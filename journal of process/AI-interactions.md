@@ -222,3 +222,27 @@ Open Questions: reduced to 3 targeted items.
 If you want, I can now scaffold a minimal demo project (Web Component + demo HTML + example JSON) using this PRD as the blueprint.
 
 ## Human initiates a Git repo
+https://github.com/ErikSundvall/prostate
+Current state comitted
+
+## Human comments after reviewing 0001-prd-prostate-mri-zone-map-widget.md
+Now we have switched AI from "GPT-5" to "GPT-5 mini" to save costs/quota in VS Code Copilot
+
+* Remove the point "Support JSON import/export for round-tripping lesion data without loss" from chapter 2 (Goals) since round tripping is not meaningful for a view only component
+* In chapter 2 change this point so that we will be using Deno instead of NPM for depencency management, compilation, component packaging etc so modify the part: "Ship as a framework-agnostic Web Component with a demo page and NPM package."
+
+* In section 3 skip "As a coordinator, I want to export the data (JSON) presented by the widget to include in documentation or to re-import later, without loss."
+
+* in chapter "4. functional requirements",
+** The Subsection 3.3, clarify that a small warning text should be shown in the visualisation if there was an error during loading For example zones that were not recognised. 
+** in subsection 4.3 the colour for PI-RADS 2 should not be green since that can be interpreted as "everything OK" So pck something that suits better 
+** in subsection 4 also consider the option of using different patterns for different lesions so that we can combine colour representing the score and pattern representing the identified lesion. make sure that it's clearly visible when the patterns overlap so that one pattern does not hide the other.
+** skip section 7 we don't need any data export in this read only version
+** In section 9 note that we will change to Deno, not Node with NPM, so modify section 9.1
+* in section 11 make sure three differned input data examples are provided and can be switched between (e.g, via a dropdown), also allowe end user to upload an input JSON
+
+* In chapter 7. (Technical Considerations) modify this to reflect that we are using Deno not Node
+
+* in chapter 8. (success metrics) skip the round-trip requirement
+
+
