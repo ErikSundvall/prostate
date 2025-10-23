@@ -1,17 +1,17 @@
 ## Relevant Files
 
-- `src/components/prostate-mri-map.ts` - Main Web Component implementing the SVG rendering, data binding, interactions, and public API. (preferred path for component code)
-- `src/prostate-mri-map.ts` - alternate path used in some drafts; either location is acceptable depending on project layout.
-- `src/components/prostate-mri-map.css` / `src/styles.css` - Component styling (shadow DOM or exported CSS variables for theming).
-- `src/assets/prostate-map.svg` / `src/prostate-map.svg` - Editable SVG containing the 24 zone shapes with canonical IDs (pattern: `[1-4][A|B|C][v|d]`).
-- `src/types.ts` / `src/utils/data-schema.ts` - TypeScript interfaces and validation helpers for the lesion JSON schema.
-- `src/utils.ts` / `src/utils/palette-and-patterns.ts` - Utility functions: color/pattern mapping, computeZoneState, validation helpers, pattern composition helpers.
+- `src/components/prostate-mri-map.ts` - Main Web Component implementing the SVG rendering, data binding, interactions, and public API.
+- `src/components/prostate-mri-map.css` - Component styling (shadow DOM with CSS custom properties for theming).
+- `src/assets/prostate-map.svg` - Editable SVG containing the 24 zone shapes with canonical IDs (pattern: `[1-4][A|B|C][v|d]`).
+- `src/types.ts` - TypeScript interfaces and types for the lesion JSON schema and component props.
+- `src/utils/palette-and-patterns.ts` - Utility functions: color/pattern mapping, `computeZoneState`, validation helpers, and pattern composition helpers.
+- `src/utils/data-schema.ts` - Data validation helpers and schema-aware utilities (can import types from `src/types.ts`).
 - `demo/index.html` - Demo page showcasing language toggle, dataset dropdown, upload control, and the component.
 - `demo/data/example-1.json` - Example dataset 1 (index lesion spanning zones).
 - `demo/data/example-2.json` - Example dataset 2 (multiple lesions, overlapping zones).
 - `demo/data/example-3.json` - Example dataset 3 (edge cases: invalid zones, missing fields).
-- `tests/data-validation.test.ts` / `tests/validation.test.ts` - Unit tests for JSON validation and warning emission.
-- `tests/mapping.test.ts` / `tests/rendering.test.ts` - Unit tests for mapping zones to SVG elements, color/pattern assignment and overlap handling.
+- `tests/validation.test.ts` - Unit tests for JSON validation and warning emission.
+- `tests/rendering.test.ts` - Unit tests for mapping zones to SVG elements, color/pattern assignment and overlap handling.
 - `deno.json` - Deno configuration file: tasks for `fmt`, `lint`, `test`, and `bundle` (and optional bundle/umd task).
 - `README.md` - Usage and build instructions (Deno-centric), example JSON format, demo instructions and API docs.
 - `LICENSE` - Apache-2.0 license file.
@@ -54,12 +54,12 @@
 
 - [ ] 4.0 Visualization: colors, patterns, badges and legend
   - [ ] 4.1 Add a color palette mapping PI-RADS → colors in `src/utils/palette-and-patterns.ts` and expose defaults as CSS custom properties in the component stylesheet to allow theming.
-    - Defaults (can be tuned):
-      - PI-RADS 5: #C62828
-      - PI-RADS 4: #EF6C00
-      - PI-RADS 3: #F9A825
-      - PI-RADS 2: #9E9E9E
-      - PI-RADS 1: #90CAF9
+    - Defaults (colorblind-aware, can be tuned):
+      - PI-RADS 5: #D73027  /* strong red */
+      - PI-RADS 4: #FC8D59  /* orange */
+      - PI-RADS 3: #FEE08B  /* warm yellow/amber */
+      - PI-RADS 2: #999999  /* neutral gray */
+      - PI-RADS 1: #4575B4  /* blue */
   - [ ] 4.2 Implement `computeZoneState(lesions)` that returns a mapping zoneId → { highestPirads, lesionIds: string[], count } and any per-zone pattern-stack metadata needed for rendering multiple lesions.
   - [ ] 4.3 Apply fill colors to SVG zone shapes based on the computed highest PI-RADS per zone. Prefer CSS variables or style attributes for easy overrides.
   - [ ] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a pattern assignment strategy: per lesion generate a pattern ID (e.g., `pattern-L1`) and, when multiple lesions overlap a zone, render pattern layers (semi-transparent) or overlay small glyph badges to preserve legibility.

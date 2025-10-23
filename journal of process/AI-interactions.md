@@ -284,3 +284,11 @@ Read tasks-0001-prd-prostate-mri-zone-map-widget(GPT-4o).md
 Read tasks-0001-prd-prostate-mri-zone-map-widget(Grok-Code-Fast-1).md
 
 I'll read the six existing task files (done), synthesize their best details into one comprehensive task list, and add a new merged file at /tasks/tasks-0001-prd-prostate-mri-zone-map-widget(merged).md. Expected outcome: a single, combined Markdown task file ready for developers. I'll now create the merged file.
+
+## Human reads and suggest suggestions to merged file
+
+* I manually edited the colour palette of 4.1, please cheque if it's still colorblind safe otherwise try to alter it a bit. The D3.js library usually have good palettes that can be used as inspiration
+* In section "Relevant Files"  we want to settle for one of the alterantive file namings in each case. go for using /components and /assets subdirectories
+* Choices in "Relevant Files" affect corresponding mentions in "Tasks" section so first decide in "Relevant Files" then fix the rest to be consistent.
+
+When using speech to text some words get wrong and when typing others get wrong...
