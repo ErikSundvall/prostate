@@ -16,16 +16,15 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
 - Provide an accurate, guideline-aligned SVG map of prostate zones with canonical IDs and bilingual UI labels.
 - Visualize lesions across one or more zones; handle multiple lesions overlapping the same zone.
 - Offer inspect-only interactions (e.g., open a detail panel) without editing.
-- Support JSON import/export for round-tripping lesion data without loss.
 - Ensure accessibility (colorblind-safe palette, keyboard/ARIA) and fast load (<200 ms on a modern laptop, no network).
-- Ship as a framework-agnostic Web Component with a demo page and NPM package.
+ - Ensure accessibility (colorblind-safe palette, keyboard/ARIA) and fast load (<200 ms on a modern laptop, no network).
+ - Ship as a framework-agnostic Web Component with a demo page and packaging/build targeted for Deno (module bundle); releases will be provided via GitHub/Deno registry.
 
 ## 3. User Stories
 
 - As an MDT coordinator (primary user), I want to load pre-existing lesion data so the widget visualizes lesions by zone for the MDT meeting.
 - As an MDT attendee, I want to quickly see which prostate zones contain lesions so I can understand lesion distribution.
 - As an MDT attendee, I want to click or use the keyboard to open a small detail panel for a zone/lesion to read PI-RADS and comments.
-- As a coordinator, I want to export the data (JSON) presented by the widget to include in documentation or to re-import later, without loss.
 - As staff in Sweden, I want labels and hints in Swedish; as international staff, I want English, and I need to switch between languages easily.
 
 ## 4. Functional Requirements
@@ -65,7 +64,7 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
        }
      ```
    - 3.2 The widget must validate that all referenced zone IDs exist; invalid IDs should be logged and ignored (no crash), surfaced via an optional warning callback/event.
-   - 3.3 The widget must support loading data programmatically (property/setter) and via an HTML attribute containing a JSON string or a URL returning JSON (optional future extension; out-of-scope in v1 unless trivial).
+   - 3.3 The widget must support loading data programmatically (property/setter) and via an HTML attribute containing a JSON string or a URL returning JSON (optional future extension; out-of-scope in v1 unless trivial). If there are errors during loading (for example, unrecognized zone IDs or fetch failures), the widget must show a small inline warning text inside the visualization area (non-blocking) and emit a `data-warning` event with details. Invalid zone IDs should still be ignored and not cause a crash.
 
 4) Visualization rules
    - 4.1 Zones with one or more lesions must be highlighted by color.
@@ -74,10 +73,11 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
       - PI-RADS 5: #C62828 (deep red)
       - PI-RADS 4: #EF6C00 (orange)
       - PI-RADS 3: #F9A825 (amber)
-      - PI-RADS 2: #66BB6A (green)
+      - PI-RADS 2: #9E9E9E (neutral gray)  // avoid using green which can imply "ok"
       - PI-RADS 1: #90CAF9 (blue)
       The palette must be configurable via a property or CSS custom properties for later adjustments.
-   - 4.4 Lesion count per zone should be indicated (e.g., small badge/overlay number) in a non-obtrusive manner.
+   - 4.4 Consider using pattern fills (hatches/dots/diagonals) per lesion in addition to color so that color conveys PI-RADS and pattern conveys distinct lesion identity. Patterns must be designed so multiple patterns can be composed or overlaid when lesions span the same zone, and overlapping patterns should remain distinguishable (e.g., via semi-transparent pattern layers, offsetting, or small glyph badges). Patterns and composition rules must be configurable.
+   - 4.5 Lesion count per zone should be indicated (e.g., small badge/overlay number) in a non-obtrusive manner.
 
 5) Inspect-only interactions
    - 5.1 Clicking (or keyboard activating) a zone opens a small detail panel that lists: the zone ID, lesion list that intersects the zone, each lesion’s PI-RADS, comment, and any optional fields provided (e.g., size_mm).
@@ -90,8 +90,7 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
    - 6.3 Color usage must meet colorblind-safe practice; do not rely on color alone—include badges/legend.
 
 7) Data export
-   - 7.1 Users must be able to export the current dataset as JSON (round-trip without loss), preserving lesion-to-zone relationships and attributes.
-   - 7.2 Exports must not include any PHI beyond the provided lesion metadata. The widget should not introduce PHI.
+   - This read-only version does not provide any data export functionality. Any export or persistence is out-of-scope for v1.
 
 8) Embedding and APIs
    - 8.1 Provide a framework-agnostic Web Component, e.g., `<prostate-mri-map>`.
@@ -104,7 +103,7 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
      - `data-warning` for validation issues
 
 9) Packaging and compatibility
-   - 9.1 Provide a single embeddable bundle (UMD/IIFE) and an NPM package with ESM output.
+   - 9.1 Provide a single embeddable module bundle suitable for Deno (ES module) and a small UMD/IIFE build for direct browser embed; publish releases via GitHub and optionally the Deno registry. No NPM package is required for v1.
    - 9.2 Support latest Chrome/Edge and current Firefox/Safari.
    - 9.3 License: Apache-2.0.
 
@@ -113,7 +112,7 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
    - 10.2 Keep bundle size modest; avoid heavy dependencies. No frameworks required.
 
 11) Demo
-   - 11.1 Include a simple demo HTML page showing Swedish/English toggle, loading example JSON, and exporting it.
+   - 11.1 Include a simple demo HTML page showing Swedish/English toggle, and the ability to switch between three different example input datasets (selectable via a dropdown). The demo must also allow the end user to upload their own JSON input file to preview. Exporting data is not required for the demo in v1.
 
 ## 5. Non-Goals (Out of Scope for v1)
 
@@ -133,8 +132,9 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
 ## 7. Technical Considerations
 
 - Implementation: vanilla Web Component (Custom Elements + Shadow DOM) written in TypeScript (recommended) or modern JavaScript. Avoid framework coupling.
-- Build: Rollup or Vite to produce UMD/IIFE (single file) and ESM outputs. Include type declarations if using TS.
-- Testing: lightweight unit tests (e.g., Vitest/Jest) for mapping logic, color assignment, and import/export.
+ - Implementation: vanilla Web Component (Custom Elements + Shadow DOM) written in TypeScript (recommended) or modern JavaScript. Avoid framework coupling.
+ - Build: Use Deno for dependency management, compilation, and bundling. Produce an ES module for Deno and an optional small UMD/IIFE for legacy embed if needed.
+ - Testing: lightweight unit tests (e.g., using Deno's built-in test runner or a minimal test harness) for mapping logic, color assignment, and input validation.
 - Data model accommodates more than three lesions, though typical input includes up to three; UI remains performant with more.
 - Security: no external calls by default; no PHI introduced. Data stays in memory unless explicitly exported.
  - License: Apache-2.0.
@@ -142,9 +142,10 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
 ## 8. Success Metrics
 
 - Accurate SVG map with all 24 zones correctly named and inspectable (A).
-- JSON import/export round-trips without loss (C).
 - Unit tests for core functions (G) with passing results in CI.
 - Load time < 200 ms on a modern laptop (H).
+ - Unit tests for core functions (G) with passing results in CI.
+ - Load time < 200 ms on a modern laptop (H).
 - Optional qualitative: positive feedback from MDT users on clarity and bilingual usability.
 
 ## 9. Open Questions
