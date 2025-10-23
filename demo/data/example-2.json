@@ -1,0 +1,12 @@
+{
+  "lesions": [
+    {
+      "id": "L1",
+      "zones": ["1Av", "1Ad"],
+      "pirads": 5,
+      "comment": "High risk"
+    },
+    { "id": "L2", "zones": ["1Ad", "2Bd"], "pirads": 3 }
+  ],
+  "meta": { "version": "1.0", "language": "en" }
+}

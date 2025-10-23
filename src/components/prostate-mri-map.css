@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+:root {
+  --pirads-5: #a50f15;
+  --pirads-4: #de2d26;
+  --pirads-3: #fb6a4a;
+  --pirads-2: #fd8d3c;
+  --pirads-1: #ffffb2;
+}

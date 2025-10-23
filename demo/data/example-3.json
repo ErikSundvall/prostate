@@ -1,0 +1,6 @@
+{
+  "lesions": [
+    { "id": "Lx", "zones": ["X99", "1Av"], "pirads": 2 }
+  ],
+  "meta": { "version": "1.0", "language": "en" }
+}

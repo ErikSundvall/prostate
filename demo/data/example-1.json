@@ -1,0 +1,11 @@
+{
+  "lesions": [
+    {
+      "id": "L1",
+      "zones": ["1Av", "2Av"],
+      "pirads": 4,
+      "comment": "Index lesion"
+    }
+  ],
+  "meta": { "version": "1.0", "language": "en" }
+}

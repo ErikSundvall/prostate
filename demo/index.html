@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Prostate MRI Map Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, Segoe UI, Roboto, Arial;
+        margin: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Prostate MRI Map - Demo (placeholder)</h1>
+    <p>
+      Language: <select id="lang">
+        <option value="en">en</option>
+        <option value="sv">sv</option>
+      </select>
+    </p>
+    <p>
+      Dataset: <select id="dataset">
+        <option value="example-1.json">example-1.json</option>
+        <option value="example-2.json">example-2.json</option>
+        <option value="example-3.json">example-3.json</option>
+      </select>
+    </p>
+    <prostate-mri-map id="map" language="en"></prostate-mri-map>
+    <script type="module">
+      import "../src/components/prostate-mri-map.ts";
+      const map = document.getElementById("map");
+      document.getElementById("lang").addEventListener(
+        "change",
+        (e) => {
+          map.language = e.target.value;
+        },
+      );
+      document.getElementById("dataset").addEventListener(
+        "change",
+        async (e) => {
+          const url = "./data/" + e.target.value;
+          const resp = await fetch(url);
+          const json = await resp.json();
+          map.data = json;
+        },
+      );
+      // load initial dataset
+      (async () => {
+        const resp = await fetch("./data/example-1.json");
+        map.data = await resp.json();
+      })();
+    </script>
+  </body>
+</html>

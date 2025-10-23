@@ -1,0 +1,13 @@
+{
+  "fmt": {
+    "exclude": ["dist", "src/assets/prostate-map.svg"]
+  },
+  "lint": {},
+  "tasks": {
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "test": "deno test",
+    "bundle": "deno bundle src/components/prostate-mri-map.ts dist/prostate-mri-map.bundle.js",
+    "dev": "deno run --allow-net --allow-read https://deno.land/std@0.204.0/http/file_server.ts demo"
+  }
+}
