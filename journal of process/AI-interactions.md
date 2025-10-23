@@ -245,4 +245,16 @@ Now we have switched AI from "GPT-5" to "GPT-5 mini" to save costs/quota in VS C
 
 * in chapter 8. (success metrics) skip the round-trip requirement
 
+## AI preformed the changes
+See changes in diff: https://github.com/ErikSundvall/prostate/commit/383e131cecbc2c2e6b9a50ce6807d6a5575b9a0e
 
+TH AI then offers to start working...
+```` Next steps I can take (pick one):
+
+Scaffold a minimal Deno-based demo project with the Web Component, three example JSON files, and an upload control.
+Generate the initial SVG zone map as an editable SVG file and a simple JS module that maps zone IDs to SVG element IDs.
+Create a small test plan and example test cases for the mapping and visualization logic.
+```
+...but we resist the temptantion and instead go on to the next part of the scaffolfing by issuing the command:
+
+#file:generate-tasks.md please generate tasks for #file:0001-prd-prostate-mri-zone-map-widget.md 
