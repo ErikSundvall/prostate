@@ -52,18 +52,20 @@ Skeleton files created in this step (placeholders):
 
 - [ ] 1.0 Project setup and core assets
   - [x] 1.1 Create repository skeleton and directories: `src/`,
-        `src/components/`, `src/assets/`, `src/utils/`, `demo/`, `demo/data/`,and `tests/`.
+        `src/components/`, `src/assets/`, `src/utils/`, `demo/`,
+        `demo/data/`,and `tests/`.
   - [x] 1.2 Add `deno.json` with tasks for `fmt`, `lint`, `test`, `bundle`, and
         a `dev` task (if desired). Include sensible TypeScript/Deno compiler
         options and an import map if used.
-      - [x] 1.3 Add `LICENSE` (Apache-2.0) and a minimal `CONTRIBUTING.md` note.
-      - [x] 1.4 Create `src/assets/prostate-map.svg` with 24 clearly labeled zone
-        shapes and stable IDs that match the canonical IDs (1Av, 1Ad, 1Bv, ...
-        4Cv, 4Cd). 
-            - [x] 1.4.1 Defer to later: manual tracing (Inkscape) — Manually trace background bitmaps into yone big svg with identified zones. (Do not generate any help for this.)
-            - [x] 1.4.2 pretend the current prostate-map.svg to be correct and go on with rest of work
-            
-      - [x] 1.5 Add three demo datasets to `demo/data/`:
+    - [x] 1.3 Add `LICENSE` (Apache-2.0) and a minimal `CONTRIBUTING.md` note.
+    - [x] 1.4 Create `src/assets/prostate-map.svg` with 24 clearly labeled zone
+          shapes and stable IDs that match the canonical IDs (1Av, 1Ad, 1Bv, ...
+          4Cv, 4Cd). - [x] 1.4.1 Defer to later: manual tracing (Inkscape) —
+          Manually trace background bitmaps into yone big svg with identified
+          zones. (Do not generate any help for this.) - [x] 1.4.2 pretend the
+          current prostate-map.svg to be correct and go on with rest of work
+
+    - [x] 1.5 Add three demo datasets to `demo/data/`:
     - `example-1.json` — typical MDT use (1–3 lesions, with at least one
       spanning multiple zones)
     - `example-2.json` — overlapping lesions and multiple lesions per zone
@@ -71,22 +73,26 @@ Skeleton files created in this step (placeholders):
       to exercise validation and warnings
 
 - [ ] 2.0 Web Component skeleton and public API
-  - [ ] 2.1 Create `src/components/prostate-mri-map.ts` (or
+  - [x] 2.1 Create `src/components/prostate-mri-map.ts` (or
         `src/prostate-mri-map.ts`) and define the custom element class
         `ProstateMriMap` that extends `HTMLElement`.
-  - [ ] 2.2 Implement lifecycle methods: constructor, `connectedCallback`,
+  - [x] 2.2 Implement lifecycle methods: constructor, `connectedCallback`,
         `disconnectedCallback` and basic cleanup.
-  - [ ] 2.3 Attach an open Shadow DOM and render an SVG template (inline or via
+  - [x] 2.3 Attach an open Shadow DOM and render an SVG template (inline or via
         <object>/<svg> import) plus a container for UI chrome (legend, detail
         panel, inline warnings).
-  - [ ] 2.4 Expose observed attributes and properties: `language` ("sv"|"en"),
+  - [x] 2.4 Expose observed attributes and properties: `language` ("sv"|"en"),
         `data` (object or JSON string), and `theme` (reserved). Support
         attribute <-> property sync and JSON parsing for `data` when provided as
         attribute.
-  - [ ] 2.5 Implement getters/setters for `language`, `data`, and `theme` with
+  - [x] 2.5 Implement getters/setters for `language`, `data`, and `theme` with
         change handling and re-render hooks.
   - [ ] 2.6 Add simple event emission helpers and stubs for `zone-click` and
         `data-warning` (CustomEvent) to be used throughout implementation.
+
+        _Progress note_: `data-warning` emission is implemented and emits
+        validation/parse warnings. `zone-click` event and zone interaction
+        handlers are pending and proposed as the next subtask.
 
 - [ ] 3.0 Data schema, loading and validation
   - [ ] 3.1 Define TypeScript interfaces in `src/types.ts` describing the schema
