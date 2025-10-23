@@ -23,43 +23,48 @@
 ## Tasks
 
 - [ ] 1.0 Prepare assets and repo configuration
-  - [ ] 1.1 Create `src/assets/prostate-map.svg` with 24 clearly labeled zone shapes (IDs matching `[1-4][A|B|C][v|d]`).
-  - [ ] 1.2 Add `deno.json` with scripts for build, bundle, and test.
-  - [ ] 1.3 Create three example JSON datasets in `src/demo/datasets/`.
+  - [ ] 1.1 Create the directory structure: `src/`, `src/assets/`, `src/utils/`, `src/components/`, `demo/`, and `tests/`.
+  - [ ] 1.2 Create `src/assets/prostate-map.svg` with 24 zone paths, each with a canonical ID (e.g., `id="1Cv"`).
+  - [ ] 1.3 Create `deno.json` with scripts for `fmt`, `lint`, `test`, and `bundle`.
+  - [ ] 1.4 Add three example JSON datasets in `demo/datasets/` (`example-1.json`, `example-2.json`, `example-3.json`).
 
 - [ ] 2.0 Component skeleton and API
-  - [ ] 2.1 Implement `src/components/prostate-mri-map.ts` skeleton: custom element registration, basic shadow DOM, and minimal rendering of the SVG.
-  - [ ] 2.2 Expose public attributes/properties: `language`, `data`, and `theme`.
-  - [ ] 2.3 Implement basic event emission stubs: `zone-click` and `data-warning`.
+  - [ ] 2.1 Define and register the `ProstateMriMap` custom element in `src/components/prostate-mri-map.ts`.
+  - [ ] 2.2 Set up the shadow DOM to render the SVG and link to `src/components/prostate-mri-map.css`.
+  - [ ] 2.3 Define the `language`, `data`, and `theme` attributes/properties with default values.
+  - [ ] 2.4 Implement stubs for `zone-click` and `data-warning` events.
 
 - [ ] 3.0 Data validation and loading
-  - [ ] 3.1 Implement `src/utils/data-schema.ts` with TypeScript interfaces and validation functions for the lesion JSON schema.
-  - [ ] 3.2 Wire up data loading in the component: accept programmatic data and attribute-based JSON; handle fetch if URL provided (optional).
-  - [ ] 3.3 Show an inline non-blocking warning in the visualization area when load/validation errors occur and emit `data-warning` with details.
+  - [ ] 3.1 Define TypeScript interfaces for lesion data in `src/utils/data-schema.ts`.
+  - [ ] 3.2 Implement a validation function to check lesion data against the schema.
+  - [ ] 3.3 Wire the validation function to the `data` property setter in the component.
+  - [ ] 3.4 Display a warning message and emit a `data-warning` event for invalid data.
 
 - [ ] 4.0 Visualization: coloring, patterns, badges
-  - [ ] 4.1 Implement `src/utils/palette-and-patterns.ts` with default PI-RADS colors and pattern definitions.
-  - [ ] 4.2 Map lesions to zones and compute zone-level state (highest PI-RADS, lesion list, patterns).
-  - [ ] 4.3 Apply colors and pattern fills to SVG zones; ensure overlapping patterns remain distinguishable.
-  - [ ] 4.4 Add small badge/overlay for lesion counts per zone.
+  - [ ] 4.1 Define the PI-RADS color palette as CSS variables in `src/components/prostate-mri-map.css`.
+  - [ ] 4.2 Write a function to map lesions to zones and compute the highest PI-RADS score per zone.
+  - [ ] 4.3 Apply color fills to SVG zones based on their PI-RADS scores.
+  - [ ] 4.4 Add SVG patterns for lesion differentiation and ensure they are distinguishable when overlapping.
+  - [ ] 4.5 Add a badge to each zone showing the lesion count.
 
 - [ ] 5.0 Interactions and accessibility
-  - [ ] 5.1 Make each zone focusable and keyboard navigable; implement Enter/Space to open the detail panel.
-  - [ ] 5.2 Implement click/shift-click/right-click handlers to open a read-only detail panel.
-  - [ ] 5.3 Add ARIA labels for each zone and ensure the detail panel is accessible and dismissible via Esc.
+  - [ ] 5.1 Add `tabindex="0"` to SVG zones to make them keyboard-navigable.
+  - [ ] 5.2 Implement a detail panel to display zone and lesion information on click or keyboard activation.
+  - [ ] 5.3 Ensure the detail panel can be dismissed via `Esc` or clicking outside.
+  - [ ] 5.4 Add ARIA labels to zones describing their state (e.g., "Zone 1Cv, 2 lesions, PI-RADS 4").
 
 - [ ] 6.0 Demo page and UX polish
-  - [ ] 6.1 Build `src/demo/index.html` with language toggle (sv/en), dataset dropdown (3 provided), and file upload to load a JSON file.
-  - [ ] 6.2 Ensure the demo shows the inline warning for invalid input and allows switching datasets.
-  - [ ] 6.3 Add simple CSS variables for palette customization in the demo.
+  - [ ] 6.1 Build `demo/index.html` with a `<prostate-mri-map>` instance.
+  - [ ] 6.2 Add controls for language toggle, dataset selection, and file upload.
+  - [ ] 6.3 Implement logic to load and pass data from the controls to the component.
+  - [ ] 6.4 Add hover effects and focus styles for better discoverability.
 
 - [ ] 7.0 Tests and CI
-  - [ ] 7.1 Implement `tests/data-validation.test.ts` and `tests/mapping.test.ts` covering schema validation, load warnings, and color/pattern assignment.
-  - [ ] 7.2 Add a simple GitHub Actions workflow that runs `deno test` on push (optional; can be added later).
+  - [ ] 7.1 Write unit tests for data validation in `tests/data-validation.test.ts`.
+  - [ ] 7.2 Write unit tests for visualization logic in `tests/mapping.test.ts`.
+  - [ ] 7.3 Add a GitHub Actions workflow to run `deno lint`, `deno fmt --check`, and `deno test` on push.
 
 - [ ] 8.0 Docs and packaging
-  - [ ] 8.1 Write `README.md` with Deno-based build and usage instructions and the example JSON format.
-  - [ ] 8.2 Create a Deno-friendly bundle script to produce a distributable ES module for the component.
-
-
-I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed.
+  - [ ] 8.1 Write `README.md` with setup instructions, API documentation, and usage examples.
+  - [ ] 8.2 Create a build script in `deno.json` to bundle the component as an ES module.
+  - [ ] 8.3 Add an `LICENSE` file with Apache-2.0 license text.
