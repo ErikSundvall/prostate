@@ -52,17 +52,17 @@ Skeleton files created in this step (placeholders):
 
 - [ ] 1.0 Project setup and core assets
   - [x] 1.1 Create repository skeleton and directories: `src/`,
-        `src/components/`, `src/assets/`, `src/utils/`, `demo/`, `demo/data/`,
-        and `tests/`.
-  - [ ] 1.2 Add `deno.json` with tasks for `fmt`, `lint`, `test`, `bundle`, and
+        `src/components/`, `src/assets/`, `src/utils/`, `demo/`, `demo/data/`,and `tests/`.
+  - [x] 1.2 Add `deno.json` with tasks for `fmt`, `lint`, `test`, `bundle`, and
         a `dev` task (if desired). Include sensible TypeScript/Deno compiler
         options and an import map if used.
-  - [ ] 1.3 Add `LICENSE` (Apache-2.0) and a minimal `CONTRIBUTING.md` note.
-  - [ ] 1.4 Create `src/assets/prostate-map.svg` with 24 clearly labeled zone
+      - [x] 1.3 Add `LICENSE` (Apache-2.0) and a minimal `CONTRIBUTING.md` note.
+      - [ ] 1.4 Create `src/assets/prostate-map.svg` with 24 clearly labeled zone
         shapes and stable IDs that match the canonical IDs (1Av, 1Ad, 1Bv, ...
-        4Cv, 4Cd). Verify orientation (ventral/dorsal and base/mid/apex) against
-        provided guideline schematics and add an inline comment in the SVG with
-        author and version metadata.
+        4Cv, 4Cd). 
+            - [ ] 1.4.1 Defer to later: manual tracing (Inkscape) — Manually trace background bitmaps into one big svg with identified zones. (Do not generate any help for this.)
+            - [ ] 1.4.2 pretend the current prostate-map.svg to be correct and go on with rest of work
+            
   - [ ] 1.5 Add three demo datasets to `demo/data/`:
     - `example-1.json` — typical MDT use (1–3 lesions, with at least one
       spanning multiple zones)
