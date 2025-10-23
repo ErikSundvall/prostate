@@ -69,13 +69,13 @@ Primary use: The MDT coordinator prepares a summary, and the widget is displayed
 4) Visualization rules
    - 4.1 Zones with one or more lesions must be highlighted by color.
    - 4.2 When multiple lesions affect the same zone, the zone’s color must reflect the highest PI-RADS value among those lesions by default.
-   - 4.3 Provide a legend mapping PI-RADS severity to colors using a colorblind-safe palette. Default palette (placeholder, to be refined after review):
-      - PI-RADS 5: #C62828 (deep red)
-      - PI-RADS 4: #EF6C00 (orange)
-      - PI-RADS 3: #F9A825 (amber)
-      - PI-RADS 2: #9E9E9E (neutral gray)  // avoid using green which can imply "ok"
-      - PI-RADS 1: #90CAF9 (blue)
-      The palette must be configurable via a property or CSS custom properties for later adjustments.
+   - 4.3 Provide a legend mapping PI-RADS severity to colors using a configurable palette. Default palette: ColorBrewer YlOrRd (5-class, sequential) mapping PI-RADS 1 (light) → 5 (dark):
+      - PI-RADS 5: #A50F15
+      - PI-RADS 4: #DE2D26
+      - PI-RADS 3: #FB6A4A
+      - PI-RADS 2: #FD8D3C
+      - PI-RADS 1: #FFFFB2
+      The palette must be configurable via a property or CSS custom properties for later adjustments. Do not rely on color alone; use patterns and badges as required for accessibility.
    - 4.4 Consider using pattern fills (hatches/dots/diagonals) per lesion in addition to color so that color conveys PI-RADS and pattern conveys distinct lesion identity. Patterns must be designed so multiple patterns can be composed or overlaid when lesions span the same zone, and overlapping patterns should remain distinguishable (e.g., via semi-transparent pattern layers, offsetting, or small glyph badges). Patterns and composition rules must be configurable.
    - 4.5 Lesion count per zone should be indicated (e.g., small badge/overlay number) in a non-obtrusive manner.
 

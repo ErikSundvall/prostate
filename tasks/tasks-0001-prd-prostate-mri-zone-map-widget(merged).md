@@ -54,12 +54,12 @@
 
 - [ ] 4.0 Visualization: colors, patterns, badges and legend
   - [ ] 4.1 Add a color palette mapping PI-RADS → colors in `src/utils/palette-and-patterns.ts` and expose defaults as CSS custom properties in the component stylesheet to allow theming.
-    - Defaults (colorblind-aware, can be tuned):
-      - PI-RADS 5: #D73027  /* strong red */
-      - PI-RADS 4: #FC8D59  /* orange */
-      - PI-RADS 3: #FEE08B  /* warm yellow/amber */
-      - PI-RADS 2: #999999  /* neutral gray */
-      - PI-RADS 1: #4575B4  /* blue */
+    - Defaults (ColorBrewer YlOrRd 5 sequential, mapping PI-RADS 1→light to 5→dark):
+      - PI-RADS 5: #A50F15
+      - PI-RADS 4: #DE2D26
+      - PI-RADS 3: #FB6A4A
+      - PI-RADS 2: #FD8D3C
+      - PI-RADS 1: #FFFFB2
   - [ ] 4.2 Implement `computeZoneState(lesions)` that returns a mapping zoneId → { highestPirads, lesionIds: string[], count } and any per-zone pattern-stack metadata needed for rendering multiple lesions.
   - [ ] 4.3 Apply fill colors to SVG zone shapes based on the computed highest PI-RADS per zone. Prefer CSS variables or style attributes for easy overrides.
   - [ ] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a pattern assignment strategy: per lesion generate a pattern ID (e.g., `pattern-L1`) and, when multiple lesions overlap a zone, render pattern layers (semi-transparent) or overlay small glyph badges to preserve legibility.
