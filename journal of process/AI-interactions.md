@@ -263,3 +263,24 @@ Then i did this for several
 
 
 Now based on #file:generate-tasks.md please continue generating subtstasks for #file:0001-prd-prostate-mri-zone-map-widget.md based on your already started work with main tasks in #file:tasks-0001-prd-prostate-mri-zone-map-widget(Grok-Code-Fast-1).md  (do this _without_ opening/reading any other files prefixed by `tasks-0001` )
+
+
+## Human aske for a merge
+Compare the 6 files prefixed tasks-0001 in the #file:tasks folder. They are written by diffent AIs. Does any of them look to ne more detailed/complete than others? Synthezise the best combination of all files and stor the result in a new file suffixed (merged).md
+
+## AI
+I'll: 1) record a short todo plan, 2) read all six tasks-0001 files in parallel to compare them, then 3) create a merged task file that synthesizes the best details from each. I'll run reads in parallel to collect content. Expected outcome: a new file tasks-0001-prd-prostate-mri-zone-map-widget(merged).md added to tasks with the combined, prioritized task list.
+
+Starting (1/3) Gather task files
+
+Read tasks-0001-prd-prostate-mri-zone-map-widget(GPT-5-mini).md
+
+Read tasks-0001-prd-prostate-mri-zone-map-widget(Gemeni-2.5-Pro).md
+
+Read tasks-0001-prd-prostate-mri-zone-map-widget(GPT-4.1).md
+
+Read tasks-0001-prd-prostate-mri-zone-map-widget(GPT-4o).md
+
+Read tasks-0001-prd-prostate-mri-zone-map-widget(Grok-Code-Fast-1).md
+
+I'll read the six existing task files (done), synthesize their best details into one comprehensive task list, and add a new merged file at /tasks/tasks-0001-prd-prostate-mri-zone-map-widget(merged).md. Expected outcome: a single, combined Markdown task file ready for developers. I'll now create the merged file.
