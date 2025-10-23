@@ -60,6 +60,3 @@
 - [ ] 8.0 Docs and packaging
   - [ ] 8.1 Write `README.md` with Deno-based build and usage instructions and the example JSON format.
   - [ ] 8.2 Create a Deno-friendly bundle script to produce a distributable ES module for the component.
-
-
-I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed.
