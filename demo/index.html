@@ -27,13 +27,29 @@
       </select>
     </p>
     <prostate-mri-map id="map" language="en"></prostate-mri-map>
-    <script>
-      // Lightweight demo script that doesn't rely on the TypeScript web
-      // component. It loads the SVG and JSON dataset and applies fills
-      // directly so you can inspect the result in a browser without a
-      // dev/bundle step.
 
-      const container = document.getElementById("map");
+    <script type="module">
+      // Try to load the bundled component if present in demo/. If the bundle
+      // doesn't exist (dev workflow without bundling), fall back to the
+      // inline renderer below.
+      let _haveBundle = false;
+      try {
+        await import('./prostate-mri-map.bundle.js');
+        _haveBundle = !!customElements.get('prostate-mri-map');
+      } catch (err) {
+        // bundle not present or failed to load — we'll use the inline demo
+        // script that manipulates the slotted SVG directly.
+        _haveBundle = false;
+        console.debug('Bundle not loaded, falling back to inline demo renderer.', err);
+      }
+    </script>
+
+    <script>
+      // Lightweight demo script that supports two modes:
+      //  - component mode (if the bundled `prostate-mri-map` is loaded)
+      //  - inline mode (fallback) which manipulates the slotted SVG directly
+
+  const container = document.getElementById("map");
       let currentData = null;
       // color map (PI-RADS)
       const PI_RADS_COLORS = {
@@ -136,9 +152,24 @@
         const resp = await fetch('./data/' + name);
         const json = await resp.json();
         currentData = json;
-        const svg = container.querySelector('svg') || await loadSvg();
-        const state = computeZoneState(json.lesions || []);
-        applyZoneStylesToSvg(svg, state);
+        // If the real component is present, set its `data` property so it
+        // can validate and render using the bundled logic. Otherwise fall
+        // back to manipulating the slotted SVG directly.
+        if (customElements.get('prostate-mri-map')) {
+          const comp = container;
+          try {
+            comp.data = json;
+          } catch (err) {
+            console.warn('Failed to set component data, falling back to inline renderer', err);
+            const svg = container.querySelector('svg') || await loadSvg();
+            const state = computeZoneState(json.lesions || []);
+            applyZoneStylesToSvg(svg, state);
+          }
+        } else {
+          const svg = container.querySelector('svg') || await loadSvg();
+          const state = computeZoneState(json.lesions || []);
+          applyZoneStylesToSvg(svg, state);
+        }
       }
 
       document.getElementById('dataset').addEventListener('change', (e) => {

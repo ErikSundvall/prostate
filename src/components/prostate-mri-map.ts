@@ -59,26 +59,27 @@ export class ProstateMriMap extends HTMLElement {
   private _wireSlottedZones() {
     const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
     if (!slot) return;
-    slot.addEventListener('slotchange', () => {
-      // forward clicks and keyboard events from slotted SVG shapes
-      const nodes = slot.assignedElements({ flatten: true });
-      nodes.forEach(node => {
-        node.querySelectorAll('.zone').forEach((z: Element) => {
-          z.setAttribute('tabindex', '0');
-          z.addEventListener('click', (ev) => this._onZoneActivate(ev, z));
-          z.addEventListener('keydown', (ev: KeyboardEvent) => {
-            if (ev.key === 'Enter' || ev.key === ' ') {
-              ev.preventDefault();
-              this._onZoneActivate(ev, z);
-            }
+      slot.addEventListener('slotchange', () => {
+        // forward clicks and keyboard events from slotted SVG shapes
+        const nodes = slot.assignedElements({ flatten: true });
+        nodes.forEach(node => {
+          node.querySelectorAll('.zone').forEach((z: Element) => {
+            z.setAttribute('tabindex', '0');
+            // wire click and keyboard handlers to existing methods
+            z.addEventListener('click', (ev) => this._onZoneClick(ev as unknown as Event));
+            z.addEventListener('keydown', (ev: KeyboardEvent) => {
+              if (ev.key === 'Enter' || ev.key === ' ') {
+                ev.preventDefault();
+                this._onZoneKeydown(ev);
+              }
+            });
           });
         });
-      });
 
-      // After slot content changes, re-apply computed styles to the slotted SVG
-      // so the visualization stays in sync with `this._data`.
-      this._applyStylesToSlottedSvg();
-    });
+        // After slot content changes, re-apply computed styles to the slotted SVG
+        // so the visualization stays in sync with `this._data`.
+        this._applyStylesToSlottedSvg();
+      });
     }
 
   /**
@@ -109,26 +110,10 @@ export class ProstateMriMap extends HTMLElement {
       }
     } catch (err) {
       // non-fatal: styling failures shouldn't break the component
-      this._emitWarning(`applyStyles failed: ${err}`);
+        this._dispatchWarning([`applyStyles failed: ${String(err)}`]);
     }
   }
-    // For each svg, attach attributes and listeners to zone shapes with IDs
-    for (const svg of svgs) {
-      const zoneShapes = Array.from(svg.querySelectorAll("[id]")) as Element[];
-      for (const shape of zoneShapes) {
-        const id = (shape as Element).id;
-        if (!id) continue;
-        // make interactive
-        (shape as HTMLElement).setAttribute("tabindex", "0");
-        (shape as HTMLElement).setAttribute("role", "button");
-        if (!(shape as Element).getAttribute("aria-label")) {
-          (shape as Element).setAttribute("aria-label", `Zone ${id}`);
-        }
-        shape.addEventListener("click", this._onZoneClick as EventListener);
-        shape.addEventListener("keydown", this._onZoneKeydown as EventListener);
-      }
-    }
-  }
+    
 
   private _unwireSlottedZones() {
     const slot = this.shadow.querySelector('slot[name="map-svg"]') as
@@ -214,6 +199,9 @@ export class ProstateMriMap extends HTMLElement {
       this._data = res.validData ?? null;
     } else this._data = null;
     this._render();
+    // ensure styles are applied after data updates so slotted SVG reflects
+    // the new computed zone state immediately
+    this._applyStylesToSlottedSvg();
   }
 
   private _dispatchWarning(warnings: string[]) {

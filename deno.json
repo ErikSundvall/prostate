@@ -7,7 +7,7 @@
     "fmt": "deno fmt",
     "lint": "deno lint",
     "test": "deno test",
-    "bundle": "deno bundle src/components/prostate-mri-map.ts dist/prostate-mri-map.bundle.js",
+  "bundle": "deno bundle -o demo/prostate-mri-map.bundle.js src/components/prostate-mri-map.ts",
     "dev": "deno run --allow-net --allow-read https://deno.land/std@0.204.0/http/file_server.ts demo"
   }
 }

@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { computeZoneState, applyZoneStyles } from "../src/utils/palette-and-patterns.ts";
 import type { Lesion } from "../src/types.ts";
 

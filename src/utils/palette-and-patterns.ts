@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import type { Lesion } from "../types.ts";
 import { CANONICAL_ZONES } from "../types.ts";
 
@@ -60,25 +61,59 @@ export function computeZoneState(lesions: Lesion[] = {} as Lesion[]) {
 export function applyZoneStyles(root: Element, zoneState: Record<string, ZoneState>) {
   if (!root) return;
   for (const zoneId of Object.keys(zoneState)) {
-  try {
-  // avoid relying on CSS.escape which may not exist in all runtimes
-  const selector = `#${zoneId}`;
-  const el = root.querySelector(selector) as Element | null;
+    try {
+      // Prefer attribute selector to avoid issues with IDs that start with
+      // digits or otherwise would make `#id` invalid in a CSS selector.
+      const safeId = String(zoneId || "").replace(/"/g, '\\"');
+      const selector = `[id="${safeId}"]`;
+      let el: Element | null = null;
+      try {
+        el = root.querySelector(selector) as Element | null;
+      } catch {
+        // selector may still fail in odd runtimes; fall through to manual scan
+        el = null;
+      }
+
+      if (!el) {
+        // Defensive fallback: scan all nodes with id and compare attribute.
+        // Support environments where `root` is a minimal mock (tests) that
+        // exposes an `elements` map instead of querySelectorAll.
+        const maybeRoot = root as unknown as {
+          querySelectorAll?: (s: string) => NodeListOf<Element>;
+          elements?: Record<string, { getAttribute?: (n: string) => string | null }>;
+        };
+        if (typeof maybeRoot.querySelectorAll === 'function') {
+          const nodes = maybeRoot.querySelectorAll!('[id]');
+          for (const n of Array.from(nodes)) {
+            if ((n as Element).getAttribute('id') === zoneId) { el = n as Element; break; }
+          }
+        } else if (maybeRoot.elements && typeof maybeRoot.elements === 'object') {
+          for (const candidate of Object.values(maybeRoot.elements)) {
+            const attrId = candidate && typeof candidate.getAttribute === 'function' ? candidate.getAttribute('id') : null;
+            const propId = (candidate as unknown as { id?: string })?.id ?? null;
+            if (attrId === zoneId || propId === zoneId) {
+              el = candidate as unknown as Element;
+              break;
+            }
+          }
+        }
+      }
+
       if (!el) continue;
       const st = zoneState[zoneId];
       if (st.highestPirads === null) {
-        el.removeAttribute("fill");
-        el.removeAttribute("data-pirads");
-        el.removeAttribute("data-patterns");
+        // Explicitly set transparent/none so CSS defaults don't render black
+        el.setAttribute('fill', 'none');
+        el.removeAttribute('data-pirads');
+        el.removeAttribute('data-patterns');
       } else {
-        el.setAttribute("fill", getPiradsColor(st.highestPirads));
-        el.setAttribute("data-pirads", String(st.highestPirads));
+        el.setAttribute('fill', getPiradsColor(st.highestPirads));
+        el.setAttribute('data-pirads', String(st.highestPirads));
         if (st.count > 1) {
-          // assign per-lesion pattern IDs (do not inject defs here)
-          const patterns = st.lesionIds.map(getPatternId).join(" ");
-          el.setAttribute("data-patterns", patterns);
+          const patterns = st.lesionIds.map(getPatternId).join(' ');
+          el.setAttribute('data-patterns', patterns);
         } else {
-          el.removeAttribute("data-patterns");
+          el.removeAttribute('data-patterns');
         }
       }
     } catch (err) {
