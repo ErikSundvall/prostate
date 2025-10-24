@@ -27,28 +27,128 @@
       </select>
     </p>
     <prostate-mri-map id="map" language="en"></prostate-mri-map>
-    <script type="module">
-      import "../src/components/prostate-mri-map.ts";
-      const map = document.getElementById("map");
-      document.getElementById("lang").addEventListener(
-        "change",
-        (e) => {
-          map.language = e.target.value;
-        },
-      );
-      document.getElementById("dataset").addEventListener(
-        "change",
-        async (e) => {
-          const url = "./data/" + e.target.value;
-          const resp = await fetch(url);
-          const json = await resp.json();
-          map.data = json;
-        },
-      );
-      // load initial dataset
+    <script>
+      // Lightweight demo script that doesn't rely on the TypeScript web
+      // component. It loads the SVG and JSON dataset and applies fills
+      // directly so you can inspect the result in a browser without a
+      // dev/bundle step.
+
+      const container = document.getElementById("map");
+      let currentData = null;
+      // color map (PI-RADS)
+      const PI_RADS_COLORS = {
+        5: "#A50F15",
+        4: "#DE2D26",
+        3: "#FB6A4A",
+        2: "#FD8D3C",
+        1: "#FFFFB2",
+      };
+
+      function getPiradsColor(p) {
+        p = Math.max(1, Math.min(5, Math.round(Number(p) || 1)));
+        return PI_RADS_COLORS[p];
+      }
+
+      function computeZoneState(lesions) {
+        const CANONICAL = [];
+        for (let g = 1; g <= 4; g++) {
+          for (const letter of ["A", "B", "C"]) {
+            for (const suffix of ["v", "d"]) CANONICAL.push(`${g}${letter}${suffix}`);
+          }
+        }
+        const result = {};
+        for (const z of CANONICAL) result[z] = { highestPirads: null, lesionIds: [], count: 0 };
+        for (const lesion of lesions || []) {
+          const id = String(lesion.id || "");
+          const p = Number(lesion.pirads || 0) || 0;
+          for (const z of lesion.zones || []) {
+            const zid = String(z).trim();
+            if (!result[zid]) result[zid] = { highestPirads: null, lesionIds: [], count: 0 };
+            const st = result[zid];
+            st.lesionIds.push(id);
+            st.count = st.lesionIds.length;
+            if (st.highestPirads === null || p > st.highestPirads) st.highestPirads = p;
+          }
+        }
+        return result;
+      }
+
+      function applyZoneStylesToSvg(svg, zoneState) {
+        if (!svg) return;
+        for (const rawZoneId of Object.keys(zoneState)) {
+          const zoneId = String(rawZoneId || "").trim();
+          if (!zoneId) continue;
+          let el = null;
+          try {
+            // Use an attribute selector to avoid problems with IDs that start
+            // with digits or contain characters that would make `#id` invalid.
+            const selector = `[id="${zoneId.replace(/"/g, '\\"')}"]`;
+            el = svg.querySelector(selector);
+          } catch (err) {
+            // Defensive fallback: try a simple contains-based search
+            const nodes = svg.querySelectorAll('[id]');
+            for (const n of nodes) {
+              if (n.getAttribute('id') === zoneId) { el = n; break; }
+            }
+          }
+          if (!el) continue;
+          const st = zoneState[rawZoneId];
+          if (st.highestPirads === null) {
+            // explicitly set transparent fill for unmarked zones so they do
+            // not fall back to browser defaults (black) or inherited CSS.
+            el.setAttribute('fill', 'none');
+            el.removeAttribute('data-pirads');
+            el.removeAttribute('data-patterns');
+          } else {
+            // set explicit fill attribute to ensure it overrides CSS
+            el.setAttribute('fill', getPiradsColor(st.highestPirads));
+            el.setAttribute('data-pirads', String(st.highestPirads));
+            if (st.count > 1) el.setAttribute('data-patterns', st.lesionIds.map(id => `pattern-${id}`).join(' '));
+            else el.removeAttribute('data-patterns');
+          }
+        }
+      }
+
+      async function loadSvg() {
+        try {
+          const svgResp = await fetch('./prostate-map.svg');
+          if (!svgResp.ok) {
+            console.warn('SVG not found');
+            return null;
+          }
+          const svgText = await svgResp.text();
+          const wrapper = document.createElement('div');
+          // ensure the SVG is slotted into the component's named slot so it
+          // appears inside the component shadow DOM (slot name: map-svg)
+          wrapper.setAttribute('slot', 'map-svg');
+          wrapper.innerHTML = svgText;
+          // clear previous content
+          while (container.firstChild) container.removeChild(container.firstChild);
+          container.appendChild(wrapper);
+          return wrapper.querySelector('svg');
+        } catch (err) {
+          console.warn('Failed to load SVG:', err);
+          return null;
+        }
+      }
+
+      async function loadDataset(name) {
+        const resp = await fetch('./data/' + name);
+        const json = await resp.json();
+        currentData = json;
+        const svg = container.querySelector('svg') || await loadSvg();
+        const state = computeZoneState(json.lesions || []);
+        applyZoneStylesToSvg(svg, state);
+      }
+
+      document.getElementById('dataset').addEventListener('change', (e) => {
+        loadDataset(e.target.value);
+      });
+
+      // initial load
       (async () => {
-        const resp = await fetch("./data/example-1.json");
-        map.data = await resp.json();
+        await loadSvg();
+        await loadDataset('example-1.json');
       })();
     </script>
   </body>

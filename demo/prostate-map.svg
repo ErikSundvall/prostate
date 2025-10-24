@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prostate map schematic (development placeholder). Author: Erik Sundvall. Version: 0.1 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Prostate zone schematic">
+  <defs>
+    <style>
+      /* Do not set a hard fill on zones so dynamic fills applied via
+         attributes are visible. Use stroke for outlines. */
+      .zone { stroke: #333; stroke-width:1 }
+      .label { font: 12px sans-serif; fill: #111 }
+    </style>
+  </defs>
+
+  <!-- Layout: 4 rows (base to apex) and 6 columns (A/B/C x v/d) as a simple grid -->
+  <!-- Scale down the whole visualization to 10% so it fits in small viewports -->
+  <g id="zones" transform="translate(5,5) scale(0.2)">
+    <!-- Row 1 (base) -->
+    <g id="row-1" transform="translate(0,0)">
+      <rect id="1Av" class="zone" x="0" y="0" width="120" height="80" />
+      <text x="10" y="20" class="label">1Av</text>
+      <rect id="1Ad" class="zone" x="140" y="0" width="120" height="80" />
+      <text x="150" y="20" class="label">1Ad</text>
+      <rect id="1Bv" class="zone" x="280" y="0" width="120" height="80" />
+      <text x="290" y="20" class="label">1Bv</text>
+      <rect id="1Bd" class="zone" x="420" y="0" width="120" height="80" />
+      <text x="430" y="20" class="label">1Bd</text>
+      <rect id="1Cv" class="zone" x="560" y="0" width="120" height="80" />
+      <text x="570" y="20" class="label">1Cv</text>
+      <rect id="1Cd" class="zone" x="700" y="0" width="120" height="80" />
+      <text x="710" y="20" class="label">1Cd</text>
+    </g>
+
+    <!-- Row 2 (mid-base) -->
+    <g id="row-2" transform="translate(0,120)">
+      <rect id="2Av" class="zone" x="0" y="0" width="120" height="80" />
+      <text x="10" y="20" class="label">2Av</text>
+      <rect id="2Ad" class="zone" x="140" y="0" width="120" height="80" />
+      <text x="150" y="20" class="label">2Ad</text>
+      <rect id="2Bv" class="zone" x="280" y="0" width="120" height="80" />
+      <text x="290" y="20" class="label">2Bv</text>
+      <rect id="2Bd" class="zone" x="420" y="0" width="120" height="80" />
+      <text x="430" y="20" class="label">2Bd</text>
+      <rect id="2Cv" class="zone" x="560" y="0" width="120" height="80" />
+      <text x="570" y="20" class="label">2Cv</text>
+      <rect id="2Cd" class="zone" x="700" y="0" width="120" height="80" />
+      <text x="710" y="20" class="label">2Cd</text>
+    </g>
+
+    <!-- Row 3 (mid-apex) -->
+    <g id="row-3" transform="translate(0,240)">
+      <rect id="3Av" class="zone" x="0" y="0" width="120" height="80" />
+      <text x="10" y="20" class="label">3Av</text>
+      <rect id="3Ad" class="zone" x="140" y="0" width="120" height="80" />
+      <text x="150" y="20" class="label">3Ad</text>
+      <rect id="3Bv" class="zone" x="280" y="0" width="120" height="80" />
+      <text x="290" y="20" class="label">3Bv</text>
+      <rect id="3Bd" class="zone" x="420" y="0" width="120" height="80" />
+      <text x="430" y="20" class="label">3Bd</text>
+      <rect id="3Cv" class="zone" x="560" y="0" width="120" height="80" />
+      <text x="570" y="20" class="label">3Cv</text>
+      <rect id="3Cd" class="zone" x="700" y="0" width="120" height="80" />
+      <text x="710" y="20" class="label">3Cd</text>
+    </g>
+
+    <!-- Row 4 (apex) -->
+    <g id="row-4" transform="translate(0,360)">
+      <rect id="4Av" class="zone" x="0" y="0" width="120" height="80" />
+      <text x="10" y="20" class="label">4Av</text>
+      <rect id="4Ad" class="zone" x="140" y="0" width="120" height="80" />
+      <text x="150" y="20" class="label">4Ad</text>
+      <rect id="4Bv" class="zone" x="280" y="0" width="120" height="80" />
+      <text x="290" y="20" class="label">4Bv</text>
+      <rect id="4Bd" class="zone" x="420" y="0" width="120" height="80" />
+      <text x="430" y="20" class="label">4Bd</text>
+      <rect id="4Cv" class="zone" x="560" y="0" width="120" height="80" />
+      <text x="570" y="20" class="label">4Cv</text>
+      <rect id="4Cd" class="zone" x="700" y="0" width="120" height="80" />
+      <text x="710" y="20" class="label">4Cd</text>
+    </g>
+  </g>
+</svg>

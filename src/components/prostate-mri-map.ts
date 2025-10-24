@@ -1,5 +1,7 @@
 /// <reference lib="dom" />
 import type { ProstateMriData } from "../types.ts";
+import { validateLesionData } from "../utils/data-schema.ts";
+import { computeZoneState, applyZoneStyles } from "../utils/palette-and-patterns.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -55,25 +57,61 @@ export class ProstateMriMap extends HTMLElement {
   }
 
   private _wireSlottedZones() {
-    const slot = this.shadow.querySelector('slot[name="map-svg"]') as
-      | HTMLSlotElement
-      | null;
+    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
     if (!slot) return;
-    const nodes = slot.assignedNodes({ flatten: true }) as Node[];
-    // find any SVG elements inside assigned nodes
-    const svgs: SVGElement[] = [];
-    for (const n of nodes) {
-      if (n.nodeType === Node.ELEMENT_NODE) {
-        const el = n as Element;
-        const tag = (el.tagName || "").toLowerCase();
-        if (tag === "svg") svgs.push(el as unknown as SVGElement);
-        else {svgs.push(
-            ...Array.from(
-              el.querySelectorAll("svg"),
-            ) as unknown as SVGElement[],
-          );}
-      }
+    slot.addEventListener('slotchange', () => {
+      // forward clicks and keyboard events from slotted SVG shapes
+      const nodes = slot.assignedElements({ flatten: true });
+      nodes.forEach(node => {
+        node.querySelectorAll('.zone').forEach((z: Element) => {
+          z.setAttribute('tabindex', '0');
+          z.addEventListener('click', (ev) => this._onZoneActivate(ev, z));
+          z.addEventListener('keydown', (ev: KeyboardEvent) => {
+            if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              this._onZoneActivate(ev, z);
+            }
+          });
+        });
+      });
+
+      // After slot content changes, re-apply computed styles to the slotted SVG
+      // so the visualization stays in sync with `this._data`.
+      this._applyStylesToSlottedSvg();
+    });
     }
+
+  /**
+   * Find any slotted SVG root(s) and apply computed zone styles to them.
+   * This calls into the utilities `computeZoneState` and `applyZoneStyles`.
+   */
+  private _applyStylesToSlottedSvg(): void {
+    try {
+      const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
+      if (!slot) return;
+      const nodes = slot.assignedNodes({ flatten: true });
+      const lesions = Array.isArray(this._data?.lesions) ? this._data.lesions : [];
+      const zoneState = computeZoneState(lesions);
+      for (const node of nodes) {
+        if (node.nodeType !== Node.ELEMENT_NODE) continue;
+        const el = node as Element;
+        // If the slotted node is the svg root itself, use it, otherwise look
+        // for an <svg> descendant.
+        let svgRoot: Element | null = null;
+        if (el.tagName && el.tagName.toLowerCase() === 'svg') {
+          svgRoot = el;
+        } else {
+          svgRoot = el.querySelector('svg');
+        }
+        if (svgRoot) {
+          applyZoneStyles(svgRoot, zoneState);
+        }
+      }
+    } catch (err) {
+      // non-fatal: styling failures shouldn't break the component
+      this._emitWarning(`applyStyles failed: ${err}`);
+    }
+  }
     // For each svg, attach attributes and listeners to zone shapes with IDs
     for (const svg of svgs) {
       const zoneShapes = Array.from(svg.querySelectorAll("[id]")) as Element[];
@@ -155,7 +193,9 @@ export class ProstateMriMap extends HTMLElement {
     if (name === "data" && newValue) {
       try {
         const parsed = JSON.parse(newValue);
-        this.data = parsed as ProstateMriData;
+        const res = validateLesionData(parsed);
+        if (res.warnings.length) this._dispatchWarning(res.warnings);
+        this.data = res.validData ?? null;
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         this._dispatchWarning([`Failed to parse data attribute: ${msg}`]);
@@ -168,7 +208,11 @@ export class ProstateMriMap extends HTMLElement {
     return this._data;
   }
   set data(v: ProstateMriData | null) {
-    this._data = v;
+    if (v) {
+      const res = validateLesionData(v as unknown);
+      if (res.warnings.length) this._dispatchWarning(res.warnings);
+      this._data = res.validData ?? null;
+    } else this._data = null;
     this._render();
   }
 

@@ -14,7 +14,10 @@
 - `src/utils/data-schema.ts` - Data validation helpers and schema-aware
   utilities (can import types from `src/types.ts`).
 - `demo/index.html` - Demo page showcasing language toggle, dataset dropdown,
-  upload control, and the component.
+      upload control, and the component. (Updated to include an internal JS demo
+      renderer for quick viewing when the demo directory is served.)
+- `demo/prostate-map.svg` - Copy of the SVG asset placed in `demo/` so the
+      demo file-server (which may be rooted at `demo/`) can load the asset.
 - `demo/data/example-1.json` - Example dataset 1 (index lesion spanning zones).
 - `demo/data/example-2.json` - Example dataset 2 (multiple lesions, overlapping
   zones).
@@ -87,17 +90,17 @@ Skeleton files created in this step (placeholders):
         attribute.
   - [x] 2.5 Implement getters/setters for `language`, `data`, and `theme` with
         change handling and re-render hooks.
-  - [ ] 2.6 Add simple event emission helpers and stubs for `zone-click` and
+  - [x] 2.6 Add simple event emission helpers and stubs for `zone-click` and
         `data-warning` (CustomEvent) to be used throughout implementation.
 
         _Progress note_: `data-warning` emission is implemented and emits
         validation/parse warnings. `zone-click` event and zone interaction
-        handlers are pending and proposed as the next subtask.
+        handlers are implemented (delegation to slotted SVG shapes).
 
 - [ ] 3.0 Data schema, loading and validation
-  - [ ] 3.1 Define TypeScript interfaces in `src/types.ts` describing the schema
+  - [x] 3.1 Define TypeScript interfaces in `src/types.ts` describing the schema
         from the PRD: `Lesion`, `LesionDetails`, `ProstateMriData`, and `Meta`.
-  - [ ] 3.2 Implement `validateLesionData(data): { validData, warnings }` in
+  - [x] 3.2 Implement `validateLesionData(data): { validData, warnings }` in
         `src/utils.ts` or `src/utils/data-schema.ts`. Validation details:
     - Confirm `lesions` is an array; each lesion has `id` (string), `zones`
       (array of canonical IDs), `pirads` (integer 1–5). Optional fields
@@ -105,11 +108,12 @@ Skeleton files created in this step (placeholders):
     - Check every zone referenced exists in the 24 canonical IDs; collect
       invalid zone IDs and produce warnings but do not crash.
     - Normalize zone ID casing/whitespace and dedupe zone lists per lesion.
-  - [ ] 3.3 Support loading data programmatically (component property), via an
+      - [x] 3.3 Support loading data programmatically (component property), via an
         attribute containing a JSON string, and optionally via a URL (if
         provided and trivial to add). When loading from URL, handle fetch errors
         gracefully and emit warnings.
-  - [ ] 3.4 On validation warnings or load errors, render a small, non-blocking
+
+      - [x] 3.4 On validation warnings or load errors, render a small, non-blocking
         inline warning inside the component (an SVG `<text>`/HTML `<div>` placed
         in the visualization area) and dispatch a `data-warning` CustomEvent
         with `{ warnings, errors }` detail.
@@ -117,7 +121,7 @@ Skeleton files created in this step (placeholders):
         them visible in the emitted warnings so host apps can log/act.
 
 - [ ] 4.0 Visualization: colors, patterns, badges and legend
-  - [ ] 4.1 Add a color palette mapping PI-RADS → colors in
+  - [x] 4.1 Add a color palette mapping PI-RADS → colors in
         `src/utils/palette-and-patterns.ts` and expose defaults as CSS custom
         properties in the component stylesheet to allow theming.
     - Defaults (ColorBrewer YlOrRd 5 sequential, mapping PI-RADS 1→light to
@@ -127,13 +131,16 @@ Skeleton files created in this step (placeholders):
       - PI-RADS 3: #FB6A4A
       - PI-RADS 2: #FD8D3C
       - PI-RADS 1: #FFFFB2
-  - [ ] 4.2 Implement `computeZoneState(lesions)` that returns a mapping zoneId
+  - [x] 4.2 Implement `computeZoneState(lesions)` that returns a mapping zoneId
         → { highestPirads, lesionIds: string[], count } and any per-zone
         pattern-stack metadata needed for rendering multiple lesions.
-  - [ ] 4.3 Apply fill colors to SVG zone shapes based on the computed highest
+      - [x] 4.3 Apply fill colors to SVG zone shapes based on the computed highest
         PI-RADS per zone. Prefer CSS variables or style attributes for easy
         overrides.
-  - [ ] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
+                        - [x] 4.3.1 Wire `applyZoneStyles` into `src/components/prostate-mri-map.ts` so
+                              the component applies computed styles to any slotted SVG when `data`
+                              changes or when the `map-svg` slot content changes.
+  - [x] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
         pattern assignment strategy: per lesion generate a pattern ID (e.g.,
         `pattern-L1`) and, when multiple lesions overlap a zone, render pattern
         layers (semi-transparent) or overlay small glyph badges to preserve
@@ -147,10 +154,10 @@ Skeleton files created in this step (placeholders):
         ensure contrast, and prefer patterns+badges for colorblind users.
 
 - [ ] 5.0 Interactions and accessibility
-  - [ ] 5.1 Make each SVG zone shape focusable (`tabindex="0"`), and add
+  - [x] 5.1 Make each SVG zone shape focusable (`tabindex="0"`), and add
         `role="button"` (or an appropriate role) and `aria-label` describing its
         state (e.g., "Zone 1Cv — 2 lesions — Highest PI-RADS 4").
-  - [ ] 5.2 Add pointer and keyboard handlers: `click`, `contextmenu`
+  - [x] 5.2 Add pointer and keyboard handlers: `click`, `contextmenu`
         (right-click), and `keydown` for Enter/Space to open the detail panel.
         For `contextmenu`, prevent the browser default menu when opening the
         panel.
@@ -162,7 +169,7 @@ Skeleton files created in this step (placeholders):
         or another clear pattern) and that focus is trapped when the detail
         panel is open (for accessibility), or at minimum the panel is reachable
         and dismissible via keyboard.
-  - [ ] 5.5 Emit `zone-click` CustomEvent with `{ zoneId, lesions }` when a zone
+  - [x] 5.5 Emit `zone-click` CustomEvent with `{ zoneId, lesions }` when a zone
         is activated; keep the event read-only (no modifications to underlying
         data in v1).
   - [ ] 5.6 Ensure all dynamic text is localized according to `language` and
@@ -170,10 +177,10 @@ Skeleton files created in this step (placeholders):
         dictionaries (JSON) for `sv` and `en`.
 
 - [ ] 6.0 Demo page and UX polish
-  - [ ] 6.1 Create `demo/index.html` with a `<prostate-mri-map>` instance and
+  - [x] 6.1 Create `demo/index.html` with a `<prostate-mri-map>` instance and
         controls: language toggle (sv/en), dataset dropdown (example-1..3), and
         a file input for uploading a JSON dataset.
-  - [ ] 6.2 Implement the demo control wiring: selecting a dataset or uploading
+  - [x] 6.2 Implement the demo control wiring: selecting a dataset or uploading
         a file loads data into the component and displays inline warnings if
         present.
   - [ ] 6.3 Add clear demo instructions and show a small example of listening to
