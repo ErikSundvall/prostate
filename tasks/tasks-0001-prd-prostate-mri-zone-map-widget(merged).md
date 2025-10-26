@@ -54,7 +54,7 @@ Skeleton files created in this step (placeholders):
 
 ## Tasks
 
-- [ ] 1.0 Project setup and core assets
+- [x] 1.0 Project setup and core assets
   - [x] 1.1 Create repository skeleton and directories: `src/`,
         `src/components/`, `src/assets/`, `src/utils/`, `demo/`,
         `demo/data/`,and `tests/`.
@@ -76,7 +76,7 @@ Skeleton files created in this step (placeholders):
     - `example-3.json` — edge cases (invalid zone IDs, missing optional fields)
       to exercise validation and warnings
 
-- [ ] 2.0 Web Component skeleton and public API
+- [x] 2.0 Web Component skeleton and public API
   - [x] 2.1 Create `src/components/prostate-mri-map.ts` (or
         `src/prostate-mri-map.ts`) and define the custom element class
         `ProstateMriMap` that extends `HTMLElement`.
@@ -121,7 +121,7 @@ Skeleton files created in this step (placeholders):
   - [x] 3.5 Strip or ignore invalid zone references for rendering while keeping
         them visible in the emitted warnings so host apps can log/act.
 
-- [ ] 4.0 Visualization: colors, patterns, badges and legend
+- [x] 4.0 Visualization: colors, patterns, badges and legend
   - [x] 4.1 Add a color palette mapping PI-RADS → colors in
         `src/utils/palette-and-patterns.ts` and expose defaults as CSS custom
         properties in the component stylesheet to allow theming.
@@ -182,33 +182,33 @@ Skeleton files created in this step (placeholders):
         present.
   - [x] 6.3 Add clear demo instructions and show a small example of listening to
         `zone-click` and `data-warning` events in the demo.
-  - [ ] 6.4 Provide CSS variables for palette overrides in the demo so reviewers
+  - [x] 6.4 Provide CSS variables for palette overrides in the demo so reviewers
         can test different palettes.
   - [ ] 6.5 Add subtle hover states and visible focus rings to improve
         discoverability; ensure these meet contrast/visibility guidelines.
 
-- [ ] 7.0 Tests and CI
-  - [ ] 7.1 Create unit tests for `validateLesionData()` covering: valid
+- [-] 7.0 Tests and CI
+  - [x] 7.1 Create unit tests for `validateLesionData()` covering: valid
         dataset, invalid zone IDs, missing required fields, and
         normalization/deduplication behavior.
-  - [ ] 7.2 Add unit tests for `computeZoneState()` covering multiple
+  - [x] 7.2 Add unit tests for `computeZoneState()` covering multiple
         overlapping lesions, highest PI-RADS selection, and count correctness.
-  - [ ] 7.3 Add rendering tests that verify correct color/pattern assignment to
+  - [x] 7.3 Add rendering tests that verify correct color/pattern assignment to
         a DOM/SVG snapshot or via DOM inspection (using a minimal test harness
         compatible with Deno).
   - [ ] 7.4 Add tests that verify `data-warning` and `zone-click` events are
         emitted with correct details.
-  - [ ] 7.5 Use `deno test` to run the test suite locally; add a lightweight
+  - [-] 7.5 Use `deno test` to run the test suite locally; add a lightweight
         GitHub Actions workflow (`.github/workflows/ci.yml`) that runs
         `deno fmt --check`, `deno lint`, and `deno test` on push/pull request.
 
-- [ ] 8.0 Docs, packaging and release
-  - [ ] 8.1 Write `README.md` with project overview, API
+- [-] 8.0 Docs, packaging and release
+  - [-] 8.1 Write `README.md` with project overview, API
         (attributes/properties/events), example JSON data format, demo
         instructions and build steps.
-  - [ ] 8.2 Add code examples showing programmatic usage and attribute-based
+  - [-] 8.2 Add code examples showing programmatic usage and attribute-based
         usage in the README.
-  - [ ] 8.3 Provide a `deno` bundle task in `deno.json` that creates a
+  - [x] 8.3 Provide a `deno` bundle task in `deno.json` that creates a
         distributable ES module (e.g.,
         `deno bundle src/components/prostate-mri-map.ts dist/prostate-mri-map.bundle.js`).
   - [ ] 8.4 Optionally create a small UMD/IIFE build for direct browser
@@ -216,7 +216,7 @@ Skeleton files created in this step (placeholders):
         it loads in the demo page.
   - [ ] 8.5 Tag releases on GitHub and publish a Deno-friendly release
         (optional).
-  - [ ] 8.6 Document contribution guidelines and the Apache-2.0 license in
+  - [x] 8.6 Document contribution guidelines and the Apache-2.0 license in
         repository files.
 
 ## Implementation notes and priorities
