@@ -182,6 +182,31 @@
         await loadSvg();
         await loadDataset('example-1.json');
       })();
+
+      // Event listeners for demo
+      const mapEl = document.getElementById('map');
+      mapEl.addEventListener('zone-click', (e) => {
+        console.log('Zone clicked:', e.detail);
+      });
+      mapEl.addEventListener('data-warning', (e) => {
+        console.log('Data warning:', e.detail);
+      });
     </script>
+
+    <h2>Demo Instructions</h2>
+    <p>
+      This demo showcases the Prostate MRI Map Web Component. Use the controls above to change language and dataset.
+      Click or tab to zones to see details. The component emits <code>zone-click</code> and <code>data-warning</code> events.
+    </p>
+    <h3>Event Listening Example</h3>
+    <pre><code>// Listen to zone-click events
+document.querySelector('prostate-mri-map').addEventListener('zone-click', (event) => {
+  console.log('Zone clicked:', event.detail.zoneId, event.detail.lesions);
+});
+
+// Listen to data-warning events
+document.querySelector('prostate-mri-map').addEventListener('data-warning', (event) => {
+  console.log('Warnings:', event.detail.warnings);
+});</code></pre>
   </body>
 </html>

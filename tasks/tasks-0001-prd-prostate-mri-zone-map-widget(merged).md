@@ -180,7 +180,7 @@ Skeleton files created in this step (placeholders):
   - [x] 6.2 Implement the demo control wiring: selecting a dataset or uploading
         a file loads data into the component and displays inline warnings if
         present.
-  - [ ] 6.3 Add clear demo instructions and show a small example of listening to
+  - [x] 6.3 Add clear demo instructions and show a small example of listening to
         `zone-click` and `data-warning` events in the demo.
   - [ ] 6.4 Provide CSS variables for palette overrides in the demo so reviewers
         can test different palettes.
