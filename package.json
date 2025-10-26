@@ -1,0 +1,31 @@
+{
+  "name": "prostate-mri-map",
+  "version": "1.0.0",
+  "description": "Web Component for visualizing prostate MRI zones with lesion data",
+  "main": "prostate-mri-map.bundle.js",
+  "module": "prostate-mri-map.bundle.js",
+  "files": [
+    "prostate-mri-map.bundle.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "web-component",
+    "prostate",
+    "mri",
+    "visualization",
+    "medical",
+    "svg",
+    "d3"
+  ],
+  "author": "Erik Sundvall",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ErikSundvall/prostate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ErikSundvall/prostate/issues"
+  },
+  "homepage": "https://github.com/ErikSundvall/prostate#readme"
+}

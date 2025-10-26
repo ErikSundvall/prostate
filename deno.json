@@ -3,6 +3,7 @@
     "exclude": ["dist", "src/assets/prostate-map.svg"]
   },
   "lint": {},
+  "nodeModulesDir": "auto",
   "imports": {
     "d3": "npm:d3@7"
   },

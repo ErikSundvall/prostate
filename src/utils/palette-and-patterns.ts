@@ -294,7 +294,6 @@ export function applyZoneStyles(
 
     if (state.highestPirads === null) {
       zoneSelection
-        .attr("fill", "none")
         .attr("data-pirads", null)
         .attr("data-patterns", null);
       overlayLayer
@@ -306,7 +305,6 @@ export function applyZoneStyles(
     }
 
     zoneSelection
-      .attr("fill", getPiradsColor(state.highestPirads))
       .attr("data-pirads", String(state.highestPirads));
 
     if (state.count > 1) {

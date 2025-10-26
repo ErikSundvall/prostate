@@ -28,6 +28,16 @@ template.innerHTML = `
     #detail-content ul { list-style: none; padding: 0; }
     #detail-content li { margin-bottom: 0.5rem; }
     #detail-close { position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+    /* Palette overrides via CSS variables */
+    .zone[data-pirads="1"] { fill: var(--pirads-1, #FFFFB2); }
+    .zone[data-pirads="2"] { fill: var(--pirads-2, #FD8D3C); }
+    .zone[data-pirads="3"] { fill: var(--pirads-3, #FB6A4A); }
+    .zone[data-pirads="4"] { fill: var(--pirads-4, #DE2D26); }
+    .zone[data-pirads="5"] { fill: var(--pirads-5, #A50F15); }
+    .zone:not([data-pirads]) { fill: none; }
+    /* Hover and focus states */
+    .zone:hover { stroke: #000; stroke-width: 2; }
+    .zone:focus { stroke: #007acc; stroke-width: 3; }
   </style>
   <div class="map" part="map">
     <slot name="map-svg"></slot>
