@@ -7929,7 +7929,7 @@ var translations = {
     piradsLabel: "PI-RADS",
     patternsLabel: "M\xF6nster",
     patternDiagonal: "Diagonal",
-    patternCrosshatch: "Korshat",
+    patternCrosshatch: "Korsat",
     patternDots: "Punkter"
   }
 };
@@ -7946,11 +7946,25 @@ template.innerHTML = `
     #legend h4 { margin: 0.5rem 0 0.25rem 0; font-size: 0.9rem; }
     #legend div { margin-bottom: 0.25rem; }
     #legend span { margin-right: 0.5rem; border: 1px solid #000; }
+    #detail-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
+    #detail-panel.show { display: flex; align-items: center; justify-content: center; }
+    #detail-content { background: white; border: 1px solid #ccc; border-radius: 4px; padding: 1rem; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+    #detail-content h3 { margin-top: 0; }
+    #detail-content ul { list-style: none; padding: 0; }
+    #detail-content li { margin-bottom: 0.5rem; }
+    #detail-close { position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
   </style>
   <div class="map" part="map">
     <slot name="map-svg"></slot>
     <div id="warnings" aria-live="polite"></div>
     <div id="legend"></div>
+    <div id="detail-panel">
+      <div id="detail-content" role="dialog" aria-modal="true">
+        <button id="detail-close" aria-label="Close">&times;</button>
+        <h3 id="detail-title"></h3>
+        <ul id="detail-lesions"></ul>
+      </div>
+    </div>
   </div>
 `;
 var ProstateMriMap = class extends HTMLElement {
@@ -7964,6 +7978,7 @@ var ProstateMriMap = class extends HTMLElement {
   shadow;
   _data = null;
   _language = "en";
+  _currentZone = null;
   constructor() {
     super();
     this.shadow = this.attachShadow({
@@ -7973,17 +7988,31 @@ var ProstateMriMap = class extends HTMLElement {
     this._onSlotChange = this._onSlotChange.bind(this);
     this._onZoneClick = this._onZoneClick.bind(this);
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
+    this._onPanelClose = this._onPanelClose.bind(this);
+    this._onPanelKeydown = this._onPanelKeydown.bind(this);
   }
   connectedCallback() {
     this._render();
     const slot = this.shadow.querySelector('slot[name="map-svg"]');
     if (slot) slot.addEventListener("slotchange", this._onSlotChange);
+    const panel = this.shadow.querySelector("#detail-panel");
+    const closeBtn = this.shadow.querySelector("#detail-close");
+    closeBtn.addEventListener("click", this._onPanelClose);
+    panel.addEventListener("click", (e) => {
+      if (e.target === panel) this._onPanelClose();
+    });
+    this.shadow.addEventListener("keydown", this._onPanelKeydown);
     this._wireSlottedZones();
     this._applyStylesToSlottedSvg();
   }
   disconnectedCallback() {
     const slot = this.shadow.querySelector('slot[name="map-svg"]');
     if (slot) slot.removeEventListener("slotchange", this._onSlotChange);
+    const panel = this.shadow.querySelector("#detail-panel");
+    const closeBtn = this.shadow.querySelector("#detail-close");
+    closeBtn.removeEventListener("click", this._onPanelClose);
+    panel.removeEventListener("click", this._onPanelClose);
+    this.shadow.removeEventListener("keydown", this._onPanelKeydown);
     this._unwireSlottedZones();
   }
   // --- zone interaction plumbing ---
@@ -8063,7 +8092,9 @@ var ProstateMriMap = class extends HTMLElement {
     if (!target) return;
     const zoneId = target.id || null;
     if (!zoneId) return;
-    this._dispatchZoneClick(zoneId, []);
+    const lesions = this._data?.lesions.filter((l) => l.zones.includes(zoneId)) || [];
+    this._showDetailPanel(zoneId, lesions);
+    this._dispatchZoneClick(zoneId, lesions);
   }
   _onZoneKeydown(e) {
     if (e.key === "Enter" || e.key === " ") {
@@ -8072,7 +8103,9 @@ var ProstateMriMap = class extends HTMLElement {
       if (!target) return;
       const zoneId = target.id || null;
       if (!zoneId) return;
-      this._dispatchZoneClick(zoneId, []);
+      const lesions = this._data?.lesions.filter((l) => l.zones.includes(zoneId)) || [];
+      this._showDetailPanel(zoneId, lesions);
+      this._dispatchZoneClick(zoneId, lesions);
     }
   }
   _dispatchZoneClick(zoneId, lesions) {
@@ -8085,6 +8118,40 @@ var ProstateMriMap = class extends HTMLElement {
       composed: true
     });
     this.dispatchEvent(ev);
+  }
+  _showDetailPanel(zoneId, lesions) {
+    this._currentZone = zoneId;
+    const panel = this.shadow.querySelector("#detail-panel");
+    const title = this.shadow.querySelector("#detail-title");
+    const list = this.shadow.querySelector("#detail-lesions");
+    title.textContent = `Zone ${zoneId}`;
+    list.innerHTML = "";
+    for (const lesion of lesions) {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>ID:</strong> ${lesion.id}<br>
+        <strong>PI-RADS:</strong> ${lesion.pirads}<br>
+        ${lesion.details?.comment ? `<strong>Comment:</strong> ${lesion.details.comment}<br>` : ""}
+        ${lesion.details?.size_mm ? `<strong>Size:</strong> ${lesion.details.size_mm} mm<br>` : ""}
+        ${lesion.details ? `<strong>Details:</strong> ${JSON.stringify(lesion.details)}` : ""}
+      `;
+      list.appendChild(li);
+    }
+    panel.classList.add("show");
+  }
+  _hideDetailPanel() {
+    this._currentZone = null;
+    const panel = this.shadow.querySelector("#detail-panel");
+    panel.classList.remove("show");
+  }
+  _onPanelClose() {
+    this._hideDetailPanel();
+  }
+  _onPanelKeydown(e) {
+    const ke = e;
+    if (ke.key === "Escape") {
+      this._hideDetailPanel();
+    }
   }
   attributeChangedCallback(name, _oldValue, newValue) {
     if (name === "data" && newValue) {

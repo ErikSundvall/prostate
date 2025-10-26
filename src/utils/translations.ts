@@ -12,7 +12,7 @@ export const translations = {
     piradsLabel: "PI-RADS",
     patternsLabel: "Mönster",
     patternDiagonal: "Diagonal",
-    patternCrosshatch: "Korshat",
+    patternCrosshatch: "Korsat",
     patternDots: "Punkter",
   },
 } as const;

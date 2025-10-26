@@ -158,7 +158,7 @@ Skeleton files created in this step (placeholders):
         (right-click), and `keydown` for Enter/Space to open the detail panel.
         For `contextmenu`, prevent the browser default menu when opening the
         panel.
-  - [ ] 5.3 Build a small, dismissible detail panel hosted inside the shadow DOM
+  - [x] 5.3 Build a small, dismissible detail panel hosted inside the shadow DOM
         that lists the zone ID and lesions that intersect that zone, with
         fields: lesion id, pirads, comment, size_mm, and any details. The panel
         must be dismissible with Esc and by clicking outside.
