@@ -1,1281 +1,917 @@
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/ascending.js
-function ascending(a2, b) {
-  return a2 == null || b == null ? NaN : a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
+// deno:https://esm.sh/d3-array@3.2.4/denonext/d3-array.mjs
+function s(e30, t10) {
+  return e30 == null || t10 == null ? NaN : e30 < t10 ? -1 : e30 > t10 ? 1 : e30 >= t10 ? 0 : NaN;
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/descending.js
-function descending(a2, b) {
-  return a2 == null || b == null ? NaN : b < a2 ? -1 : b > a2 ? 1 : b >= a2 ? 0 : NaN;
+function H(e30, t10) {
+  return e30 == null || t10 == null ? NaN : t10 < e30 ? -1 : t10 > e30 ? 1 : t10 >= e30 ? 0 : NaN;
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/bisector.js
-function bisector(f) {
-  let compare1, compare2, delta;
-  if (f.length !== 2) {
-    compare1 = ascending;
-    compare2 = (d, x3) => ascending(f(d), x3);
-    delta = (d, x3) => f(d) - x3;
-  } else {
-    compare1 = f === ascending || f === descending ? f : zero;
-    compare2 = f;
-    delta = f;
-  }
-  function left(a2, x3, lo = 0, hi = a2.length) {
-    if (lo < hi) {
-      if (compare1(x3, x3) !== 0) return hi;
+function F(e30) {
+  let t10, n13, o21;
+  e30.length !== 2 ? (t10 = s, n13 = (u9, c11) => s(e30(u9), c11), o21 = (u9, c11) => e30(u9) - c11) : (t10 = e30 === s || e30 === H ? e30 : Xe, n13 = e30, o21 = e30);
+  function r11(u9, c11, l9 = 0, m12 = u9.length) {
+    if (l9 < m12) {
+      if (t10(c11, c11) !== 0) return m12;
       do {
-        const mid = lo + hi >>> 1;
-        if (compare2(a2[mid], x3) < 0) lo = mid + 1;
-        else hi = mid;
-      } while (lo < hi);
+        let d11 = l9 + m12 >>> 1;
+        n13(u9[d11], c11) < 0 ? l9 = d11 + 1 : m12 = d11;
+      } while (l9 < m12);
     }
-    return lo;
+    return l9;
   }
-  function right(a2, x3, lo = 0, hi = a2.length) {
-    if (lo < hi) {
-      if (compare1(x3, x3) !== 0) return hi;
+  function f15(u9, c11, l9 = 0, m12 = u9.length) {
+    if (l9 < m12) {
+      if (t10(c11, c11) !== 0) return m12;
       do {
-        const mid = lo + hi >>> 1;
-        if (compare2(a2[mid], x3) <= 0) lo = mid + 1;
-        else hi = mid;
-      } while (lo < hi);
+        let d11 = l9 + m12 >>> 1;
+        n13(u9[d11], c11) <= 0 ? l9 = d11 + 1 : m12 = d11;
+      } while (l9 < m12);
     }
-    return lo;
+    return l9;
   }
-  function center(a2, x3, lo = 0, hi = a2.length) {
-    const i = left(a2, x3, lo, hi - 1);
-    return i > lo && delta(a2[i - 1], x3) > -delta(a2[i], x3) ? i - 1 : i;
+  function i9(u9, c11, l9 = 0, m12 = u9.length) {
+    let d11 = r11(u9, c11, l9, m12 - 1);
+    return d11 > l9 && o21(u9[d11 - 1], c11) > -o21(u9[d11], c11) ? d11 - 1 : d11;
   }
   return {
-    left,
-    center,
-    right
+    left: r11,
+    center: i9,
+    right: f15
   };
 }
-function zero() {
+function Xe() {
   return 0;
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/number.js
-function number(x3) {
-  return x3 === null ? NaN : +x3;
+function b(e30) {
+  return e30 === null ? NaN : +e30;
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/bisect.js
-var ascendingBisect = bisector(ascending);
-var bisectRight = ascendingBisect.right;
-var bisectLeft = ascendingBisect.left;
-var bisectCenter = bisector(number).center;
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/blur.js
-var blur2 = Blur2(blurf);
-var blurImage = Blur2(blurfImage);
-function Blur2(blur3) {
-  return function(data, rx, ry = rx) {
-    if (!((rx = +rx) >= 0)) throw new RangeError("invalid rx");
-    if (!((ry = +ry) >= 0)) throw new RangeError("invalid ry");
-    let { data: values, width, height } = data;
-    if (!((width = Math.floor(width)) >= 0)) throw new RangeError("invalid width");
-    if (!((height = Math.floor(height !== void 0 ? height : values.length / width)) >= 0)) throw new RangeError("invalid height");
-    if (!width || !height || !rx && !ry) return data;
-    const blurx = rx && blur3(rx);
-    const blury = ry && blur3(ry);
-    const temp = values.slice();
-    if (blurx && blury) {
-      blurh(blurx, temp, values, width, height);
-      blurh(blurx, values, temp, width, height);
-      blurh(blurx, temp, values, width, height);
-      blurv(blury, values, temp, width, height);
-      blurv(blury, temp, values, width, height);
-      blurv(blury, values, temp, width, height);
-    } else if (blurx) {
-      blurh(blurx, values, temp, width, height);
-      blurh(blurx, temp, values, width, height);
-      blurh(blurx, values, temp, width, height);
-    } else if (blury) {
-      blurv(blury, values, temp, width, height);
-      blurv(blury, temp, values, width, height);
-      blurv(blury, values, temp, width, height);
-    }
-    return data;
+var de = F(s);
+var ae = de.right;
+var Ye = de.left;
+var Ze = F(b).center;
+var ve = me(oe);
+var et = me(tt);
+function me(e30) {
+  return function(t10, n13, o21 = n13) {
+    if (!((n13 = +n13) >= 0)) throw new RangeError("invalid rx");
+    if (!((o21 = +o21) >= 0)) throw new RangeError("invalid ry");
+    let { data: r11, width: f15, height: i9 } = t10;
+    if (!((f15 = Math.floor(f15)) >= 0)) throw new RangeError("invalid width");
+    if (!((i9 = Math.floor(i9 !== void 0 ? i9 : r11.length / f15)) >= 0)) throw new RangeError("invalid height");
+    if (!f15 || !i9 || !n13 && !o21) return t10;
+    let u9 = n13 && e30(n13), c11 = o21 && e30(o21), l9 = r11.slice();
+    return u9 && c11 ? (N(u9, l9, r11, f15, i9), N(u9, r11, l9, f15, i9), N(u9, l9, r11, f15, i9), q(c11, r11, l9, f15, i9), q(c11, l9, r11, f15, i9), q(c11, r11, l9, f15, i9)) : u9 ? (N(u9, r11, l9, f15, i9), N(u9, l9, r11, f15, i9), N(u9, r11, l9, f15, i9)) : c11 && (q(c11, r11, l9, f15, i9), q(c11, l9, r11, f15, i9), q(c11, r11, l9, f15, i9)), t10;
   };
 }
-function blurh(blur3, T, S, w, h) {
-  for (let y3 = 0, n = w * h; y3 < n; ) {
-    blur3(T, S, y3, y3 += w, 1);
-  }
+function N(e30, t10, n13, o21, r11) {
+  for (let f15 = 0, i9 = o21 * r11; f15 < i9; ) e30(t10, n13, f15, f15 += o21, 1);
 }
-function blurv(blur3, T, S, w, h) {
-  for (let x3 = 0, n = w * h; x3 < w; ++x3) {
-    blur3(T, S, x3, x3 + n, w);
-  }
+function q(e30, t10, n13, o21, r11) {
+  for (let f15 = 0, i9 = o21 * r11; f15 < o21; ++f15) e30(t10, n13, f15, f15 + i9, o21);
 }
-function blurfImage(radius) {
-  const blur3 = blurf(radius);
-  return (T, S, start2, stop, step) => {
-    start2 <<= 2, stop <<= 2, step <<= 2;
-    blur3(T, S, start2 + 0, stop + 0, step);
-    blur3(T, S, start2 + 1, stop + 1, step);
-    blur3(T, S, start2 + 2, stop + 2, step);
-    blur3(T, S, start2 + 3, stop + 3, step);
+function tt(e30) {
+  let t10 = oe(e30);
+  return (n13, o21, r11, f15, i9) => {
+    r11 <<= 2, f15 <<= 2, i9 <<= 2, t10(n13, o21, r11 + 0, f15 + 0, i9), t10(n13, o21, r11 + 1, f15 + 1, i9), t10(n13, o21, r11 + 2, f15 + 2, i9), t10(n13, o21, r11 + 3, f15 + 3, i9);
   };
 }
-function blurf(radius) {
-  const radius0 = Math.floor(radius);
-  if (radius0 === radius) return bluri(radius);
-  const t = radius - radius0;
-  const w = 2 * radius + 1;
-  return (T, S, start2, stop, step) => {
-    if (!((stop -= step) >= start2)) return;
-    let sum4 = radius0 * S[start2];
-    const s0 = step * radius0;
-    const s1 = s0 + step;
-    for (let i = start2, j = start2 + s0; i < j; i += step) {
-      sum4 += S[Math.min(stop, i)];
-    }
-    for (let i = start2, j = stop; i <= j; i += step) {
-      sum4 += S[Math.min(stop, i + s0)];
-      T[i] = (sum4 + t * (S[Math.max(start2, i - s1)] + S[Math.min(stop, i + s1)])) / w;
-      sum4 -= S[Math.max(start2, i - s0)];
-    }
+function oe(e30) {
+  let t10 = Math.floor(e30);
+  if (t10 === e30) return nt(e30);
+  let n13 = e30 - t10, o21 = 2 * e30 + 1;
+  return (r11, f15, i9, u9, c11) => {
+    if (!((u9 -= c11) >= i9)) return;
+    let l9 = t10 * f15[i9], m12 = c11 * t10, d11 = m12 + c11;
+    for (let a11 = i9, p12 = i9 + m12; a11 < p12; a11 += c11) l9 += f15[Math.min(u9, a11)];
+    for (let a11 = i9, p12 = u9; a11 <= p12; a11 += c11) l9 += f15[Math.min(u9, a11 + m12)], r11[a11] = (l9 + n13 * (f15[Math.max(i9, a11 - d11)] + f15[Math.min(u9, a11 + d11)])) / o21, l9 -= f15[Math.max(i9, a11 - m12)];
   };
 }
-function bluri(radius) {
-  const w = 2 * radius + 1;
-  return (T, S, start2, stop, step) => {
-    if (!((stop -= step) >= start2)) return;
-    let sum4 = radius * S[start2];
-    const s2 = step * radius;
-    for (let i = start2, j = start2 + s2; i < j; i += step) {
-      sum4 += S[Math.min(stop, i)];
-    }
-    for (let i = start2, j = stop; i <= j; i += step) {
-      sum4 += S[Math.min(stop, i + s2)];
-      T[i] = sum4 / w;
-      sum4 -= S[Math.max(start2, i - s2)];
-    }
+function nt(e30) {
+  let t10 = 2 * e30 + 1;
+  return (n13, o21, r11, f15, i9) => {
+    if (!((f15 -= i9) >= r11)) return;
+    let u9 = e30 * o21[r11], c11 = i9 * e30;
+    for (let l9 = r11, m12 = r11 + c11; l9 < m12; l9 += i9) u9 += o21[Math.min(f15, l9)];
+    for (let l9 = r11, m12 = f15; l9 <= m12; l9 += i9) u9 += o21[Math.min(f15, l9 + c11)], n13[l9] = u9 / t10, u9 -= o21[Math.max(r11, l9 - c11)];
   };
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/fsum.js
-var Adder = class {
+var V = class {
   constructor() {
-    this._partials = new Float64Array(32);
-    this._n = 0;
+    this._partials = new Float64Array(32), this._n = 0;
   }
-  add(x3) {
-    const p = this._partials;
-    let i = 0;
-    for (let j = 0; j < this._n && j < 32; j++) {
-      const y3 = p[j], hi = x3 + y3, lo = Math.abs(x3) < Math.abs(y3) ? x3 - (hi - y3) : y3 - (hi - x3);
-      if (lo) p[i++] = lo;
-      x3 = hi;
+  add(t10) {
+    let n13 = this._partials, o21 = 0;
+    for (let r11 = 0; r11 < this._n && r11 < 32; r11++) {
+      let f15 = n13[r11], i9 = t10 + f15, u9 = Math.abs(t10) < Math.abs(f15) ? t10 - (i9 - f15) : f15 - (i9 - t10);
+      u9 && (n13[o21++] = u9), t10 = i9;
     }
-    p[i] = x3;
-    this._n = i + 1;
-    return this;
+    return n13[o21] = t10, this._n = o21 + 1, this;
   }
   valueOf() {
-    const p = this._partials;
-    let n = this._n, x3, y3, lo, hi = 0;
-    if (n > 0) {
-      hi = p[--n];
-      while (n > 0) {
-        x3 = hi;
-        y3 = p[--n];
-        hi = x3 + y3;
-        lo = y3 - (hi - x3);
-        if (lo) break;
-      }
-      if (n > 0 && (lo < 0 && p[n - 1] < 0 || lo > 0 && p[n - 1] > 0)) {
-        y3 = lo * 2;
-        x3 = hi + y3;
-        if (y3 == x3 - hi) hi = x3;
-      }
+    let t10 = this._partials, n13 = this._n, o21, r11, f15, i9 = 0;
+    if (n13 > 0) {
+      for (i9 = t10[--n13]; n13 > 0 && (o21 = i9, r11 = t10[--n13], i9 = o21 + r11, f15 = r11 - (i9 - o21), !f15); ) ;
+      n13 > 0 && (f15 < 0 && t10[n13 - 1] < 0 || f15 > 0 && t10[n13 - 1] > 0) && (r11 = f15 * 2, o21 = i9 + r11, r11 == o21 - i9 && (i9 = o21));
     }
-    return hi;
+    return i9;
   }
 };
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/array.js
-var array = Array.prototype;
-var slice = array.slice;
-var map = array.map;
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/ticks.js
-var e10 = Math.sqrt(50);
-var e5 = Math.sqrt(10);
-var e2 = Math.sqrt(2);
-function tickSpec(start2, stop, count3) {
-  const step = (stop - start2) / Math.max(0, count3), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
-  let i1, i2, inc;
-  if (power < 0) {
-    inc = Math.pow(10, -power) / factor;
-    i1 = Math.round(start2 * inc);
-    i2 = Math.round(stop * inc);
-    if (i1 / inc < start2) ++i1;
-    if (i2 / inc > stop) --i2;
-    inc = -inc;
-  } else {
-    inc = Math.pow(10, power) * factor;
-    i1 = Math.round(start2 / inc);
-    i2 = Math.round(stop / inc);
-    if (i1 * inc < start2) ++i1;
-    if (i2 * inc > stop) --i2;
-  }
-  if (i2 < i1 && 0.5 <= count3 && count3 < 2) return tickSpec(start2, stop, count3 * 2);
-  return [
-    i1,
-    i2,
-    inc
+var ye = Array.prototype;
+var be = ye.slice;
+var un = ye.map;
+var pt = Math.sqrt(50);
+var xt = Math.sqrt(10);
+var ht = Math.sqrt(2);
+function W(e30, t10, n13) {
+  let o21 = (t10 - e30) / Math.max(0, n13), r11 = Math.floor(Math.log10(o21)), f15 = o21 / Math.pow(10, r11), i9 = f15 >= pt ? 10 : f15 >= xt ? 5 : f15 >= ht ? 2 : 1, u9, c11, l9;
+  return r11 < 0 ? (l9 = Math.pow(10, -r11) / i9, u9 = Math.round(e30 * l9), c11 = Math.round(t10 * l9), u9 / l9 < e30 && ++u9, c11 / l9 > t10 && --c11, l9 = -l9) : (l9 = Math.pow(10, r11) * i9, u9 = Math.round(e30 / l9), c11 = Math.round(t10 / l9), u9 * l9 < e30 && ++u9, c11 * l9 > t10 && --c11), c11 < u9 && 0.5 <= n13 && n13 < 2 ? W(e30, t10, n13 * 2) : [
+    u9,
+    c11,
+    l9
   ];
 }
-function tickIncrement(start2, stop, count3) {
-  stop = +stop, start2 = +start2, count3 = +count3;
-  return tickSpec(start2, stop, count3)[2];
+function M(e30, t10, n13) {
+  return t10 = +t10, e30 = +e30, n13 = +n13, W(e30, t10, n13)[2];
 }
-function tickStep(start2, stop, count3) {
-  stop = +stop, start2 = +start2, count3 = +count3;
-  const reverse2 = stop < start2, inc = reverse2 ? tickIncrement(stop, start2, count3) : tickIncrement(start2, stop, count3);
-  return (reverse2 ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
+function gt(e30, t10, n13) {
+  t10 = +t10, e30 = +e30, n13 = +n13;
+  let o21 = t10 < e30, r11 = o21 ? M(t10, e30, n13) : M(e30, t10, n13);
+  return (o21 ? -1 : 1) * (r11 < 0 ? 1 / -r11 : r11);
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/merge.js
-function* flatten(arrays) {
-  for (const array4 of arrays) {
-    yield* array4;
-  }
+function* yt(e30) {
+  for (let t10 of e30) yield* t10;
 }
-function merge(arrays) {
-  return Array.from(flatten(arrays));
+function Ee(e30) {
+  return Array.from(yt(e30));
 }
-
-// node_modules/.deno/d3-array@3.2.4/node_modules/d3-array/src/shuffle.js
-var shuffle_default = shuffler(Math.random);
-function shuffler(random) {
-  return function shuffle2(array4, i0 = 0, i1 = array4.length) {
-    let m = i1 - (i0 = +i0);
-    while (m) {
-      const i = random() * m-- | 0, t = array4[m + i0];
-      array4[m + i0] = array4[i + i0];
-      array4[i + i0] = t;
+var At = Fe(Math.random);
+function Fe(e30) {
+  return function(n13, o21 = 0, r11 = n13.length) {
+    let f15 = r11 - (o21 = +o21);
+    for (; f15; ) {
+      let i9 = e30() * f15-- | 0, u9 = n13[f15 + o21];
+      n13[f15 + o21] = n13[i9 + o21], n13[i9 + o21] = u9;
     }
-    return array4;
+    return n13;
   };
 }
 
-// node_modules/.deno/d3-dispatch@3.0.1/node_modules/d3-dispatch/src/dispatch.js
-var noop = {
+// deno:https://esm.sh/d3-dispatch@3.0.1/denonext/d3-dispatch.mjs
+var l = {
   value: () => {
   }
 };
-function dispatch() {
-  for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
-    if (!(t = arguments[i] + "") || t in _ || /[\s.]/.test(t)) throw new Error("illegal type: " + t);
-    _[t] = [];
+function s2() {
+  for (var r11 = 0, t10 = arguments.length, n13 = {}, e30; r11 < t10; ++r11) {
+    if (!(e30 = arguments[r11] + "") || e30 in n13 || /[\s.]/.test(e30)) throw new Error("illegal type: " + e30);
+    n13[e30] = [];
   }
-  return new Dispatch(_);
+  return new f(n13);
 }
-function Dispatch(_) {
-  this._ = _;
+function f(r11) {
+  this._ = r11;
 }
-function parseTypenames(typenames, types) {
-  return typenames.trim().split(/^|\s+/).map(function(t) {
-    var name = "", i = t.indexOf(".");
-    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
+function h(r11, t10) {
+  return r11.trim().split(/^|\s+/).map(function(n13) {
+    var e30 = "", o21 = n13.indexOf(".");
+    if (o21 >= 0 && (e30 = n13.slice(o21 + 1), n13 = n13.slice(0, o21)), n13 && !t10.hasOwnProperty(n13)) throw new Error("unknown type: " + n13);
     return {
-      type: t,
-      name
+      type: n13,
+      name: e30
     };
   });
 }
-Dispatch.prototype = dispatch.prototype = {
-  constructor: Dispatch,
-  on: function(typename, callback) {
-    var _ = this._, T = parseTypenames(typename + "", _), t, i = -1, n = T.length;
+f.prototype = s2.prototype = {
+  constructor: f,
+  on: function(r11, t10) {
+    var n13 = this._, e30 = h(r11 + "", n13), o21, u9 = -1, i9 = e30.length;
     if (arguments.length < 2) {
-      while (++i < n) if ((t = (typename = T[i]).type) && (t = get(_[t], typename.name))) return t;
+      for (; ++u9 < i9; ) if ((o21 = (r11 = e30[u9]).type) && (o21 = w(n13[o21], r11.name))) return o21;
       return;
     }
-    if (callback != null && typeof callback !== "function") throw new Error("invalid callback: " + callback);
-    while (++i < n) {
-      if (t = (typename = T[i]).type) _[t] = set(_[t], typename.name, callback);
-      else if (callback == null) for (t in _) _[t] = set(_[t], typename.name, null);
-    }
+    if (t10 != null && typeof t10 != "function") throw new Error("invalid callback: " + t10);
+    for (; ++u9 < i9; ) if (o21 = (r11 = e30[u9]).type) n13[o21] = a(n13[o21], r11.name, t10);
+    else if (t10 == null) for (o21 in n13) n13[o21] = a(n13[o21], r11.name, null);
     return this;
   },
   copy: function() {
-    var copy3 = {}, _ = this._;
-    for (var t in _) copy3[t] = _[t].slice();
-    return new Dispatch(copy3);
+    var r11 = {}, t10 = this._;
+    for (var n13 in t10) r11[n13] = t10[n13].slice();
+    return new f(r11);
   },
-  call: function(type2, that) {
-    if ((n = arguments.length - 2) > 0) for (var args = new Array(n), i = 0, n, t; i < n; ++i) args[i] = arguments[i + 2];
-    if (!this._.hasOwnProperty(type2)) throw new Error("unknown type: " + type2);
-    for (t = this._[type2], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  call: function(r11, t10) {
+    if ((o21 = arguments.length - 2) > 0) for (var n13 = new Array(o21), e30 = 0, o21, u9; e30 < o21; ++e30) n13[e30] = arguments[e30 + 2];
+    if (!this._.hasOwnProperty(r11)) throw new Error("unknown type: " + r11);
+    for (u9 = this._[r11], e30 = 0, o21 = u9.length; e30 < o21; ++e30) u9[e30].value.apply(t10, n13);
   },
-  apply: function(type2, that, args) {
-    if (!this._.hasOwnProperty(type2)) throw new Error("unknown type: " + type2);
-    for (var t = this._[type2], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  apply: function(r11, t10, n13) {
+    if (!this._.hasOwnProperty(r11)) throw new Error("unknown type: " + r11);
+    for (var e30 = this._[r11], o21 = 0, u9 = e30.length; o21 < u9; ++o21) e30[o21].value.apply(t10, n13);
   }
 };
-function get(type2, name) {
-  for (var i = 0, n = type2.length, c3; i < n; ++i) {
-    if ((c3 = type2[i]).name === name) {
-      return c3.value;
-    }
-  }
+function w(r11, t10) {
+  for (var n13 = 0, e30 = r11.length, o21; n13 < e30; ++n13) if ((o21 = r11[n13]).name === t10) return o21.value;
 }
-function set(type2, name, callback) {
-  for (var i = 0, n = type2.length; i < n; ++i) {
-    if (type2[i].name === name) {
-      type2[i] = noop, type2 = type2.slice(0, i).concat(type2.slice(i + 1));
-      break;
-    }
+function a(r11, t10, n13) {
+  for (var e30 = 0, o21 = r11.length; e30 < o21; ++e30) if (r11[e30].name === t10) {
+    r11[e30] = l, r11 = r11.slice(0, e30).concat(r11.slice(e30 + 1));
+    break;
   }
-  if (callback != null) type2.push({
-    name,
-    value: callback
-  });
-  return type2;
+  return n13 != null && r11.push({
+    name: t10,
+    value: n13
+  }), r11;
 }
-var dispatch_default = dispatch;
+var c = s2;
 
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/namespaces.js
-var xhtml = "http://www.w3.org/1999/xhtml";
-var namespaces_default = {
+// deno:https://esm.sh/d3-selection@3.0.0/denonext/d3-selection.mjs
+var E = "http://www.w3.org/1999/xhtml";
+var N2 = {
   svg: "http://www.w3.org/2000/svg",
-  xhtml,
+  xhtml: E,
   xlink: "http://www.w3.org/1999/xlink",
   xml: "http://www.w3.org/XML/1998/namespace",
   xmlns: "http://www.w3.org/2000/xmlns/"
 };
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/namespace.js
-function namespace_default(name) {
-  var prefix = name += "", i = prefix.indexOf(":");
-  if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns") name = name.slice(i + 1);
-  return namespaces_default.hasOwnProperty(prefix) ? {
-    space: namespaces_default[prefix],
-    local: name
-  } : name;
+function x(t10) {
+  var e30 = t10 += "", r11 = e30.indexOf(":");
+  return r11 >= 0 && (e30 = t10.slice(0, r11)) !== "xmlns" && (t10 = t10.slice(r11 + 1)), N2.hasOwnProperty(e30) ? {
+    space: N2[e30],
+    local: t10
+  } : t10;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/creator.js
-function creatorInherit(name) {
+function Vt(t10) {
   return function() {
-    var document2 = this.ownerDocument, uri = this.namespaceURI;
-    return uri === xhtml && document2.documentElement.namespaceURI === xhtml ? document2.createElement(name) : document2.createElementNS(uri, name);
+    var e30 = this.ownerDocument, r11 = this.namespaceURI;
+    return r11 === E && e30.documentElement.namespaceURI === E ? e30.createElement(t10) : e30.createElementNS(r11, t10);
   };
 }
-function creatorFixed(fullname) {
+function Ft(t10) {
   return function() {
-    return this.ownerDocument.createElementNS(fullname.space, fullname.local);
+    return this.ownerDocument.createElementNS(t10.space, t10.local);
   };
 }
-function creator_default(name) {
-  var fullname = namespace_default(name);
-  return (fullname.local ? creatorFixed : creatorInherit)(fullname);
+function d(t10) {
+  var e30 = x(t10);
+  return (e30.local ? Ft : Vt)(e30);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selector.js
-function none() {
+function Bt() {
 }
-function selector_default(selector) {
-  return selector == null ? none : function() {
-    return this.querySelector(selector);
+function g(t10) {
+  return t10 == null ? Bt : function() {
+    return this.querySelector(t10);
   };
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/select.js
-function select_default(select) {
-  if (typeof select !== "function") select = selector_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && (subnode = select.call(node, node.__data__, i, group2))) {
-        if ("__data__" in node) subnode.__data__ = node.__data__;
-        subgroup[i] = subnode;
-      }
-    }
-  }
-  return new Selection(subgroups, this._parents);
+function H2(t10) {
+  typeof t10 != "function" && (t10 = g(t10));
+  for (var e30 = this._groups, r11 = e30.length, i9 = new Array(r11), n13 = 0; n13 < r11; ++n13) for (var o21 = e30[n13], f15 = o21.length, l9 = i9[n13] = new Array(f15), u9, s14, c11 = 0; c11 < f15; ++c11) (u9 = o21[c11]) && (s14 = t10.call(u9, u9.__data__, c11, o21)) && ("__data__" in u9 && (s14.__data__ = u9.__data__), l9[c11] = s14);
+  return new a2(i9, this._parents);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/array.js
-function array2(x3) {
-  return x3 == null ? [] : Array.isArray(x3) ? x3 : Array.from(x3);
+function v(t10) {
+  return t10 == null ? [] : Array.isArray(t10) ? t10 : Array.from(t10);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selectorAll.js
-function empty() {
+function Mt() {
   return [];
 }
-function selectorAll_default(selector) {
-  return selector == null ? empty : function() {
-    return this.querySelectorAll(selector);
+function V2(t10) {
+  return t10 == null ? Mt : function() {
+    return this.querySelectorAll(t10);
   };
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectAll.js
-function arrayAll(select) {
+function Tt(t10) {
   return function() {
-    return array2(select.apply(this, arguments));
+    return v(t10.apply(this, arguments));
   };
 }
-function selectAll_default(select) {
-  if (typeof select === "function") select = arrayAll(select);
-  else select = selectorAll_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        subgroups.push(select.call(node, node.__data__, i, group2));
-        parents.push(node);
-      }
-    }
-  }
-  return new Selection(subgroups, parents);
+function U(t10) {
+  typeof t10 == "function" ? t10 = Tt(t10) : t10 = V2(t10);
+  for (var e30 = this._groups, r11 = e30.length, i9 = [], n13 = [], o21 = 0; o21 < r11; ++o21) for (var f15 = e30[o21], l9 = f15.length, u9, s14 = 0; s14 < l9; ++s14) (u9 = f15[s14]) && (i9.push(t10.call(u9, u9.__data__, s14, f15)), n13.push(u9));
+  return new a2(i9, n13);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/matcher.js
-function matcher_default(selector) {
+function F2(t10) {
   return function() {
-    return this.matches(selector);
+    return this.matches(t10);
   };
 }
-function childMatcher(selector) {
-  return function(node) {
-    return node.matches(selector);
+function L(t10) {
+  return function(e30) {
+    return e30.matches(t10);
   };
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChild.js
-var find = Array.prototype.find;
-function childFind(match) {
+var Pt = Array.prototype.find;
+function qt(t10) {
   return function() {
-    return find.call(this.children, match);
+    return Pt.call(this.children, t10);
   };
 }
-function childFirst() {
+function Dt() {
   return this.firstElementChild;
 }
-function selectChild_default(match) {
-  return this.select(match == null ? childFirst : childFind(typeof match === "function" ? match : childMatcher(match)));
+function X(t10) {
+  return this.select(t10 == null ? Dt : qt(typeof t10 == "function" ? t10 : L(t10)));
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/selectChildren.js
-var filter2 = Array.prototype.filter;
-function children() {
+var It = Array.prototype.filter;
+function Ot() {
   return Array.from(this.children);
 }
-function childrenFilter(match) {
+function kt(t10) {
   return function() {
-    return filter2.call(this.children, match);
+    return It.call(this.children, t10);
   };
 }
-function selectChildren_default(match) {
-  return this.selectAll(match == null ? children : childrenFilter(typeof match === "function" ? match : childMatcher(match)));
+function z(t10) {
+  return this.selectAll(t10 == null ? Ot : kt(typeof t10 == "function" ? t10 : L(t10)));
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/filter.js
-function filter_default(match) {
-  if (typeof match !== "function") match = matcher_default(match);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && match.call(node, node.__data__, i, group2)) {
-        subgroup.push(node);
-      }
-    }
-  }
-  return new Selection(subgroups, this._parents);
+function Y(t10) {
+  typeof t10 != "function" && (t10 = F2(t10));
+  for (var e30 = this._groups, r11 = e30.length, i9 = new Array(r11), n13 = 0; n13 < r11; ++n13) for (var o21 = e30[n13], f15 = o21.length, l9 = i9[n13] = [], u9, s14 = 0; s14 < f15; ++s14) (u9 = o21[s14]) && t10.call(u9, u9.__data__, s14, o21) && l9.push(u9);
+  return new a2(i9, this._parents);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sparse.js
-function sparse_default(update) {
-  return new Array(update.length);
+function b2(t10) {
+  return new Array(t10.length);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/enter.js
-function enter_default() {
-  return new Selection(this._enter || this._groups.map(sparse_default), this._parents);
+function K() {
+  return new a2(this._enter || this._groups.map(b2), this._parents);
 }
-function EnterNode(parent, datum2) {
-  this.ownerDocument = parent.ownerDocument;
-  this.namespaceURI = parent.namespaceURI;
-  this._next = null;
-  this._parent = parent;
-  this.__data__ = datum2;
+function w2(t10, e30) {
+  this.ownerDocument = t10.ownerDocument, this.namespaceURI = t10.namespaceURI, this._next = null, this._parent = t10, this.__data__ = e30;
 }
-EnterNode.prototype = {
-  constructor: EnterNode,
-  appendChild: function(child) {
-    return this._parent.insertBefore(child, this._next);
+w2.prototype = {
+  constructor: w2,
+  appendChild: function(t10) {
+    return this._parent.insertBefore(t10, this._next);
   },
-  insertBefore: function(child, next) {
-    return this._parent.insertBefore(child, next);
+  insertBefore: function(t10, e30) {
+    return this._parent.insertBefore(t10, e30);
   },
-  querySelector: function(selector) {
-    return this._parent.querySelector(selector);
+  querySelector: function(t10) {
+    return this._parent.querySelector(t10);
   },
-  querySelectorAll: function(selector) {
-    return this._parent.querySelectorAll(selector);
+  querySelectorAll: function(t10) {
+    return this._parent.querySelectorAll(t10);
   }
 };
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/constant.js
-function constant_default(x3) {
+function G(t10) {
   return function() {
-    return x3;
+    return t10;
   };
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/data.js
-function bindIndex(parent, group2, enter, update, exit, data) {
-  var i = 0, node, groupLength = group2.length, dataLength = data.length;
-  for (; i < dataLength; ++i) {
-    if (node = group2[i]) {
-      node.__data__ = data[i];
-      update[i] = node;
-    } else {
-      enter[i] = new EnterNode(parent, data[i]);
+function Ht(t10, e30, r11, i9, n13, o21) {
+  for (var f15 = 0, l9, u9 = e30.length, s14 = o21.length; f15 < s14; ++f15) (l9 = e30[f15]) ? (l9.__data__ = o21[f15], i9[f15] = l9) : r11[f15] = new w2(t10, o21[f15]);
+  for (; f15 < u9; ++f15) (l9 = e30[f15]) && (n13[f15] = l9);
+}
+function Ut(t10, e30, r11, i9, n13, o21, f15) {
+  var l9, u9, s14 = /* @__PURE__ */ new Map(), c11 = e30.length, h9 = o21.length, m12 = new Array(c11), p12;
+  for (l9 = 0; l9 < c11; ++l9) (u9 = e30[l9]) && (m12[l9] = p12 = f15.call(u9, u9.__data__, l9, e30) + "", s14.has(p12) ? n13[l9] = u9 : s14.set(p12, u9));
+  for (l9 = 0; l9 < h9; ++l9) p12 = f15.call(t10, o21[l9], l9, o21) + "", (u9 = s14.get(p12)) ? (i9[l9] = u9, u9.__data__ = o21[l9], s14.delete(p12)) : r11[l9] = new w2(t10, o21[l9]);
+  for (l9 = 0; l9 < c11; ++l9) (u9 = e30[l9]) && s14.get(m12[l9]) === u9 && (n13[l9] = u9);
+}
+function Xt(t10) {
+  return t10.__data__;
+}
+function J(t10, e30) {
+  if (!arguments.length) return Array.from(this, Xt);
+  var r11 = e30 ? Ut : Ht, i9 = this._parents, n13 = this._groups;
+  typeof t10 != "function" && (t10 = G(t10));
+  for (var o21 = n13.length, f15 = new Array(o21), l9 = new Array(o21), u9 = new Array(o21), s14 = 0; s14 < o21; ++s14) {
+    var c11 = i9[s14], h9 = n13[s14], m12 = h9.length, p12 = zt(t10.call(c11, c11 && c11.__data__, s14, i9)), _8 = p12.length, D9 = l9[s14] = new Array(_8), I9 = f15[s14] = new Array(_8), Rt3 = u9[s14] = new Array(m12);
+    r11(c11, h9, D9, I9, Rt3, p12, e30);
+    for (var y11 = 0, C11 = 0, O5, k10; y11 < _8; ++y11) if (O5 = D9[y11]) {
+      for (y11 >= C11 && (C11 = y11 + 1); !(k10 = I9[C11]) && ++C11 < _8; ) ;
+      O5._next = k10 || null;
     }
   }
-  for (; i < groupLength; ++i) {
-    if (node = group2[i]) {
-      exit[i] = node;
-    }
-  }
+  return f15 = new a2(f15, i9), f15._enter = l9, f15._exit = u9, f15;
 }
-function bindKey(parent, group2, enter, update, exit, data, key) {
-  var i, node, nodeByKeyValue = /* @__PURE__ */ new Map(), groupLength = group2.length, dataLength = data.length, keyValues = new Array(groupLength), keyValue;
-  for (i = 0; i < groupLength; ++i) {
-    if (node = group2[i]) {
-      keyValues[i] = keyValue = key.call(node, node.__data__, i, group2) + "";
-      if (nodeByKeyValue.has(keyValue)) {
-        exit[i] = node;
-      } else {
-        nodeByKeyValue.set(keyValue, node);
-      }
-    }
-  }
-  for (i = 0; i < dataLength; ++i) {
-    keyValue = key.call(parent, data[i], i, data) + "";
-    if (node = nodeByKeyValue.get(keyValue)) {
-      update[i] = node;
-      node.__data__ = data[i];
-      nodeByKeyValue.delete(keyValue);
-    } else {
-      enter[i] = new EnterNode(parent, data[i]);
-    }
-  }
-  for (i = 0; i < groupLength; ++i) {
-    if ((node = group2[i]) && nodeByKeyValue.get(keyValues[i]) === node) {
-      exit[i] = node;
-    }
-  }
+function zt(t10) {
+  return typeof t10 == "object" && "length" in t10 ? t10 : Array.from(t10);
 }
-function datum(node) {
-  return node.__data__;
+function Q() {
+  return new a2(this._exit || this._groups.map(b2), this._parents);
 }
-function data_default(value, key) {
-  if (!arguments.length) return Array.from(this, datum);
-  var bind = key ? bindKey : bindIndex, parents = this._parents, groups2 = this._groups;
-  if (typeof value !== "function") value = constant_default(value);
-  for (var m = groups2.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
-    var parent = parents[j], group2 = groups2[j], groupLength = group2.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
-    bind(parent, group2, enterGroup, updateGroup, exitGroup, data, key);
-    for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
-      if (previous = enterGroup[i0]) {
-        if (i0 >= i1) i1 = i0 + 1;
-        while (!(next = updateGroup[i1]) && ++i1 < dataLength) ;
-        previous._next = next || null;
-      }
-    }
-  }
-  update = new Selection(update, parents);
-  update._enter = enter;
-  update._exit = exit;
-  return update;
+function W2(t10, e30, r11) {
+  var i9 = this.enter(), n13 = this, o21 = this.exit();
+  return typeof t10 == "function" ? (i9 = t10(i9), i9 && (i9 = i9.selection())) : i9 = i9.append(t10 + ""), e30 != null && (n13 = e30(n13), n13 && (n13 = n13.selection())), r11 == null ? o21.remove() : r11(o21), i9 && n13 ? i9.merge(n13).order() : n13;
 }
-function arraylike(data) {
-  return typeof data === "object" && "length" in data ? data : Array.from(data);
+function Z(t10) {
+  for (var e30 = t10.selection ? t10.selection() : t10, r11 = this._groups, i9 = e30._groups, n13 = r11.length, o21 = i9.length, f15 = Math.min(n13, o21), l9 = new Array(n13), u9 = 0; u9 < f15; ++u9) for (var s14 = r11[u9], c11 = i9[u9], h9 = s14.length, m12 = l9[u9] = new Array(h9), p12, _8 = 0; _8 < h9; ++_8) (p12 = s14[_8] || c11[_8]) && (m12[_8] = p12);
+  for (; u9 < n13; ++u9) l9[u9] = r11[u9];
+  return new a2(l9, this._parents);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/exit.js
-function exit_default() {
-  return new Selection(this._exit || this._groups.map(sparse_default), this._parents);
-}
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/join.js
-function join_default(onenter, onupdate, onexit) {
-  var enter = this.enter(), update = this, exit = this.exit();
-  if (typeof onenter === "function") {
-    enter = onenter(enter);
-    if (enter) enter = enter.selection();
-  } else {
-    enter = enter.append(onenter + "");
-  }
-  if (onupdate != null) {
-    update = onupdate(update);
-    if (update) update = update.selection();
-  }
-  if (onexit == null) exit.remove();
-  else onexit(exit);
-  return enter && update ? enter.merge(update).order() : update;
-}
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/merge.js
-function merge_default(context) {
-  var selection2 = context.selection ? context.selection() : context;
-  for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group0[i] || group1[i]) {
-        merge2[i] = node;
-      }
-    }
-  }
-  for (; j < m0; ++j) {
-    merges[j] = groups0[j];
-  }
-  return new Selection(merges, this._parents);
-}
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/order.js
-function order_default() {
-  for (var groups2 = this._groups, j = -1, m = groups2.length; ++j < m; ) {
-    for (var group2 = groups2[j], i = group2.length - 1, next = group2[i], node; --i >= 0; ) {
-      if (node = group2[i]) {
-        if (next && node.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node, next);
-        next = node;
-      }
-    }
-  }
+function $() {
+  for (var t10 = this._groups, e30 = -1, r11 = t10.length; ++e30 < r11; ) for (var i9 = t10[e30], n13 = i9.length - 1, o21 = i9[n13], f15; --n13 >= 0; ) (f15 = i9[n13]) && (o21 && f15.compareDocumentPosition(o21) ^ 4 && o21.parentNode.insertBefore(f15, o21), o21 = f15);
   return this;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/sort.js
-function sort_default(compare) {
-  if (!compare) compare = ascending2;
-  function compareNode(a2, b) {
-    return a2 && b ? compare(a2.__data__, b.__data__) : !a2 - !b;
+function j(t10) {
+  t10 || (t10 = Yt);
+  function e30(h9, m12) {
+    return h9 && m12 ? t10(h9.__data__, m12.__data__) : !h9 - !m12;
   }
-  for (var groups2 = this._groups, m = groups2.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        sortgroup[i] = node;
-      }
-    }
-    sortgroup.sort(compareNode);
+  for (var r11 = this._groups, i9 = r11.length, n13 = new Array(i9), o21 = 0; o21 < i9; ++o21) {
+    for (var f15 = r11[o21], l9 = f15.length, u9 = n13[o21] = new Array(l9), s14, c11 = 0; c11 < l9; ++c11) (s14 = f15[c11]) && (u9[c11] = s14);
+    u9.sort(e30);
   }
-  return new Selection(sortgroups, this._parents).order();
+  return new a2(n13, this._parents).order();
 }
-function ascending2(a2, b) {
-  return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
+function Yt(t10, e30) {
+  return t10 < e30 ? -1 : t10 > e30 ? 1 : t10 >= e30 ? 0 : NaN;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/call.js
-function call_default() {
-  var callback = arguments[0];
-  arguments[0] = this;
-  callback.apply(null, arguments);
-  return this;
+function tt2() {
+  var t10 = arguments[0];
+  return arguments[0] = this, t10.apply(null, arguments), this;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/nodes.js
-function nodes_default() {
+function et2() {
   return Array.from(this);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/node.js
-function node_default() {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length; i < n; ++i) {
-      var node = group2[i];
-      if (node) return node;
-    }
+function rt() {
+  for (var t10 = this._groups, e30 = 0, r11 = t10.length; e30 < r11; ++e30) for (var i9 = t10[e30], n13 = 0, o21 = i9.length; n13 < o21; ++n13) {
+    var f15 = i9[n13];
+    if (f15) return f15;
   }
   return null;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/size.js
-function size_default() {
-  let size = 0;
-  for (const node of this) ++size;
-  return size;
+function nt2() {
+  let t10 = 0;
+  for (let e30 of this) ++t10;
+  return t10;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js
-function empty_default() {
+function it() {
   return !this.node();
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/each.js
-function each_default(callback) {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
-      if (node = group2[i]) callback.call(node, node.__data__, i, group2);
-    }
-  }
+function ot(t10) {
+  for (var e30 = this._groups, r11 = 0, i9 = e30.length; r11 < i9; ++r11) for (var n13 = e30[r11], o21 = 0, f15 = n13.length, l9; o21 < f15; ++o21) (l9 = n13[o21]) && t10.call(l9, l9.__data__, o21, n13);
   return this;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/attr.js
-function attrRemove(name) {
+function Kt(t10) {
   return function() {
-    this.removeAttribute(name);
+    this.removeAttribute(t10);
   };
 }
-function attrRemoveNS(fullname) {
+function Gt(t10) {
   return function() {
-    this.removeAttributeNS(fullname.space, fullname.local);
+    this.removeAttributeNS(t10.space, t10.local);
   };
 }
-function attrConstant(name, value) {
+function Jt(t10, e30) {
   return function() {
-    this.setAttribute(name, value);
+    this.setAttribute(t10, e30);
   };
 }
-function attrConstantNS(fullname, value) {
+function Qt(t10, e30) {
   return function() {
-    this.setAttributeNS(fullname.space, fullname.local, value);
+    this.setAttributeNS(t10.space, t10.local, e30);
   };
 }
-function attrFunction(name, value) {
+function Wt(t10, e30) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    if (v2 == null) this.removeAttribute(name);
-    else this.setAttribute(name, v2);
+    var r11 = e30.apply(this, arguments);
+    r11 == null ? this.removeAttribute(t10) : this.setAttribute(t10, r11);
   };
 }
-function attrFunctionNS(fullname, value) {
+function Zt(t10, e30) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    if (v2 == null) this.removeAttributeNS(fullname.space, fullname.local);
-    else this.setAttributeNS(fullname.space, fullname.local, v2);
+    var r11 = e30.apply(this, arguments);
+    r11 == null ? this.removeAttributeNS(t10.space, t10.local) : this.setAttributeNS(t10.space, t10.local, r11);
   };
 }
-function attr_default(name, value) {
-  var fullname = namespace_default(name);
+function lt(t10, e30) {
+  var r11 = x(t10);
   if (arguments.length < 2) {
-    var node = this.node();
-    return fullname.local ? node.getAttributeNS(fullname.space, fullname.local) : node.getAttribute(fullname);
+    var i9 = this.node();
+    return r11.local ? i9.getAttributeNS(r11.space, r11.local) : i9.getAttribute(r11);
   }
-  return this.each((value == null ? fullname.local ? attrRemoveNS : attrRemove : typeof value === "function" ? fullname.local ? attrFunctionNS : attrFunction : fullname.local ? attrConstantNS : attrConstant)(fullname, value));
+  return this.each((e30 == null ? r11.local ? Gt : Kt : typeof e30 == "function" ? r11.local ? Zt : Wt : r11.local ? Qt : Jt)(r11, e30));
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/window.js
-function window_default(node) {
-  return node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView;
+function A(t10) {
+  return t10.ownerDocument && t10.ownerDocument.defaultView || t10.document && t10 || t10.defaultView;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/style.js
-function styleRemove(name) {
+function $t(t10) {
   return function() {
-    this.style.removeProperty(name);
+    this.style.removeProperty(t10);
   };
 }
-function styleConstant(name, value, priority) {
+function jt(t10, e30, r11) {
   return function() {
-    this.style.setProperty(name, value, priority);
+    this.style.setProperty(t10, e30, r11);
   };
 }
-function styleFunction(name, value, priority) {
+function te(t10, e30, r11) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    if (v2 == null) this.style.removeProperty(name);
-    else this.style.setProperty(name, v2, priority);
+    var i9 = e30.apply(this, arguments);
+    i9 == null ? this.style.removeProperty(t10) : this.style.setProperty(t10, i9, r11);
   };
 }
-function style_default(name, value, priority) {
-  return arguments.length > 1 ? this.each((value == null ? styleRemove : typeof value === "function" ? styleFunction : styleConstant)(name, value, priority == null ? "" : priority)) : styleValue(this.node(), name);
+function ft(t10, e30, r11) {
+  return arguments.length > 1 ? this.each((e30 == null ? $t : typeof e30 == "function" ? te : jt)(t10, e30, r11 ?? "")) : ut(this.node(), t10);
 }
-function styleValue(node, name) {
-  return node.style.getPropertyValue(name) || window_default(node).getComputedStyle(node, null).getPropertyValue(name);
+function ut(t10, e30) {
+  return t10.style.getPropertyValue(e30) || A(t10).getComputedStyle(t10, null).getPropertyValue(e30);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/property.js
-function propertyRemove(name) {
+function ee(t10) {
   return function() {
-    delete this[name];
+    delete this[t10];
   };
 }
-function propertyConstant(name, value) {
+function re(t10, e30) {
   return function() {
-    this[name] = value;
+    this[t10] = e30;
   };
 }
-function propertyFunction(name, value) {
+function ne(t10, e30) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    if (v2 == null) delete this[name];
-    else this[name] = v2;
+    var r11 = e30.apply(this, arguments);
+    r11 == null ? delete this[t10] : this[t10] = r11;
   };
 }
-function property_default(name, value) {
-  return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name, value)) : this.node()[name];
+function st(t10, e30) {
+  return arguments.length > 1 ? this.each((e30 == null ? ee : typeof e30 == "function" ? ne : re)(t10, e30)) : this.node()[t10];
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/classed.js
-function classArray(string) {
-  return string.trim().split(/^|\s+/);
+function ct(t10) {
+  return t10.trim().split(/^|\s+/);
 }
-function classList(node) {
-  return node.classList || new ClassList(node);
+function B(t10) {
+  return t10.classList || new at(t10);
 }
-function ClassList(node) {
-  this._node = node;
-  this._names = classArray(node.getAttribute("class") || "");
+function at(t10) {
+  this._node = t10, this._names = ct(t10.getAttribute("class") || "");
 }
-ClassList.prototype = {
-  add: function(name) {
-    var i = this._names.indexOf(name);
-    if (i < 0) {
-      this._names.push(name);
-      this._node.setAttribute("class", this._names.join(" "));
-    }
+at.prototype = {
+  add: function(t10) {
+    var e30 = this._names.indexOf(t10);
+    e30 < 0 && (this._names.push(t10), this._node.setAttribute("class", this._names.join(" ")));
   },
-  remove: function(name) {
-    var i = this._names.indexOf(name);
-    if (i >= 0) {
-      this._names.splice(i, 1);
-      this._node.setAttribute("class", this._names.join(" "));
-    }
+  remove: function(t10) {
+    var e30 = this._names.indexOf(t10);
+    e30 >= 0 && (this._names.splice(e30, 1), this._node.setAttribute("class", this._names.join(" ")));
   },
-  contains: function(name) {
-    return this._names.indexOf(name) >= 0;
+  contains: function(t10) {
+    return this._names.indexOf(t10) >= 0;
   }
 };
-function classedAdd(node, names) {
-  var list = classList(node), i = -1, n = names.length;
-  while (++i < n) list.add(names[i]);
+function pt2(t10, e30) {
+  for (var r11 = B(t10), i9 = -1, n13 = e30.length; ++i9 < n13; ) r11.add(e30[i9]);
 }
-function classedRemove(node, names) {
-  var list = classList(node), i = -1, n = names.length;
-  while (++i < n) list.remove(names[i]);
+function ht2(t10, e30) {
+  for (var r11 = B(t10), i9 = -1, n13 = e30.length; ++i9 < n13; ) r11.remove(e30[i9]);
 }
-function classedTrue(names) {
+function ie(t10) {
   return function() {
-    classedAdd(this, names);
+    pt2(this, t10);
   };
 }
-function classedFalse(names) {
+function oe2(t10) {
   return function() {
-    classedRemove(this, names);
+    ht2(this, t10);
   };
 }
-function classedFunction(names, value) {
+function le(t10, e30) {
   return function() {
-    (value.apply(this, arguments) ? classedAdd : classedRemove)(this, names);
+    (e30.apply(this, arguments) ? pt2 : ht2)(this, t10);
   };
 }
-function classed_default(name, value) {
-  var names = classArray(name + "");
+function mt(t10, e30) {
+  var r11 = ct(t10 + "");
   if (arguments.length < 2) {
-    var list = classList(this.node()), i = -1, n = names.length;
-    while (++i < n) if (!list.contains(names[i])) return false;
+    for (var i9 = B(this.node()), n13 = -1, o21 = r11.length; ++n13 < o21; ) if (!i9.contains(r11[n13])) return false;
     return true;
   }
-  return this.each((typeof value === "function" ? classedFunction : value ? classedTrue : classedFalse)(names, value));
+  return this.each((typeof e30 == "function" ? le : e30 ? ie : oe2)(r11, e30));
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/text.js
-function textRemove() {
+function fe() {
   this.textContent = "";
 }
-function textConstant(value) {
+function ue(t10) {
   return function() {
-    this.textContent = value;
+    this.textContent = t10;
   };
 }
-function textFunction(value) {
+function se(t10) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    this.textContent = v2 == null ? "" : v2;
+    var e30 = t10.apply(this, arguments);
+    this.textContent = e30 ?? "";
   };
 }
-function text_default(value) {
-  return arguments.length ? this.each(value == null ? textRemove : (typeof value === "function" ? textFunction : textConstant)(value)) : this.node().textContent;
+function _t(t10) {
+  return arguments.length ? this.each(t10 == null ? fe : (typeof t10 == "function" ? se : ue)(t10)) : this.node().textContent;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/html.js
-function htmlRemove() {
+function ce() {
   this.innerHTML = "";
 }
-function htmlConstant(value) {
+function ae2(t10) {
   return function() {
-    this.innerHTML = value;
+    this.innerHTML = t10;
   };
 }
-function htmlFunction(value) {
+function pe(t10) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    this.innerHTML = v2 == null ? "" : v2;
+    var e30 = t10.apply(this, arguments);
+    this.innerHTML = e30 ?? "";
   };
 }
-function html_default(value) {
-  return arguments.length ? this.each(value == null ? htmlRemove : (typeof value === "function" ? htmlFunction : htmlConstant)(value)) : this.node().innerHTML;
+function dt(t10) {
+  return arguments.length ? this.each(t10 == null ? ce : (typeof t10 == "function" ? pe : ae2)(t10)) : this.node().innerHTML;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/raise.js
-function raise() {
-  if (this.nextSibling) this.parentNode.appendChild(this);
+function he() {
+  this.nextSibling && this.parentNode.appendChild(this);
 }
-function raise_default() {
-  return this.each(raise);
+function yt2() {
+  return this.each(he);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/lower.js
-function lower() {
-  if (this.previousSibling) this.parentNode.insertBefore(this, this.parentNode.firstChild);
+function me2() {
+  this.previousSibling && this.parentNode.insertBefore(this, this.parentNode.firstChild);
 }
-function lower_default() {
-  return this.each(lower);
+function xt2() {
+  return this.each(me2);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/append.js
-function append_default(name) {
-  var create2 = typeof name === "function" ? name : creator_default(name);
+function gt2(t10) {
+  var e30 = typeof t10 == "function" ? t10 : d(t10);
   return this.select(function() {
-    return this.appendChild(create2.apply(this, arguments));
+    return this.appendChild(e30.apply(this, arguments));
   });
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/insert.js
-function constantNull() {
+function _e() {
   return null;
 }
-function insert_default(name, before) {
-  var create2 = typeof name === "function" ? name : creator_default(name), select = before == null ? constantNull : typeof before === "function" ? before : selector_default(before);
+function vt(t10, e30) {
+  var r11 = typeof t10 == "function" ? t10 : d(t10), i9 = e30 == null ? _e : typeof e30 == "function" ? e30 : g(e30);
   return this.select(function() {
-    return this.insertBefore(create2.apply(this, arguments), select.apply(this, arguments) || null);
+    return this.insertBefore(r11.apply(this, arguments), i9.apply(this, arguments) || null);
   });
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/remove.js
-function remove() {
-  var parent = this.parentNode;
-  if (parent) parent.removeChild(this);
+function de2() {
+  var t10 = this.parentNode;
+  t10 && t10.removeChild(this);
 }
-function remove_default() {
-  return this.each(remove);
+function wt() {
+  return this.each(de2);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/clone.js
-function selection_cloneShallow() {
-  var clone = this.cloneNode(false), parent = this.parentNode;
-  return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
+function ye2() {
+  var t10 = this.cloneNode(false), e30 = this.parentNode;
+  return e30 ? e30.insertBefore(t10, this.nextSibling) : t10;
 }
-function selection_cloneDeep() {
-  var clone = this.cloneNode(true), parent = this.parentNode;
-  return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
+function xe() {
+  var t10 = this.cloneNode(true), e30 = this.parentNode;
+  return e30 ? e30.insertBefore(t10, this.nextSibling) : t10;
 }
-function clone_default(deep) {
-  return this.select(deep ? selection_cloneDeep : selection_cloneShallow);
+function At2(t10) {
+  return this.select(t10 ? xe : ye2);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/datum.js
-function datum_default(value) {
-  return arguments.length ? this.property("__data__", value) : this.node().__data__;
+function St(t10) {
+  return arguments.length ? this.property("__data__", t10) : this.node().__data__;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/on.js
-function contextListener(listener) {
-  return function(event) {
-    listener.call(this, event, this.__data__);
+function ge(t10) {
+  return function(e30) {
+    t10.call(this, e30, this.__data__);
   };
 }
-function parseTypenames2(typenames) {
-  return typenames.trim().split(/^|\s+/).map(function(t) {
-    var name = "", i = t.indexOf(".");
-    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    return {
-      type: t,
-      name
+function ve2(t10) {
+  return t10.trim().split(/^|\s+/).map(function(e30) {
+    var r11 = "", i9 = e30.indexOf(".");
+    return i9 >= 0 && (r11 = e30.slice(i9 + 1), e30 = e30.slice(0, i9)), {
+      type: e30,
+      name: r11
     };
   });
 }
-function onRemove(typename) {
+function we(t10) {
   return function() {
-    var on = this.__on;
-    if (!on) return;
-    for (var j = 0, i = -1, m = on.length, o; j < m; ++j) {
-      if (o = on[j], (!typename.type || o.type === typename.type) && o.name === typename.name) {
-        this.removeEventListener(o.type, o.listener, o.options);
-      } else {
-        on[++i] = o;
-      }
+    var e30 = this.__on;
+    if (e30) {
+      for (var r11 = 0, i9 = -1, n13 = e30.length, o21; r11 < n13; ++r11) o21 = e30[r11], (!t10.type || o21.type === t10.type) && o21.name === t10.name ? this.removeEventListener(o21.type, o21.listener, o21.options) : e30[++i9] = o21;
+      ++i9 ? e30.length = i9 : delete this.__on;
     }
-    if (++i) on.length = i;
-    else delete this.__on;
   };
 }
-function onAdd(typename, value, options) {
+function Ae(t10, e30, r11) {
   return function() {
-    var on = this.__on, o, listener = contextListener(value);
-    if (on) for (var j = 0, m = on.length; j < m; ++j) {
-      if ((o = on[j]).type === typename.type && o.name === typename.name) {
-        this.removeEventListener(o.type, o.listener, o.options);
-        this.addEventListener(o.type, o.listener = listener, o.options = options);
-        o.value = value;
+    var i9 = this.__on, n13, o21 = ge(e30);
+    if (i9) {
+      for (var f15 = 0, l9 = i9.length; f15 < l9; ++f15) if ((n13 = i9[f15]).type === t10.type && n13.name === t10.name) {
+        this.removeEventListener(n13.type, n13.listener, n13.options), this.addEventListener(n13.type, n13.listener = o21, n13.options = r11), n13.value = e30;
         return;
       }
     }
-    this.addEventListener(typename.type, listener, options);
-    o = {
-      type: typename.type,
-      name: typename.name,
-      value,
-      listener,
-      options
-    };
-    if (!on) this.__on = [
-      o
+    this.addEventListener(t10.type, o21, r11), n13 = {
+      type: t10.type,
+      name: t10.name,
+      value: e30,
+      listener: o21,
+      options: r11
+    }, i9 ? i9.push(n13) : this.__on = [
+      n13
     ];
-    else on.push(o);
   };
 }
-function on_default(typename, value, options) {
-  var typenames = parseTypenames2(typename + ""), i, n = typenames.length, t;
+function Ct(t10, e30, r11) {
+  var i9 = ve2(t10 + ""), n13, o21 = i9.length, f15;
   if (arguments.length < 2) {
-    var on = this.node().__on;
-    if (on) for (var j = 0, m = on.length, o; j < m; ++j) {
-      for (i = 0, o = on[j]; i < n; ++i) {
-        if ((t = typenames[i]).type === o.type && t.name === o.name) {
-          return o.value;
-        }
-      }
+    var l9 = this.node().__on;
+    if (l9) {
+      for (var u9 = 0, s14 = l9.length, c11; u9 < s14; ++u9) for (n13 = 0, c11 = l9[u9]; n13 < o21; ++n13) if ((f15 = i9[n13]).type === c11.type && f15.name === c11.name) return c11.value;
     }
     return;
   }
-  on = value ? onAdd : onRemove;
-  for (i = 0; i < n; ++i) this.each(on(typenames[i], value, options));
+  for (l9 = e30 ? Ae : we, n13 = 0; n13 < o21; ++n13) this.each(l9(i9[n13], e30, r11));
   return this;
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/dispatch.js
-function dispatchEvent(node, type2, params) {
-  var window2 = window_default(node), event = window2.CustomEvent;
-  if (typeof event === "function") {
-    event = new event(type2, params);
-  } else {
-    event = window2.document.createEvent("Event");
-    if (params) event.initEvent(type2, params.bubbles, params.cancelable), event.detail = params.detail;
-    else event.initEvent(type2, false, false);
-  }
-  node.dispatchEvent(event);
+function Et(t10, e30, r11) {
+  var i9 = A(t10), n13 = i9.CustomEvent;
+  typeof n13 == "function" ? n13 = new n13(e30, r11) : (n13 = i9.document.createEvent("Event"), r11 ? (n13.initEvent(e30, r11.bubbles, r11.cancelable), n13.detail = r11.detail) : n13.initEvent(e30, false, false)), t10.dispatchEvent(n13);
 }
-function dispatchConstant(type2, params) {
+function Se(t10, e30) {
   return function() {
-    return dispatchEvent(this, type2, params);
+    return Et(this, t10, e30);
   };
 }
-function dispatchFunction(type2, params) {
+function Ce(t10, e30) {
   return function() {
-    return dispatchEvent(this, type2, params.apply(this, arguments));
+    return Et(this, t10, e30.apply(this, arguments));
   };
 }
-function dispatch_default2(type2, params) {
-  return this.each((typeof params === "function" ? dispatchFunction : dispatchConstant)(type2, params));
+function Nt(t10, e30) {
+  return this.each((typeof e30 == "function" ? Ce : Se)(t10, e30));
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/iterator.js
-function* iterator_default() {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
-      if (node = group2[i]) yield node;
-    }
-  }
+function* Lt() {
+  for (var t10 = this._groups, e30 = 0, r11 = t10.length; e30 < r11; ++e30) for (var i9 = t10[e30], n13 = 0, o21 = i9.length, f15; n13 < o21; ++n13) (f15 = i9[n13]) && (yield f15);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/selection/index.js
-var root = [
+var S = [
   null
 ];
-function Selection(groups2, parents) {
-  this._groups = groups2;
-  this._parents = parents;
+function a2(t10, e30) {
+  this._groups = t10, this._parents = e30;
 }
-function selection() {
-  return new Selection([
+function bt() {
+  return new a2([
     [
       document.documentElement
     ]
-  ], root);
+  ], S);
 }
-function selection_selection() {
+function Ee2() {
   return this;
 }
-Selection.prototype = selection.prototype = {
-  constructor: Selection,
-  select: select_default,
-  selectAll: selectAll_default,
-  selectChild: selectChild_default,
-  selectChildren: selectChildren_default,
-  filter: filter_default,
-  data: data_default,
-  enter: enter_default,
-  exit: exit_default,
-  join: join_default,
-  merge: merge_default,
-  selection: selection_selection,
-  order: order_default,
-  sort: sort_default,
-  call: call_default,
-  nodes: nodes_default,
-  node: node_default,
-  size: size_default,
-  empty: empty_default,
-  each: each_default,
-  attr: attr_default,
-  style: style_default,
-  property: property_default,
-  classed: classed_default,
-  text: text_default,
-  html: html_default,
-  raise: raise_default,
-  lower: lower_default,
-  append: append_default,
-  insert: insert_default,
-  remove: remove_default,
-  clone: clone_default,
-  datum: datum_default,
-  on: on_default,
-  dispatch: dispatch_default2,
-  [Symbol.iterator]: iterator_default
+a2.prototype = bt.prototype = {
+  constructor: a2,
+  select: H2,
+  selectAll: U,
+  selectChild: X,
+  selectChildren: z,
+  filter: Y,
+  data: J,
+  enter: K,
+  exit: Q,
+  join: W2,
+  merge: Z,
+  selection: Ee2,
+  order: $,
+  sort: j,
+  call: tt2,
+  nodes: et2,
+  node: rt,
+  size: nt2,
+  empty: it,
+  each: ot,
+  attr: lt,
+  style: ft,
+  property: st,
+  classed: mt,
+  text: _t,
+  html: dt,
+  raise: yt2,
+  lower: xt2,
+  append: gt2,
+  insert: vt,
+  remove: wt,
+  clone: At2,
+  datum: St,
+  on: Ct,
+  dispatch: Nt,
+  [Symbol.iterator]: Lt
 };
-var selection_default = selection;
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/select.js
-function select_default2(selector) {
-  return typeof selector === "string" ? new Selection([
+var Ne = bt;
+function M2(t10) {
+  return typeof t10 == "string" ? new a2([
     [
-      document.querySelector(selector)
+      document.querySelector(t10)
     ]
   ], [
     document.documentElement
-  ]) : new Selection([
+  ]) : new a2([
     [
-      selector
+      t10
     ]
-  ], root);
+  ], S);
 }
-
-// node_modules/.deno/d3-selection@3.0.0/node_modules/d3-selection/src/local.js
-var nextId = 0;
-function local() {
-  return new Local();
+var be2 = 0;
+function P() {
+  return new T();
 }
-function Local() {
-  this._ = "@" + (++nextId).toString(36);
+function T() {
+  this._ = "@" + (++be2).toString(36);
 }
-Local.prototype = local.prototype = {
-  constructor: Local,
-  get: function(node) {
-    var id2 = this._;
-    while (!(id2 in node)) if (!(node = node.parentNode)) return;
-    return node[id2];
+T.prototype = P.prototype = {
+  constructor: T,
+  get: function(t10) {
+    for (var e30 = this._; !(e30 in t10); ) if (!(t10 = t10.parentNode)) return;
+    return t10[e30];
   },
-  set: function(node, value) {
-    return node[this._] = value;
+  set: function(t10, e30) {
+    return t10[this._] = e30;
   },
-  remove: function(node) {
-    return this._ in node && delete node[this._];
+  remove: function(t10) {
+    return this._ in t10 && delete t10[this._];
   },
   toString: function() {
     return this._;
   }
 };
 
-// node_modules/.deno/d3-drag@3.0.0/node_modules/d3-drag/src/event.js
-function DragEvent(type2, { sourceEvent, subject, target, identifier, active, x: x3, y: y3, dx, dy, dispatch: dispatch2 }) {
+// deno:https://esm.sh/d3-drag@3.0.0/denonext/d3-drag.mjs
+function w3(t10, { sourceEvent: o21, subject: i9, target: l9, identifier: f15, active: h9, x: b11, y: E19, dx: T12, dy: y11, dispatch: m12 }) {
   Object.defineProperties(this, {
     type: {
-      value: type2,
+      value: t10,
       enumerable: true,
       configurable: true
     },
     sourceEvent: {
-      value: sourceEvent,
+      value: o21,
       enumerable: true,
       configurable: true
     },
     subject: {
-      value: subject,
+      value: i9,
       enumerable: true,
       configurable: true
     },
     target: {
-      value: target,
+      value: l9,
       enumerable: true,
       configurable: true
     },
     identifier: {
-      value: identifier,
+      value: f15,
       enumerable: true,
       configurable: true
     },
     active: {
-      value: active,
+      value: h9,
       enumerable: true,
       configurable: true
     },
     x: {
-      value: x3,
+      value: b11,
       enumerable: true,
       configurable: true
     },
     y: {
-      value: y3,
+      value: E19,
       enumerable: true,
       configurable: true
     },
     dx: {
-      value: dx,
+      value: T12,
       enumerable: true,
       configurable: true
     },
     dy: {
-      value: dy,
+      value: y11,
       enumerable: true,
       configurable: true
     },
     _: {
-      value: dispatch2
+      value: m12
     }
   });
 }
-DragEvent.prototype.on = function() {
-  var value = this._.on.apply(this._, arguments);
-  return value === this._ ? this : value;
+w3.prototype.on = function() {
+  var t10 = this._.on.apply(this._, arguments);
+  return t10 === this._ ? this : t10;
 };
 
-// node_modules/.deno/d3-color@3.1.0/node_modules/d3-color/src/define.js
-function define_default(constructor, factory, prototype) {
-  constructor.prototype = factory.prototype = prototype;
-  prototype.constructor = constructor;
+// deno:https://esm.sh/d3-color@3.1.0/denonext/d3-color.mjs
+function b3(e30, t10, r11) {
+  e30.prototype = t10.prototype = r11, r11.constructor = e30;
 }
-function extend(parent, definition) {
-  var prototype = Object.create(parent.prototype);
-  for (var key in definition) prototype[key] = definition[key];
-  return prototype;
+function g2(e30, t10) {
+  var r11 = Object.create(e30.prototype);
+  for (var n13 in t10) r11[n13] = t10[n13];
+  return r11;
 }
-
-// node_modules/.deno/d3-color@3.1.0/node_modules/d3-color/src/color.js
-function Color() {
+function u2() {
 }
-var darker = 0.7;
-var brighter = 1 / darker;
-var reI = "\\s*([+-]?\\d+)\\s*";
-var reN = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*";
-var reP = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*";
-var reHex = /^#([0-9a-f]{3,8})$/;
-var reRgbInteger = new RegExp(`^rgb\\(${reI},${reI},${reI}\\)$`);
-var reRgbPercent = new RegExp(`^rgb\\(${reP},${reP},${reP}\\)$`);
-var reRgbaInteger = new RegExp(`^rgba\\(${reI},${reI},${reI},${reN}\\)$`);
-var reRgbaPercent = new RegExp(`^rgba\\(${reP},${reP},${reP},${reN}\\)$`);
-var reHslPercent = new RegExp(`^hsl\\(${reN},${reP},${reP}\\)$`);
-var reHslaPercent = new RegExp(`^hsla\\(${reN},${reP},${reP},${reN}\\)$`);
-var named = {
+var p = 0.7;
+var y = 1 / p;
+var N3 = "\\s*([+-]?\\d+)\\s*";
+var M3 = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*";
+var c2 = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*";
+var be3 = /^#([0-9a-f]{3,8})$/;
+var de3 = new RegExp(`^rgb\\(${N3},${N3},${N3}\\)$`);
+var ge2 = new RegExp(`^rgb\\(${c2},${c2},${c2}\\)$`);
+var pe2 = new RegExp(`^rgba\\(${N3},${N3},${N3},${M3}\\)$`);
+var me3 = new RegExp(`^rgba\\(${c2},${c2},${c2},${M3}\\)$`);
+var we2 = new RegExp(`^hsl\\(${M3},${c2},${c2}\\)$`);
+var ye3 = new RegExp(`^hsla\\(${M3},${c2},${c2},${M3}\\)$`);
+var Y2 = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -1425,449 +1061,342 @@ var named = {
   yellow: 16776960,
   yellowgreen: 10145074
 };
-define_default(Color, color, {
-  copy(channels) {
-    return Object.assign(new this.constructor(), this, channels);
+b3(u2, H3, {
+  copy(e30) {
+    return Object.assign(new this.constructor(), this, e30);
   },
   displayable() {
     return this.rgb().displayable();
   },
-  hex: color_formatHex,
-  formatHex: color_formatHex,
-  formatHex8: color_formatHex8,
-  formatHsl: color_formatHsl,
-  formatRgb: color_formatRgb,
-  toString: color_formatRgb
+  hex: Z2,
+  formatHex: Z2,
+  formatHex8: $e,
+  formatHsl: Ne2,
+  formatRgb: F3,
+  toString: F3
 });
-function color_formatHex() {
+function Z2() {
   return this.rgb().formatHex();
 }
-function color_formatHex8() {
+function $e() {
   return this.rgb().formatHex8();
 }
-function color_formatHsl() {
-  return hslConvert(this).formatHsl();
+function Ne2() {
+  return W3(this).formatHsl();
 }
-function color_formatRgb() {
+function F3() {
   return this.rgb().formatRgb();
 }
-function color(format2) {
-  var m, l;
-  format2 = (format2 + "").trim().toLowerCase();
-  return (m = reHex.exec(format2)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format2)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format2)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format2)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format2)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format2) ? rgbn(named[format2]) : format2 === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
+function H3(e30) {
+  var t10, r11;
+  return e30 = (e30 + "").trim().toLowerCase(), (t10 = be3.exec(e30)) ? (r11 = t10[1].length, t10 = parseInt(t10[1], 16), r11 === 6 ? G2(t10) : r11 === 3 ? new a3(t10 >> 8 & 15 | t10 >> 4 & 240, t10 >> 4 & 15 | t10 & 240, (t10 & 15) << 4 | t10 & 15, 1) : r11 === 8 ? C(t10 >> 24 & 255, t10 >> 16 & 255, t10 >> 8 & 255, (t10 & 255) / 255) : r11 === 4 ? C(t10 >> 12 & 15 | t10 >> 8 & 240, t10 >> 8 & 15 | t10 >> 4 & 240, t10 >> 4 & 15 | t10 & 240, ((t10 & 15) << 4 | t10 & 15) / 255) : null) : (t10 = de3.exec(e30)) ? new a3(t10[1], t10[2], t10[3], 1) : (t10 = ge2.exec(e30)) ? new a3(t10[1] * 255 / 100, t10[2] * 255 / 100, t10[3] * 255 / 100, 1) : (t10 = pe2.exec(e30)) ? C(t10[1], t10[2], t10[3], t10[4]) : (t10 = me3.exec(e30)) ? C(t10[1] * 255 / 100, t10[2] * 255 / 100, t10[3] * 255 / 100, t10[4]) : (t10 = we2.exec(e30)) ? T2(t10[1], t10[2] / 100, t10[3] / 100, 1) : (t10 = ye3.exec(e30)) ? T2(t10[1], t10[2] / 100, t10[3] / 100, t10[4]) : Y2.hasOwnProperty(e30) ? G2(Y2[e30]) : e30 === "transparent" ? new a3(NaN, NaN, NaN, 0) : null;
 }
-function rgbn(n) {
-  return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
+function G2(e30) {
+  return new a3(e30 >> 16 & 255, e30 >> 8 & 255, e30 & 255, 1);
 }
-function rgba(r, g, b, a2) {
-  if (a2 <= 0) r = g = b = NaN;
-  return new Rgb(r, g, b, a2);
+function C(e30, t10, r11, n13) {
+  return n13 <= 0 && (e30 = t10 = r11 = NaN), new a3(e30, t10, r11, n13);
 }
-function rgbConvert(o) {
-  if (!(o instanceof Color)) o = color(o);
-  if (!o) return new Rgb();
-  o = o.rgb();
-  return new Rgb(o.r, o.g, o.b, o.opacity);
+function R(e30) {
+  return e30 instanceof u2 || (e30 = H3(e30)), e30 ? (e30 = e30.rgb(), new a3(e30.r, e30.g, e30.b, e30.opacity)) : new a3();
 }
-function rgb(r, g, b, opacity) {
-  return arguments.length === 1 ? rgbConvert(r) : new Rgb(r, g, b, opacity == null ? 1 : opacity);
+function V3(e30, t10, r11, n13) {
+  return arguments.length === 1 ? R(e30) : new a3(e30, t10, r11, n13 ?? 1);
 }
-function Rgb(r, g, b, opacity) {
-  this.r = +r;
-  this.g = +g;
-  this.b = +b;
-  this.opacity = +opacity;
+function a3(e30, t10, r11, n13) {
+  this.r = +e30, this.g = +t10, this.b = +r11, this.opacity = +n13;
 }
-define_default(Rgb, rgb, extend(Color, {
-  brighter(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Rgb(this.r * k2, this.g * k2, this.b * k2, this.opacity);
+b3(a3, V3, g2(u2, {
+  brighter(e30) {
+    return e30 = e30 == null ? y : Math.pow(y, e30), new a3(this.r * e30, this.g * e30, this.b * e30, this.opacity);
   },
-  darker(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Rgb(this.r * k2, this.g * k2, this.b * k2, this.opacity);
+  darker(e30) {
+    return e30 = e30 == null ? p : Math.pow(p, e30), new a3(this.r * e30, this.g * e30, this.b * e30, this.opacity);
   },
   rgb() {
     return this;
   },
   clamp() {
-    return new Rgb(clampi(this.r), clampi(this.g), clampi(this.b), clampa(this.opacity));
+    return new a3(w4(this.r), w4(this.g), w4(this.b), E2(this.opacity));
   },
   displayable() {
-    return -0.5 <= this.r && this.r < 255.5 && (-0.5 <= this.g && this.g < 255.5) && (-0.5 <= this.b && this.b < 255.5) && (0 <= this.opacity && this.opacity <= 1);
+    return -0.5 <= this.r && this.r < 255.5 && -0.5 <= this.g && this.g < 255.5 && -0.5 <= this.b && this.b < 255.5 && 0 <= this.opacity && this.opacity <= 1;
   },
-  hex: rgb_formatHex,
-  formatHex: rgb_formatHex,
-  formatHex8: rgb_formatHex8,
-  formatRgb: rgb_formatRgb,
-  toString: rgb_formatRgb
+  hex: J2,
+  formatHex: J2,
+  formatHex8: ve3,
+  formatRgb: Q2,
+  toString: Q2
 }));
-function rgb_formatHex() {
-  return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}`;
+function J2() {
+  return `#${m(this.r)}${m(this.g)}${m(this.b)}`;
 }
-function rgb_formatHex8() {
-  return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}${hex((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
+function ve3() {
+  return `#${m(this.r)}${m(this.g)}${m(this.b)}${m((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
-function rgb_formatRgb() {
-  const a2 = clampa(this.opacity);
-  return `${a2 === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a2 === 1 ? ")" : `, ${a2})`}`;
+function Q2() {
+  let e30 = E2(this.opacity);
+  return `${e30 === 1 ? "rgb(" : "rgba("}${w4(this.r)}, ${w4(this.g)}, ${w4(this.b)}${e30 === 1 ? ")" : `, ${e30})`}`;
 }
-function clampa(opacity) {
-  return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
+function E2(e30) {
+  return isNaN(e30) ? 1 : Math.max(0, Math.min(1, e30));
 }
-function clampi(value) {
-  return Math.max(0, Math.min(255, Math.round(value) || 0));
+function w4(e30) {
+  return Math.max(0, Math.min(255, Math.round(e30) || 0));
 }
-function hex(value) {
-  value = clampi(value);
-  return (value < 16 ? "0" : "") + value.toString(16);
+function m(e30) {
+  return e30 = w4(e30), (e30 < 16 ? "0" : "") + e30.toString(16);
 }
-function hsla(h, s2, l, a2) {
-  if (a2 <= 0) h = s2 = l = NaN;
-  else if (l <= 0 || l >= 1) h = s2 = NaN;
-  else if (s2 <= 0) h = NaN;
-  return new Hsl(h, s2, l, a2);
+function T2(e30, t10, r11, n13) {
+  return n13 <= 0 ? e30 = t10 = r11 = NaN : r11 <= 0 || r11 >= 1 ? e30 = t10 = NaN : t10 <= 0 && (e30 = NaN), new h2(e30, t10, r11, n13);
 }
-function hslConvert(o) {
-  if (o instanceof Hsl) return new Hsl(o.h, o.s, o.l, o.opacity);
-  if (!(o instanceof Color)) o = color(o);
-  if (!o) return new Hsl();
-  if (o instanceof Hsl) return o;
-  o = o.rgb();
-  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min4 = Math.min(r, g, b), max5 = Math.max(r, g, b), h = NaN, s2 = max5 - min4, l = (max5 + min4) / 2;
-  if (s2) {
-    if (r === max5) h = (g - b) / s2 + (g < b) * 6;
-    else if (g === max5) h = (b - r) / s2 + 2;
-    else h = (r - g) / s2 + 4;
-    s2 /= l < 0.5 ? max5 + min4 : 2 - max5 - min4;
-    h *= 60;
-  } else {
-    s2 = l > 0 && l < 1 ? 0 : h;
-  }
-  return new Hsl(h, s2, l, o.opacity);
+function W3(e30) {
+  if (e30 instanceof h2) return new h2(e30.h, e30.s, e30.l, e30.opacity);
+  if (e30 instanceof u2 || (e30 = H3(e30)), !e30) return new h2();
+  if (e30 instanceof h2) return e30;
+  e30 = e30.rgb();
+  var t10 = e30.r / 255, r11 = e30.g / 255, n13 = e30.b / 255, i9 = Math.min(t10, r11, n13), f15 = Math.max(t10, r11, n13), s14 = NaN, x15 = f15 - i9, d11 = (f15 + i9) / 2;
+  return x15 ? (t10 === f15 ? s14 = (r11 - n13) / x15 + (r11 < n13) * 6 : r11 === f15 ? s14 = (n13 - t10) / x15 + 2 : s14 = (t10 - r11) / x15 + 4, x15 /= d11 < 0.5 ? f15 + i9 : 2 - f15 - i9, s14 *= 60) : x15 = d11 > 0 && d11 < 1 ? 0 : s14, new h2(s14, x15, d11, e30.opacity);
 }
-function hsl(h, s2, l, opacity) {
-  return arguments.length === 1 ? hslConvert(h) : new Hsl(h, s2, l, opacity == null ? 1 : opacity);
+function ee2(e30, t10, r11, n13) {
+  return arguments.length === 1 ? W3(e30) : new h2(e30, t10, r11, n13 ?? 1);
 }
-function Hsl(h, s2, l, opacity) {
-  this.h = +h;
-  this.s = +s2;
-  this.l = +l;
-  this.opacity = +opacity;
+function h2(e30, t10, r11, n13) {
+  this.h = +e30, this.s = +t10, this.l = +r11, this.opacity = +n13;
 }
-define_default(Hsl, hsl, extend(Color, {
-  brighter(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Hsl(this.h, this.s, this.l * k2, this.opacity);
+b3(h2, ee2, g2(u2, {
+  brighter(e30) {
+    return e30 = e30 == null ? y : Math.pow(y, e30), new h2(this.h, this.s, this.l * e30, this.opacity);
   },
-  darker(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Hsl(this.h, this.s, this.l * k2, this.opacity);
+  darker(e30) {
+    return e30 = e30 == null ? p : Math.pow(p, e30), new h2(this.h, this.s, this.l * e30, this.opacity);
   },
   rgb() {
-    var h = this.h % 360 + (this.h < 0) * 360, s2 = isNaN(h) || isNaN(this.s) ? 0 : this.s, l = this.l, m2 = l + (l < 0.5 ? l : 1 - l) * s2, m1 = 2 * l - m2;
-    return new Rgb(hsl2rgb(h >= 240 ? h - 240 : h + 120, m1, m2), hsl2rgb(h, m1, m2), hsl2rgb(h < 120 ? h + 240 : h - 120, m1, m2), this.opacity);
+    var e30 = this.h % 360 + (this.h < 0) * 360, t10 = isNaN(e30) || isNaN(this.s) ? 0 : this.s, r11 = this.l, n13 = r11 + (r11 < 0.5 ? r11 : 1 - r11) * t10, i9 = 2 * r11 - n13;
+    return new a3(j2(e30 >= 240 ? e30 - 240 : e30 + 120, i9, n13), j2(e30, i9, n13), j2(e30 < 120 ? e30 + 240 : e30 - 120, i9, n13), this.opacity);
   },
   clamp() {
-    return new Hsl(clamph(this.h), clampt(this.s), clampt(this.l), clampa(this.opacity));
+    return new h2(U2(this.h), q3(this.s), q3(this.l), E2(this.opacity));
   },
   displayable() {
-    return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
+    return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && 0 <= this.l && this.l <= 1 && 0 <= this.opacity && this.opacity <= 1;
   },
   formatHsl() {
-    const a2 = clampa(this.opacity);
-    return `${a2 === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a2 === 1 ? ")" : `, ${a2})`}`;
+    let e30 = E2(this.opacity);
+    return `${e30 === 1 ? "hsl(" : "hsla("}${U2(this.h)}, ${q3(this.s) * 100}%, ${q3(this.l) * 100}%${e30 === 1 ? ")" : `, ${e30})`}`;
   }
 }));
-function clamph(value) {
-  value = (value || 0) % 360;
-  return value < 0 ? value + 360 : value;
+function U2(e30) {
+  return e30 = (e30 || 0) % 360, e30 < 0 ? e30 + 360 : e30;
 }
-function clampt(value) {
-  return Math.max(0, Math.min(1, value || 0));
+function q3(e30) {
+  return Math.max(0, Math.min(1, e30 || 0));
 }
-function hsl2rgb(h, m1, m2) {
-  return (h < 60 ? m1 + (m2 - m1) * h / 60 : h < 180 ? m2 : h < 240 ? m1 + (m2 - m1) * (240 - h) / 60 : m1) * 255;
+function j2(e30, t10, r11) {
+  return (e30 < 60 ? t10 + (r11 - t10) * e30 / 60 : e30 < 180 ? r11 : e30 < 240 ? t10 + (r11 - t10) * (240 - e30) / 60 : t10) * 255;
 }
-
-// node_modules/.deno/d3-color@3.1.0/node_modules/d3-color/src/math.js
-var radians = Math.PI / 180;
-var degrees = 180 / Math.PI;
-
-// node_modules/.deno/d3-color@3.1.0/node_modules/d3-color/src/lab.js
-var K = 18;
-var Xn = 0.96422;
-var Yn = 1;
-var Zn = 0.82521;
-var t0 = 4 / 29;
-var t1 = 6 / 29;
-var t2 = 3 * t1 * t1;
-var t3 = t1 * t1 * t1;
-function labConvert(o) {
-  if (o instanceof Lab) return new Lab(o.l, o.a, o.b, o.opacity);
-  if (o instanceof Hcl) return hcl2lab(o);
-  if (!(o instanceof Rgb)) o = rgbConvert(o);
-  var r = rgb2lrgb(o.r), g = rgb2lrgb(o.g), b = rgb2lrgb(o.b), y3 = xyz2lab((0.2225045 * r + 0.7168786 * g + 0.0606169 * b) / Yn), x3, z;
-  if (r === g && g === b) x3 = z = y3;
-  else {
-    x3 = xyz2lab((0.4360747 * r + 0.3850649 * g + 0.1430804 * b) / Xn);
-    z = xyz2lab((0.0139322 * r + 0.0971045 * g + 0.7141733 * b) / Zn);
-  }
-  return new Lab(116 * y3 - 16, 500 * (x3 - y3), 200 * (y3 - z), o.opacity);
+var P2 = Math.PI / 180;
+var _ = 180 / Math.PI;
+var I = 18;
+var te2 = 0.96422;
+var re2 = 1;
+var ne2 = 0.82521;
+var ie2 = 4 / 29;
+var v2 = 6 / 29;
+var ae3 = 3 * v2 * v2;
+var Me = v2 * v2 * v2;
+function fe2(e30) {
+  if (e30 instanceof l2) return new l2(e30.l, e30.a, e30.b, e30.opacity);
+  if (e30 instanceof o2) return le2(e30);
+  e30 instanceof a3 || (e30 = R(e30));
+  var t10 = S2(e30.r), r11 = S2(e30.g), n13 = S2(e30.b), i9 = B2((0.2225045 * t10 + 0.7168786 * r11 + 0.0606169 * n13) / re2), f15, s14;
+  return t10 === r11 && r11 === n13 ? f15 = s14 = i9 : (f15 = B2((0.4360747 * t10 + 0.3850649 * r11 + 0.1430804 * n13) / te2), s14 = B2((0.0139322 * t10 + 0.0971045 * r11 + 0.7141733 * n13) / ne2)), new l2(116 * i9 - 16, 500 * (f15 - i9), 200 * (i9 - s14), e30.opacity);
 }
-function lab(l, a2, b, opacity) {
-  return arguments.length === 1 ? labConvert(l) : new Lab(l, a2, b, opacity == null ? 1 : opacity);
+function A2(e30, t10, r11, n13) {
+  return arguments.length === 1 ? fe2(e30) : new l2(e30, t10, r11, n13 ?? 1);
 }
-function Lab(l, a2, b, opacity) {
-  this.l = +l;
-  this.a = +a2;
-  this.b = +b;
-  this.opacity = +opacity;
+function l2(e30, t10, r11, n13) {
+  this.l = +e30, this.a = +t10, this.b = +r11, this.opacity = +n13;
 }
-define_default(Lab, lab, extend(Color, {
-  brighter(k2) {
-    return new Lab(this.l + K * (k2 == null ? 1 : k2), this.a, this.b, this.opacity);
+b3(l2, A2, g2(u2, {
+  brighter(e30) {
+    return new l2(this.l + I * (e30 ?? 1), this.a, this.b, this.opacity);
   },
-  darker(k2) {
-    return new Lab(this.l - K * (k2 == null ? 1 : k2), this.a, this.b, this.opacity);
+  darker(e30) {
+    return new l2(this.l - I * (e30 ?? 1), this.a, this.b, this.opacity);
   },
   rgb() {
-    var y3 = (this.l + 16) / 116, x3 = isNaN(this.a) ? y3 : y3 + this.a / 500, z = isNaN(this.b) ? y3 : y3 - this.b / 200;
-    x3 = Xn * lab2xyz(x3);
-    y3 = Yn * lab2xyz(y3);
-    z = Zn * lab2xyz(z);
-    return new Rgb(lrgb2rgb(3.1338561 * x3 - 1.6168667 * y3 - 0.4906146 * z), lrgb2rgb(-0.9787684 * x3 + 1.9161415 * y3 + 0.033454 * z), lrgb2rgb(0.0719453 * x3 - 0.2289914 * y3 + 1.4052427 * z), this.opacity);
+    var e30 = (this.l + 16) / 116, t10 = isNaN(this.a) ? e30 : e30 + this.a / 500, r11 = isNaN(this.b) ? e30 : e30 - this.b / 200;
+    return t10 = te2 * D(t10), e30 = re2 * D(e30), r11 = ne2 * D(r11), new a3(O(3.1338561 * t10 - 1.6168667 * e30 - 0.4906146 * r11), O(-0.9787684 * t10 + 1.9161415 * e30 + 0.033454 * r11), O(0.0719453 * t10 - 0.2289914 * e30 + 1.4052427 * r11), this.opacity);
   }
 }));
-function xyz2lab(t) {
-  return t > t3 ? Math.pow(t, 1 / 3) : t / t2 + t0;
+function B2(e30) {
+  return e30 > Me ? Math.pow(e30, 1 / 3) : e30 / ae3 + ie2;
 }
-function lab2xyz(t) {
-  return t > t1 ? t * t * t : t2 * (t - t0);
+function D(e30) {
+  return e30 > v2 ? e30 * e30 * e30 : ae3 * (e30 - ie2);
 }
-function lrgb2rgb(x3) {
-  return 255 * (x3 <= 31308e-7 ? 12.92 * x3 : 1.055 * Math.pow(x3, 1 / 2.4) - 0.055);
+function O(e30) {
+  return 255 * (e30 <= 31308e-7 ? 12.92 * e30 : 1.055 * Math.pow(e30, 1 / 2.4) - 0.055);
 }
-function rgb2lrgb(x3) {
-  return (x3 /= 255) <= 0.04045 ? x3 / 12.92 : Math.pow((x3 + 0.055) / 1.055, 2.4);
+function S2(e30) {
+  return (e30 /= 255) <= 0.04045 ? e30 / 12.92 : Math.pow((e30 + 0.055) / 1.055, 2.4);
 }
-function hclConvert(o) {
-  if (o instanceof Hcl) return new Hcl(o.h, o.c, o.l, o.opacity);
-  if (!(o instanceof Lab)) o = labConvert(o);
-  if (o.a === 0 && o.b === 0) return new Hcl(NaN, 0 < o.l && o.l < 100 ? 0 : NaN, o.l, o.opacity);
-  var h = Math.atan2(o.b, o.a) * degrees;
-  return new Hcl(h < 0 ? h + 360 : h, Math.sqrt(o.a * o.a + o.b * o.b), o.l, o.opacity);
+function se2(e30) {
+  if (e30 instanceof o2) return new o2(e30.h, e30.c, e30.l, e30.opacity);
+  if (e30 instanceof l2 || (e30 = fe2(e30)), e30.a === 0 && e30.b === 0) return new o2(NaN, 0 < e30.l && e30.l < 100 ? 0 : NaN, e30.l, e30.opacity);
+  var t10 = Math.atan2(e30.b, e30.a) * _;
+  return new o2(t10 < 0 ? t10 + 360 : t10, Math.sqrt(e30.a * e30.a + e30.b * e30.b), e30.l, e30.opacity);
 }
-function hcl(h, c3, l, opacity) {
-  return arguments.length === 1 ? hclConvert(h) : new Hcl(h, c3, l, opacity == null ? 1 : opacity);
+function he2(e30, t10, r11, n13) {
+  return arguments.length === 1 ? se2(e30) : new o2(e30, t10, r11, n13 ?? 1);
 }
-function Hcl(h, c3, l, opacity) {
-  this.h = +h;
-  this.c = +c3;
-  this.l = +l;
-  this.opacity = +opacity;
+function o2(e30, t10, r11, n13) {
+  this.h = +e30, this.c = +t10, this.l = +r11, this.opacity = +n13;
 }
-function hcl2lab(o) {
-  if (isNaN(o.h)) return new Lab(o.l, 0, 0, o.opacity);
-  var h = o.h * radians;
-  return new Lab(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
+function le2(e30) {
+  if (isNaN(e30.h)) return new l2(e30.l, 0, 0, e30.opacity);
+  var t10 = e30.h * P2;
+  return new l2(e30.l, Math.cos(t10) * e30.c, Math.sin(t10) * e30.c, e30.opacity);
 }
-define_default(Hcl, hcl, extend(Color, {
-  brighter(k2) {
-    return new Hcl(this.h, this.c, this.l + K * (k2 == null ? 1 : k2), this.opacity);
+b3(o2, he2, g2(u2, {
+  brighter(e30) {
+    return new o2(this.h, this.c, this.l + I * (e30 ?? 1), this.opacity);
   },
-  darker(k2) {
-    return new Hcl(this.h, this.c, this.l - K * (k2 == null ? 1 : k2), this.opacity);
+  darker(e30) {
+    return new o2(this.h, this.c, this.l - I * (e30 ?? 1), this.opacity);
   },
   rgb() {
-    return hcl2lab(this).rgb();
+    return le2(this).rgb();
   }
 }));
-
-// node_modules/.deno/d3-color@3.1.0/node_modules/d3-color/src/cubehelix.js
-var A = -0.14861;
-var B = 1.78277;
-var C = -0.29227;
-var D = -0.90649;
-var E = 1.97294;
-var ED = E * D;
-var EB = E * B;
-var BC_DA = B * C - D * A;
-function cubehelixConvert(o) {
-  if (o instanceof Cubehelix) return new Cubehelix(o.h, o.s, o.l, o.opacity);
-  if (!(o instanceof Rgb)) o = rgbConvert(o);
-  var r = o.r / 255, g = o.g / 255, b = o.b / 255, l = (BC_DA * b + ED * r - EB * g) / (BC_DA + ED - EB), bl = b - l, k2 = (E * (g - l) - C * bl) / D, s2 = Math.sqrt(k2 * k2 + bl * bl) / (E * l * (1 - l)), h = s2 ? Math.atan2(k2, bl) * degrees - 120 : NaN;
-  return new Cubehelix(h < 0 ? h + 360 : h, s2, l, o.opacity);
+var oe3 = -0.14861;
+var L2 = 1.78277;
+var K2 = -0.29227;
+var z2 = -0.90649;
+var k = 1.97294;
+var xe2 = k * z2;
+var ce2 = k * L2;
+var ue2 = L2 * K2 - z2 * oe3;
+function ke(e30) {
+  if (e30 instanceof $2) return new $2(e30.h, e30.s, e30.l, e30.opacity);
+  e30 instanceof a3 || (e30 = R(e30));
+  var t10 = e30.r / 255, r11 = e30.g / 255, n13 = e30.b / 255, i9 = (ue2 * n13 + xe2 * t10 - ce2 * r11) / (ue2 + xe2 - ce2), f15 = n13 - i9, s14 = (k * (r11 - i9) - K2 * f15) / z2, x15 = Math.sqrt(s14 * s14 + f15 * f15) / (k * i9 * (1 - i9)), d11 = x15 ? Math.atan2(s14, f15) * _ - 120 : NaN;
+  return new $2(d11 < 0 ? d11 + 360 : d11, x15, i9, e30.opacity);
 }
-function cubehelix(h, s2, l, opacity) {
-  return arguments.length === 1 ? cubehelixConvert(h) : new Cubehelix(h, s2, l, opacity == null ? 1 : opacity);
+function X2(e30, t10, r11, n13) {
+  return arguments.length === 1 ? ke(e30) : new $2(e30, t10, r11, n13 ?? 1);
 }
-function Cubehelix(h, s2, l, opacity) {
-  this.h = +h;
-  this.s = +s2;
-  this.l = +l;
-  this.opacity = +opacity;
+function $2(e30, t10, r11, n13) {
+  this.h = +e30, this.s = +t10, this.l = +r11, this.opacity = +n13;
 }
-define_default(Cubehelix, cubehelix, extend(Color, {
-  brighter(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Cubehelix(this.h, this.s, this.l * k2, this.opacity);
+b3($2, X2, g2(u2, {
+  brighter(e30) {
+    return e30 = e30 == null ? y : Math.pow(y, e30), new $2(this.h, this.s, this.l * e30, this.opacity);
   },
-  darker(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Cubehelix(this.h, this.s, this.l * k2, this.opacity);
+  darker(e30) {
+    return e30 = e30 == null ? p : Math.pow(p, e30), new $2(this.h, this.s, this.l * e30, this.opacity);
   },
   rgb() {
-    var h = isNaN(this.h) ? 0 : (this.h + 120) * radians, l = +this.l, a2 = isNaN(this.s) ? 0 : this.s * l * (1 - l), cosh2 = Math.cos(h), sinh2 = Math.sin(h);
-    return new Rgb(255 * (l + a2 * (A * cosh2 + B * sinh2)), 255 * (l + a2 * (C * cosh2 + D * sinh2)), 255 * (l + a2 * (E * cosh2)), this.opacity);
+    var e30 = isNaN(this.h) ? 0 : (this.h + 120) * P2, t10 = +this.l, r11 = isNaN(this.s) ? 0 : this.s * t10 * (1 - t10), n13 = Math.cos(e30), i9 = Math.sin(e30);
+    return new a3(255 * (t10 + r11 * (oe3 * n13 + L2 * i9)), 255 * (t10 + r11 * (K2 * n13 + z2 * i9)), 255 * (t10 + r11 * (k * n13)), this.opacity);
   }
 }));
 
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basis.js
-function basis(t13, v0, v1, v2, v3) {
-  var t22 = t13 * t13, t32 = t22 * t13;
-  return ((1 - 3 * t13 + 3 * t22 - t32) * v0 + (4 - 6 * t22 + 3 * t32) * v1 + (1 + 3 * t13 + 3 * t22 - 3 * t32) * v2 + t32 * v3) / 6;
+// deno:https://esm.sh/d3-interpolate@3.0.1/denonext/d3-interpolate.mjs
+function T3(e30, r11, t10, n13, o21) {
+  var u9 = e30 * e30, i9 = u9 * e30;
+  return ((1 - 3 * e30 + 3 * u9 - i9) * r11 + (4 - 6 * u9 + 3 * i9) * t10 + (1 + 3 * e30 + 3 * u9 - 3 * i9) * n13 + i9 * o21) / 6;
 }
-function basis_default(values) {
-  var n = values.length - 1;
-  return function(t) {
-    var i = t <= 0 ? t = 0 : t >= 1 ? (t = 1, n - 1) : Math.floor(t * n), v1 = values[i], v2 = values[i + 1], v0 = i > 0 ? values[i - 1] : 2 * v1 - v2, v3 = i < n - 1 ? values[i + 2] : 2 * v2 - v1;
-    return basis((t - i / n) * n, v0, v1, v2, v3);
+function D2(e30) {
+  var r11 = e30.length - 1;
+  return function(t10) {
+    var n13 = t10 <= 0 ? t10 = 0 : t10 >= 1 ? (t10 = 1, r11 - 1) : Math.floor(t10 * r11), o21 = e30[n13], u9 = e30[n13 + 1], i9 = n13 > 0 ? e30[n13 - 1] : 2 * o21 - u9, f15 = n13 < r11 - 1 ? e30[n13 + 2] : 2 * u9 - o21;
+    return T3((t10 - n13 / r11) * r11, i9, o21, u9, f15);
   };
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/basisClosed.js
-function basisClosed_default(values) {
-  var n = values.length;
-  return function(t) {
-    var i = Math.floor(((t %= 1) < 0 ? ++t : t) * n), v0 = values[(i + n - 1) % n], v1 = values[i % n], v2 = values[(i + 1) % n], v3 = values[(i + 2) % n];
-    return basis((t - i / n) * n, v0, v1, v2, v3);
+function H4(e30) {
+  var r11 = e30.length;
+  return function(t10) {
+    var n13 = Math.floor(((t10 %= 1) < 0 ? ++t10 : t10) * r11), o21 = e30[(n13 + r11 - 1) % r11], u9 = e30[n13 % r11], i9 = e30[(n13 + 1) % r11], f15 = e30[(n13 + 2) % r11];
+    return T3((t10 - n13 / r11) * r11, o21, u9, i9, f15);
   };
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js
-var constant_default3 = (x3) => () => x3;
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/color.js
-function linear(a2, d) {
-  return function(t) {
-    return a2 + t * d;
+var w5 = (e30) => () => e30;
+function Z3(e30, r11) {
+  return function(t10) {
+    return e30 + t10 * r11;
   };
 }
-function exponential(a2, b, y3) {
-  return a2 = Math.pow(a2, y3), b = Math.pow(b, y3) - a2, y3 = 1 / y3, function(t) {
-    return Math.pow(a2 + t * b, y3);
+function mr(e30, r11, t10) {
+  return e30 = Math.pow(e30, t10), r11 = Math.pow(r11, t10) - e30, t10 = 1 / t10, function(n13) {
+    return Math.pow(e30 + n13 * r11, t10);
   };
 }
-function hue(a2, b) {
-  var d = b - a2;
-  return d ? linear(a2, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant_default3(isNaN(a2) ? b : a2);
+function v3(e30, r11) {
+  var t10 = r11 - e30;
+  return t10 ? Z3(e30, t10 > 180 || t10 < -180 ? t10 - 360 * Math.round(t10 / 360) : t10) : w5(isNaN(e30) ? r11 : e30);
 }
-function gamma(y3) {
-  return (y3 = +y3) === 1 ? nogamma : function(a2, b) {
-    return b - a2 ? exponential(a2, b, y3) : constant_default3(isNaN(a2) ? b : a2);
+function F4(e30) {
+  return (e30 = +e30) == 1 ? s3 : function(r11, t10) {
+    return t10 - r11 ? mr(r11, t10, e30) : w5(isNaN(r11) ? t10 : r11);
   };
 }
-function nogamma(a2, b) {
-  var d = b - a2;
-  return d ? linear(a2, d) : constant_default3(isNaN(a2) ? b : a2);
+function s3(e30, r11) {
+  var t10 = r11 - e30;
+  return t10 ? Z3(e30, t10) : w5(isNaN(e30) ? r11 : e30);
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/rgb.js
-var rgb_default = function rgbGamma(y3) {
-  var color2 = gamma(y3);
-  function rgb2(start2, end) {
-    var r = color2((start2 = rgb(start2)).r, (end = rgb(end)).r), g = color2(start2.g, end.g), b = color2(start2.b, end.b), opacity = nogamma(start2.opacity, end.opacity);
-    return function(t) {
-      start2.r = r(t);
-      start2.g = g(t);
-      start2.b = b(t);
-      start2.opacity = opacity(t);
-      return start2 + "";
+var C2 = function e(r11) {
+  var t10 = F4(r11);
+  function n13(o21, u9) {
+    var i9 = t10((o21 = V3(o21)).r, (u9 = V3(u9)).r), f15 = t10(o21.g, u9.g), c11 = t10(o21.b, u9.b), l9 = s3(o21.opacity, u9.opacity);
+    return function(a11) {
+      return o21.r = i9(a11), o21.g = f15(a11), o21.b = c11(a11), o21.opacity = l9(a11), o21 + "";
     };
   }
-  rgb2.gamma = rgbGamma;
-  return rgb2;
+  return n13.gamma = e, n13;
 }(1);
-function rgbSpline(spline) {
-  return function(colors) {
-    var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color2;
-    for (i = 0; i < n; ++i) {
-      color2 = rgb(colors[i]);
-      r[i] = color2.r || 0;
-      g[i] = color2.g || 0;
-      b[i] = color2.b || 0;
-    }
-    r = spline(r);
-    g = spline(g);
-    b = spline(b);
-    color2.opacity = 1;
-    return function(t) {
-      color2.r = r(t);
-      color2.g = g(t);
-      color2.b = b(t);
-      return color2 + "";
+function J3(e30) {
+  return function(r11) {
+    var t10 = r11.length, n13 = new Array(t10), o21 = new Array(t10), u9 = new Array(t10), i9, f15;
+    for (i9 = 0; i9 < t10; ++i9) f15 = V3(r11[i9]), n13[i9] = f15.r || 0, o21[i9] = f15.g || 0, u9[i9] = f15.b || 0;
+    return n13 = e30(n13), o21 = e30(o21), u9 = e30(u9), f15.opacity = 1, function(c11) {
+      return f15.r = n13(c11), f15.g = o21(c11), f15.b = u9(c11), f15 + "";
     };
   };
 }
-var rgbBasis = rgbSpline(basis_default);
-var rgbBasisClosed = rgbSpline(basisClosed_default);
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/number.js
-function number_default(a2, b) {
-  return a2 = +a2, b = +b, function(t) {
-    return a2 * (1 - t) + b * t;
+var sr = J3(D2);
+var hr = J3(H4);
+function x2(e30, r11) {
+  return e30 = +e30, r11 = +r11, function(t10) {
+    return e30 * (1 - t10) + r11 * t10;
   };
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/string.js
-var reA = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g;
-var reB = new RegExp(reA.source, "g");
-function zero2(b) {
+var V4 = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g;
+var E3 = new RegExp(V4.source, "g");
+function gr(e30) {
   return function() {
-    return b;
+    return e30;
   };
 }
-function one(b) {
-  return function(t) {
-    return b(t) + "";
+function dr(e30) {
+  return function(r11) {
+    return e30(r11) + "";
   };
 }
-function string_default(a2, b) {
-  var bi = reA.lastIndex = reB.lastIndex = 0, am, bm, bs, i = -1, s2 = [], q = [];
-  a2 = a2 + "", b = b + "";
-  while ((am = reA.exec(a2)) && (bm = reB.exec(b))) {
-    if ((bs = bm.index) > bi) {
-      bs = b.slice(bi, bs);
-      if (s2[i]) s2[i] += bs;
-      else s2[++i] = bs;
-    }
-    if ((am = am[0]) === (bm = bm[0])) {
-      if (s2[i]) s2[i] += bm;
-      else s2[++i] = bm;
-    } else {
-      s2[++i] = null;
-      q.push({
-        i,
-        x: number_default(am, bm)
-      });
-    }
-    bi = reB.lastIndex;
-  }
-  if (bi < b.length) {
-    bs = b.slice(bi);
-    if (s2[i]) s2[i] += bs;
-    else s2[++i] = bs;
-  }
-  return s2.length < 2 ? q[0] ? one(q[0].x) : zero2(b) : (b = q.length, function(t) {
-    for (var i2 = 0, o; i2 < b; ++i2) s2[(o = q[i2]).i] = o.x(t);
-    return s2.join("");
+function _2(e30, r11) {
+  var t10 = V4.lastIndex = E3.lastIndex = 0, n13, o21, u9, i9 = -1, f15 = [], c11 = [];
+  for (e30 = e30 + "", r11 = r11 + ""; (n13 = V4.exec(e30)) && (o21 = E3.exec(r11)); ) (u9 = o21.index) > t10 && (u9 = r11.slice(t10, u9), f15[i9] ? f15[i9] += u9 : f15[++i9] = u9), (n13 = n13[0]) === (o21 = o21[0]) ? f15[i9] ? f15[i9] += o21 : f15[++i9] = o21 : (f15[++i9] = null, c11.push({
+    i: i9,
+    x: x2(n13, o21)
+  })), t10 = E3.lastIndex;
+  return t10 < r11.length && (u9 = r11.slice(t10), f15[i9] ? f15[i9] += u9 : f15[++i9] = u9), f15.length < 2 ? c11[0] ? dr(c11[0].x) : gr(r11) : (r11 = c11.length, function(l9) {
+    for (var a11 = 0, p12; a11 < r11; ++a11) f15[(p12 = c11[a11]).i] = p12.x(l9);
+    return f15.join("");
   });
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/decompose.js
-var degrees2 = 180 / Math.PI;
-var identity2 = {
+var $3 = 180 / Math.PI;
+var B3 = {
   translateX: 0,
   translateY: 0,
   rotate: 0,
@@ -1875,1200 +1404,946 @@ var identity2 = {
   scaleX: 1,
   scaleY: 1
 };
-function decompose_default(a2, b, c3, d, e, f) {
-  var scaleX, scaleY, skewX;
-  if (scaleX = Math.sqrt(a2 * a2 + b * b)) a2 /= scaleX, b /= scaleX;
-  if (skewX = a2 * c3 + b * d) c3 -= a2 * skewX, d -= b * skewX;
-  if (scaleY = Math.sqrt(c3 * c3 + d * d)) c3 /= scaleY, d /= scaleY, skewX /= scaleY;
-  if (a2 * d < b * c3) a2 = -a2, b = -b, skewX = -skewX, scaleX = -scaleX;
-  return {
-    translateX: e,
-    translateY: f,
-    rotate: Math.atan2(b, a2) * degrees2,
-    skewX: Math.atan(skewX) * degrees2,
-    scaleX,
-    scaleY
+function G3(e30, r11, t10, n13, o21, u9) {
+  var i9, f15, c11;
+  return (i9 = Math.sqrt(e30 * e30 + r11 * r11)) && (e30 /= i9, r11 /= i9), (c11 = e30 * t10 + r11 * n13) && (t10 -= e30 * c11, n13 -= r11 * c11), (f15 = Math.sqrt(t10 * t10 + n13 * n13)) && (t10 /= f15, n13 /= f15, c11 /= f15), e30 * n13 < r11 * t10 && (e30 = -e30, r11 = -r11, c11 = -c11, i9 = -i9), {
+    translateX: o21,
+    translateY: u9,
+    rotate: Math.atan2(r11, e30) * $3,
+    skewX: Math.atan(c11) * $3,
+    scaleX: i9,
+    scaleY: f15
   };
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/parse.js
-var svgNode;
-function parseCss(value) {
-  const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
-  return m.isIdentity ? identity2 : decompose_default(m.a, m.b, m.c, m.d, m.e, m.f);
+var k2;
+function P3(e30) {
+  let r11 = new (typeof DOMMatrix == "function" ? DOMMatrix : WebKitCSSMatrix)(e30 + "");
+  return r11.isIdentity ? B3 : G3(r11.a, r11.b, r11.c, r11.d, r11.e, r11.f);
 }
-function parseSvg(value) {
-  if (value == null) return identity2;
-  if (!svgNode) svgNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  svgNode.setAttribute("transform", value);
-  if (!(value = svgNode.transform.baseVal.consolidate())) return identity2;
-  value = value.matrix;
-  return decompose_default(value.a, value.b, value.c, value.d, value.e, value.f);
+function b4(e30) {
+  return e30 == null ? B3 : (k2 || (k2 = document.createElementNS("http://www.w3.org/2000/svg", "g")), k2.setAttribute("transform", e30), (e30 = k2.transform.baseVal.consolidate()) ? (e30 = e30.matrix, G3(e30.a, e30.b, e30.c, e30.d, e30.e, e30.f)) : B3);
 }
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/transform/index.js
-function interpolateTransform(parse, pxComma, pxParen, degParen) {
-  function pop(s2) {
-    return s2.length ? s2.pop() + " " : "";
+function rr(e30, r11, t10, n13) {
+  function o21(l9) {
+    return l9.length ? l9.pop() + " " : "";
   }
-  function translate(xa, ya, xb, yb, s2, q) {
-    if (xa !== xb || ya !== yb) {
-      var i = s2.push("translate(", null, pxComma, null, pxParen);
-      q.push({
-        i: i - 4,
-        x: number_default(xa, xb)
+  function u9(l9, a11, p12, m12, h9, d11) {
+    if (l9 !== p12 || a11 !== m12) {
+      var g7 = h9.push("translate(", null, r11, null, t10);
+      d11.push({
+        i: g7 - 4,
+        x: x2(l9, p12)
       }, {
-        i: i - 2,
-        x: number_default(ya, yb)
+        i: g7 - 2,
+        x: x2(a11, m12)
       });
-    } else if (xb || yb) {
-      s2.push("translate(" + xb + pxComma + yb + pxParen);
-    }
+    } else (p12 || m12) && h9.push("translate(" + p12 + r11 + m12 + t10);
   }
-  function rotate(a2, b, s2, q) {
-    if (a2 !== b) {
-      if (a2 - b > 180) b += 360;
-      else if (b - a2 > 180) a2 += 360;
-      q.push({
-        i: s2.push(pop(s2) + "rotate(", null, degParen) - 2,
-        x: number_default(a2, b)
-      });
-    } else if (b) {
-      s2.push(pop(s2) + "rotate(" + b + degParen);
-    }
+  function i9(l9, a11, p12, m12) {
+    l9 !== a11 ? (l9 - a11 > 180 ? a11 += 360 : a11 - l9 > 180 && (l9 += 360), m12.push({
+      i: p12.push(o21(p12) + "rotate(", null, n13) - 2,
+      x: x2(l9, a11)
+    })) : a11 && p12.push(o21(p12) + "rotate(" + a11 + n13);
   }
-  function skewX(a2, b, s2, q) {
-    if (a2 !== b) {
-      q.push({
-        i: s2.push(pop(s2) + "skewX(", null, degParen) - 2,
-        x: number_default(a2, b)
-      });
-    } else if (b) {
-      s2.push(pop(s2) + "skewX(" + b + degParen);
-    }
+  function f15(l9, a11, p12, m12) {
+    l9 !== a11 ? m12.push({
+      i: p12.push(o21(p12) + "skewX(", null, n13) - 2,
+      x: x2(l9, a11)
+    }) : a11 && p12.push(o21(p12) + "skewX(" + a11 + n13);
   }
-  function scale2(xa, ya, xb, yb, s2, q) {
-    if (xa !== xb || ya !== yb) {
-      var i = s2.push(pop(s2) + "scale(", null, ",", null, ")");
-      q.push({
-        i: i - 4,
-        x: number_default(xa, xb)
+  function c11(l9, a11, p12, m12, h9, d11) {
+    if (l9 !== p12 || a11 !== m12) {
+      var g7 = h9.push(o21(h9) + "scale(", null, ",", null, ")");
+      d11.push({
+        i: g7 - 4,
+        x: x2(l9, p12)
       }, {
-        i: i - 2,
-        x: number_default(ya, yb)
+        i: g7 - 2,
+        x: x2(a11, m12)
       });
-    } else if (xb !== 1 || yb !== 1) {
-      s2.push(pop(s2) + "scale(" + xb + "," + yb + ")");
-    }
+    } else (p12 !== 1 || m12 !== 1) && h9.push(o21(h9) + "scale(" + p12 + "," + m12 + ")");
   }
-  return function(a2, b) {
-    var s2 = [], q = [];
-    a2 = parse(a2), b = parse(b);
-    translate(a2.translateX, a2.translateY, b.translateX, b.translateY, s2, q);
-    rotate(a2.rotate, b.rotate, s2, q);
-    skewX(a2.skewX, b.skewX, s2, q);
-    scale2(a2.scaleX, a2.scaleY, b.scaleX, b.scaleY, s2, q);
-    a2 = b = null;
-    return function(t) {
-      var i = -1, n = q.length, o;
-      while (++i < n) s2[(o = q[i]).i] = o.x(t);
-      return s2.join("");
+  return function(l9, a11) {
+    var p12 = [], m12 = [];
+    return l9 = e30(l9), a11 = e30(a11), u9(l9.translateX, l9.translateY, a11.translateX, a11.translateY, p12, m12), i9(l9.rotate, a11.rotate, p12, m12), f15(l9.skewX, a11.skewX, p12, m12), c11(l9.scaleX, l9.scaleY, a11.scaleX, a11.scaleY, p12, m12), l9 = a11 = null, function(h9) {
+      for (var d11 = -1, g7 = m12.length, M10; ++d11 < g7; ) p12[(M10 = m12[d11]).i] = M10.x(h9);
+      return p12.join("");
     };
   };
 }
-var interpolateTransformCss = interpolateTransform(parseCss, "px, ", "px)", "deg)");
-var interpolateTransformSvg = interpolateTransform(parseSvg, ", ", ")", ")");
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/zoom.js
-var epsilon2 = 1e-12;
-function cosh(x3) {
-  return ((x3 = Math.exp(x3)) + 1 / x3) / 2;
+var wr = rr(P3, "px, ", "px)", "deg)");
+var Ar = rr(b4, ", ", ")", ")");
+var Xr = 1e-12;
+function er(e30) {
+  return ((e30 = Math.exp(e30)) + 1 / e30) / 2;
 }
-function sinh(x3) {
-  return ((x3 = Math.exp(x3)) - 1 / x3) / 2;
+function Nr(e30) {
+  return ((e30 = Math.exp(e30)) - 1 / e30) / 2;
 }
-function tanh(x3) {
-  return ((x3 = Math.exp(2 * x3)) - 1) / (x3 + 1);
+function Sr(e30) {
+  return ((e30 = Math.exp(2 * e30)) - 1) / (e30 + 1);
 }
-var zoom_default = function zoomRho(rho, rho2, rho4) {
-  function zoom(p0, p1) {
-    var ux0 = p0[0], uy0 = p0[1], w0 = p0[2], ux1 = p1[0], uy1 = p1[1], w1 = p1[2], dx = ux1 - ux0, dy = uy1 - uy0, d2 = dx * dx + dy * dy, i, S;
-    if (d2 < epsilon2) {
-      S = Math.log(w1 / w0) / rho;
-      i = function(t) {
+var Cr = function e2(r11, t10, n13) {
+  function o21(u9, i9) {
+    var f15 = u9[0], c11 = u9[1], l9 = u9[2], a11 = i9[0], p12 = i9[1], m12 = i9[2], h9 = a11 - f15, d11 = p12 - c11, g7 = h9 * h9 + d11 * d11, M10, A14;
+    if (g7 < Xr) A14 = Math.log(m12 / l9) / r11, M10 = function(N10) {
+      return [
+        f15 + N10 * h9,
+        c11 + N10 * d11,
+        l9 * Math.exp(r11 * N10 * A14)
+      ];
+    };
+    else {
+      var R8 = Math.sqrt(g7), Y12 = (m12 * m12 - l9 * l9 + n13 * g7) / (2 * l9 * t10 * R8), q15 = (m12 * m12 - l9 * l9 - n13 * g7) / (2 * m12 * t10 * R8), X12 = Math.log(Math.sqrt(Y12 * Y12 + 1) - Y12), cr = Math.log(Math.sqrt(q15 * q15 + 1) - q15);
+      A14 = (cr - X12) / r11, M10 = function(N10) {
+        var Q11 = N10 * A14, K9 = er(X12), W12 = l9 / (t10 * R8) * (K9 * Sr(r11 * Q11 + X12) - Nr(X12));
         return [
-          ux0 + t * dx,
-          uy0 + t * dy,
-          w0 * Math.exp(rho * t * S)
-        ];
-      };
-    } else {
-      var d1 = Math.sqrt(d2), b02 = (w1 * w1 - w0 * w0 + rho4 * d2) / (2 * w0 * rho2 * d1), b12 = (w1 * w1 - w0 * w0 - rho4 * d2) / (2 * w1 * rho2 * d1), r0 = Math.log(Math.sqrt(b02 * b02 + 1) - b02), r1 = Math.log(Math.sqrt(b12 * b12 + 1) - b12);
-      S = (r1 - r0) / rho;
-      i = function(t) {
-        var s2 = t * S, coshr0 = cosh(r0), u4 = w0 / (rho2 * d1) * (coshr0 * tanh(rho * s2 + r0) - sinh(r0));
-        return [
-          ux0 + u4 * dx,
-          uy0 + u4 * dy,
-          w0 * coshr0 / cosh(rho * s2 + r0)
+          f15 + W12 * h9,
+          c11 + W12 * d11,
+          l9 * K9 / er(r11 * Q11 + X12)
         ];
       };
     }
-    i.duration = S * 1e3 * rho / Math.SQRT2;
-    return i;
+    return M10.duration = A14 * 1e3 * r11 / Math.SQRT2, M10;
   }
-  zoom.rho = function(_) {
-    var _1 = Math.max(1e-3, +_), _2 = _1 * _1, _4 = _2 * _2;
-    return zoomRho(_1, _2, _4);
-  };
-  return zoom;
+  return o21.rho = function(u9) {
+    var i9 = Math.max(1e-3, +u9), f15 = i9 * i9, c11 = f15 * f15;
+    return e2(i9, f15, c11);
+  }, o21;
 }(Math.SQRT2, 2, 4);
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hsl.js
-function hsl2(hue2) {
-  return function(start2, end) {
-    var h = hue2((start2 = hsl(start2)).h, (end = hsl(end)).h), s2 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
-    return function(t) {
-      start2.h = h(t);
-      start2.s = s2(t);
-      start2.l = l(t);
-      start2.opacity = opacity(t);
-      return start2 + "";
+function or(e30) {
+  return function(r11, t10) {
+    var n13 = e30((r11 = ee2(r11)).h, (t10 = ee2(t10)).h), o21 = s3(r11.s, t10.s), u9 = s3(r11.l, t10.l), i9 = s3(r11.opacity, t10.opacity);
+    return function(f15) {
+      return r11.h = n13(f15), r11.s = o21(f15), r11.l = u9(f15), r11.opacity = i9(f15), r11 + "";
     };
   };
 }
-var hsl_default = hsl2(hue);
-var hslLong = hsl2(nogamma);
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/hcl.js
-function hcl2(hue2) {
-  return function(start2, end) {
-    var h = hue2((start2 = hcl(start2)).h, (end = hcl(end)).h), c3 = nogamma(start2.c, end.c), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
-    return function(t) {
-      start2.h = h(t);
-      start2.c = c3(t);
-      start2.l = l(t);
-      start2.opacity = opacity(t);
-      return start2 + "";
+var Lr = or(v3);
+var Br = or(s3);
+function fr(e30) {
+  return function(r11, t10) {
+    var n13 = e30((r11 = he2(r11)).h, (t10 = he2(t10)).h), o21 = s3(r11.c, t10.c), u9 = s3(r11.l, t10.l), i9 = s3(r11.opacity, t10.opacity);
+    return function(f15) {
+      return r11.h = n13(f15), r11.c = o21(f15), r11.l = u9(f15), r11.opacity = i9(f15), r11 + "";
     };
   };
 }
-var hcl_default = hcl2(hue);
-var hclLong = hcl2(nogamma);
-
-// node_modules/.deno/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/cubehelix.js
-function cubehelix2(hue2) {
-  return function cubehelixGamma(y3) {
-    y3 = +y3;
-    function cubehelix3(start2, end) {
-      var h = hue2((start2 = cubehelix(start2)).h, (end = cubehelix(end)).h), s2 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
-      return function(t) {
-        start2.h = h(t);
-        start2.s = s2(t);
-        start2.l = l(Math.pow(t, y3));
-        start2.opacity = opacity(t);
-        return start2 + "";
+var kr = fr(v3);
+var Rr = fr(s3);
+function lr(e30) {
+  return function r11(t10) {
+    t10 = +t10;
+    function n13(o21, u9) {
+      var i9 = e30((o21 = X2(o21)).h, (u9 = X2(u9)).h), f15 = s3(o21.s, u9.s), c11 = s3(o21.l, u9.l), l9 = s3(o21.opacity, u9.opacity);
+      return function(a11) {
+        return o21.h = i9(a11), o21.s = f15(a11), o21.l = c11(Math.pow(a11, t10)), o21.opacity = l9(a11), o21 + "";
       };
     }
-    cubehelix3.gamma = cubehelixGamma;
-    return cubehelix3;
+    return n13.gamma = r11, n13;
   }(1);
 }
-var cubehelix_default = cubehelix2(hue);
-var cubehelixLong = cubehelix2(nogamma);
+var Yr = lr(v3);
+var qr = lr(s3);
 
-// node_modules/.deno/d3-timer@3.0.1/node_modules/d3-timer/src/timer.js
-var frame = 0;
-var timeout = 0;
-var interval = 0;
-var pokeDelay = 1e3;
-var taskHead;
-var taskTail;
-var clockLast = 0;
-var clockNow = 0;
-var clockSkew = 0;
-var clock = typeof performance === "object" && performance.now ? performance : Date;
-var setFrame = typeof window === "object" && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function(f) {
-  setTimeout(f, 17);
+// deno:https://esm.sh/d3-timer@3.0.1/denonext/d3-timer.mjs
+var f2 = 0;
+var l3 = 0;
+var u3 = 0;
+var F5 = 1e3;
+var _3;
+var s4;
+var h3 = 0;
+var o3 = 0;
+var x3 = 0;
+var c3 = typeof performance == "object" && performance.now ? performance : Date;
+var I2 = typeof globalThis == "object" && globalThis.requestAnimationFrame ? globalThis.requestAnimationFrame.bind(globalThis) : function(n13) {
+  setTimeout(n13, 17);
 };
-function now() {
-  return clockNow || (setFrame(clearNow), clockNow = clock.now() + clockSkew);
+function w6() {
+  return o3 || (I2(q4), o3 = c3.now() + x3);
 }
-function clearNow() {
-  clockNow = 0;
+function q4() {
+  o3 = 0;
 }
-function Timer() {
+function i() {
   this._call = this._time = this._next = null;
 }
-Timer.prototype = timer.prototype = {
-  constructor: Timer,
-  restart: function(callback, delay, time2) {
-    if (typeof callback !== "function") throw new TypeError("callback is not a function");
-    time2 = (time2 == null ? now() : +time2) + (delay == null ? 0 : +delay);
-    if (!this._next && taskTail !== this) {
-      if (taskTail) taskTail._next = this;
-      else taskHead = this;
-      taskTail = this;
-    }
-    this._call = callback;
-    this._time = time2;
-    sleep();
+i.prototype = y2.prototype = {
+  constructor: i,
+  restart: function(n13, t10, r11) {
+    if (typeof n13 != "function") throw new TypeError("callback is not a function");
+    r11 = (r11 == null ? w6() : +r11) + (t10 == null ? 0 : +t10), !this._next && s4 !== this && (s4 ? s4._next = this : _3 = this, s4 = this), this._call = n13, this._time = r11, v4();
   },
   stop: function() {
-    if (this._call) {
-      this._call = null;
-      this._time = Infinity;
-      sleep();
-    }
+    this._call && (this._call = null, this._time = 1 / 0, v4());
   }
 };
-function timer(callback, delay, time2) {
-  var t = new Timer();
-  t.restart(callback, delay, time2);
-  return t;
+function y2(n13, t10, r11) {
+  var e30 = new i();
+  return e30.restart(n13, t10, r11), e30;
 }
-function timerFlush() {
-  now();
-  ++frame;
-  var t = taskHead, e;
-  while (t) {
-    if ((e = clockNow - t._time) >= 0) t._call.call(void 0, e);
-    t = t._next;
-  }
-  --frame;
+function b5() {
+  w6(), ++f2;
+  for (var n13 = _3, t10; n13; ) (t10 = o3 - n13._time) >= 0 && n13._call.call(void 0, t10), n13 = n13._next;
+  --f2;
 }
-function wake() {
-  clockNow = (clockLast = clock.now()) + clockSkew;
-  frame = timeout = 0;
+function T4() {
+  o3 = (h3 = c3.now()) + x3, f2 = l3 = 0;
   try {
-    timerFlush();
+    b5();
   } finally {
-    frame = 0;
-    nap();
-    clockNow = 0;
+    f2 = 0, D3(), o3 = 0;
   }
 }
-function poke() {
-  var now2 = clock.now(), delay = now2 - clockLast;
-  if (delay > pokeDelay) clockSkew -= delay, clockLast = now2;
+function A3() {
+  var n13 = c3.now(), t10 = n13 - h3;
+  t10 > F5 && (x3 -= t10, h3 = n13);
 }
-function nap() {
-  var t03, t13 = taskHead, t22, time2 = Infinity;
-  while (t13) {
-    if (t13._call) {
-      if (time2 > t13._time) time2 = t13._time;
-      t03 = t13, t13 = t13._next;
-    } else {
-      t22 = t13._next, t13._next = null;
-      t13 = t03 ? t03._next = t22 : taskHead = t22;
-    }
-  }
-  taskTail = t03;
-  sleep(time2);
+function D3() {
+  for (var n13, t10 = _3, r11, e30 = 1 / 0; t10; ) t10._call ? (e30 > t10._time && (e30 = t10._time), n13 = t10, t10 = t10._next) : (r11 = t10._next, t10._next = null, t10 = n13 ? n13._next = r11 : _3 = r11);
+  s4 = n13, v4(e30);
 }
-function sleep(time2) {
-  if (frame) return;
-  if (timeout) timeout = clearTimeout(timeout);
-  var delay = time2 - clockNow;
-  if (delay > 24) {
-    if (time2 < Infinity) timeout = setTimeout(wake, time2 - clock.now() - clockSkew);
-    if (interval) interval = clearInterval(interval);
-  } else {
-    if (!interval) clockLast = clock.now(), interval = setInterval(poke, pokeDelay);
-    frame = 1, setFrame(wake);
+function v4(n13) {
+  if (!f2) {
+    l3 && (l3 = clearTimeout(l3));
+    var t10 = n13 - o3;
+    t10 > 24 ? (n13 < 1 / 0 && (l3 = setTimeout(T4, n13 - c3.now() - x3)), u3 && (u3 = clearInterval(u3))) : (u3 || (h3 = c3.now(), u3 = setInterval(A3, F5)), f2 = 1, I2(T4));
   }
+}
+function N4(n13, t10, r11) {
+  var e30 = new i();
+  return t10 = t10 == null ? 0 : +t10, e30.restart((p12) => {
+    e30.stop(), n13(p12 + t10);
+  }, t10, r11), e30;
 }
 
-// node_modules/.deno/d3-timer@3.0.1/node_modules/d3-timer/src/timeout.js
-function timeout_default(callback, delay, time2) {
-  var t = new Timer();
-  delay = delay == null ? 0 : +delay;
-  t.restart((elapsed) => {
-    t.stop();
-    callback(elapsed + delay);
-  }, delay, time2);
-  return t;
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/schedule.js
-var emptyOn = dispatch_default("start", "end", "cancel", "interrupt");
-var emptyTween = [];
-var CREATED = 0;
-var SCHEDULED = 1;
-var STARTING = 2;
-var STARTED = 3;
-var RUNNING = 4;
-var ENDING = 5;
-var ENDED = 6;
-function schedule_default(node, name, id2, index2, group2, timing) {
-  var schedules = node.__transition;
-  if (!schedules) node.__transition = {};
-  else if (id2 in schedules) return;
-  create(node, id2, {
-    name,
-    index: index2,
-    group: group2,
-    on: emptyOn,
-    tween: emptyTween,
-    time: timing.time,
-    delay: timing.delay,
-    duration: timing.duration,
-    ease: timing.ease,
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/schedule.mjs
+var A4 = c("start", "end", "cancel", "interrupt");
+var R2 = [];
+var g3 = 0;
+var l4 = 1;
+var s5 = 2;
+var m2 = 3;
+var y3 = 4;
+var E4 = 5;
+var x4 = 6;
+function C3(r11, e30, t10, i9, u9, c11) {
+  var _8 = r11.__transition;
+  if (!_8) r11.__transition = {};
+  else if (t10 in _8) return;
+  G4(r11, t10, {
+    name: e30,
+    index: i9,
+    group: u9,
+    on: A4,
+    tween: R2,
+    time: c11.time,
+    delay: c11.delay,
+    duration: c11.duration,
+    ease: c11.ease,
     timer: null,
-    state: CREATED
+    state: g3
   });
 }
-function init(node, id2) {
-  var schedule = get2(node, id2);
-  if (schedule.state > CREATED) throw new Error("too late; already scheduled");
-  return schedule;
+function U3(r11, e30) {
+  var t10 = D4(r11, e30);
+  if (t10.state > g3) throw new Error("too late; already scheduled");
+  return t10;
 }
-function set2(node, id2) {
-  var schedule = get2(node, id2);
-  if (schedule.state > STARTED) throw new Error("too late; already running");
-  return schedule;
+function j3(r11, e30) {
+  var t10 = D4(r11, e30);
+  if (t10.state > m2) throw new Error("too late; already running");
+  return t10;
 }
-function get2(node, id2) {
-  var schedule = node.__transition;
-  if (!schedule || !(schedule = schedule[id2])) throw new Error("transition not found");
-  return schedule;
+function D4(r11, e30) {
+  var t10 = r11.__transition;
+  if (!t10 || !(t10 = t10[e30])) throw new Error("transition not found");
+  return t10;
 }
-function create(node, id2, self) {
-  var schedules = node.__transition, tween;
-  schedules[id2] = self;
-  self.timer = timer(schedule, 0, self.time);
-  function schedule(elapsed) {
-    self.state = SCHEDULED;
-    self.timer.restart(start2, self.delay, self.time);
-    if (self.delay <= elapsed) start2(elapsed - self.delay);
+function G4(r11, e30, t10) {
+  var i9 = r11.__transition, u9;
+  i9[e30] = t10, t10.timer = y2(c11, 0, t10.time);
+  function c11(o21) {
+    t10.state = l4, t10.timer.restart(_8, t10.delay, t10.time), t10.delay <= o21 && _8(o21 - t10.delay);
   }
-  function start2(elapsed) {
-    var i, j, n, o;
-    if (self.state !== SCHEDULED) return stop();
-    for (i in schedules) {
-      o = schedules[i];
-      if (o.name !== self.name) continue;
-      if (o.state === STARTED) return timeout_default(start2);
-      if (o.state === RUNNING) {
-        o.state = ENDED;
-        o.timer.stop();
-        o.on.call("interrupt", node, node.__data__, o.index, o.group);
-        delete schedules[i];
-      } else if (+i < id2) {
-        o.state = ENDED;
-        o.timer.stop();
-        o.on.call("cancel", node, node.__data__, o.index, o.group);
-        delete schedules[i];
-      }
+  function _8(o21) {
+    var n13, p12, d11, a11;
+    if (t10.state !== l4) return v15();
+    for (n13 in i9) if (a11 = i9[n13], a11.name === t10.name) {
+      if (a11.state === m2) return N4(_8);
+      a11.state === y3 ? (a11.state = x4, a11.timer.stop(), a11.on.call("interrupt", r11, r11.__data__, a11.index, a11.group), delete i9[n13]) : +n13 < e30 && (a11.state = x4, a11.timer.stop(), a11.on.call("cancel", r11, r11.__data__, a11.index, a11.group), delete i9[n13]);
     }
-    timeout_default(function() {
-      if (self.state === STARTED) {
-        self.state = RUNNING;
-        self.timer.restart(tick, self.delay, self.time);
-        tick(elapsed);
-      }
-    });
-    self.state = STARTING;
-    self.on.call("start", node, node.__data__, self.index, self.group);
-    if (self.state !== STARTING) return;
-    self.state = STARTED;
-    tween = new Array(n = self.tween.length);
-    for (i = 0, j = -1; i < n; ++i) {
-      if (o = self.tween[i].value.call(node, node.__data__, self.index, self.group)) {
-        tween[++j] = o;
-      }
-    }
-    tween.length = j + 1;
-  }
-  function tick(elapsed) {
-    var t = elapsed < self.duration ? self.ease.call(null, elapsed / self.duration) : (self.timer.restart(stop), self.state = ENDING, 1), i = -1, n = tween.length;
-    while (++i < n) {
-      tween[i].call(node, t);
-    }
-    if (self.state === ENDING) {
-      self.on.call("end", node, node.__data__, self.index, self.group);
-      stop();
+    if (N4(function() {
+      t10.state === m2 && (t10.state = y3, t10.timer.restart(h9, t10.delay, t10.time), h9(o21));
+    }), t10.state = s5, t10.on.call("start", r11, r11.__data__, t10.index, t10.group), t10.state === s5) {
+      for (t10.state = m2, u9 = new Array(d11 = t10.tween.length), n13 = 0, p12 = -1; n13 < d11; ++n13) (a11 = t10.tween[n13].value.call(r11, r11.__data__, t10.index, t10.group)) && (u9[++p12] = a11);
+      u9.length = p12 + 1;
     }
   }
-  function stop() {
-    self.state = ENDED;
-    self.timer.stop();
-    delete schedules[id2];
-    for (var i in schedules) return;
-    delete node.__transition;
+  function h9(o21) {
+    for (var n13 = o21 < t10.duration ? t10.ease.call(null, o21 / t10.duration) : (t10.timer.restart(v15), t10.state = E4, 1), p12 = -1, d11 = u9.length; ++p12 < d11; ) u9[p12].call(r11, n13);
+    t10.state === E4 && (t10.on.call("end", r11, r11.__data__, t10.index, t10.group), v15());
+  }
+  function v15() {
+    t10.state = x4, t10.timer.stop(), delete i9[e30];
+    for (var o21 in i9) return;
+    delete r11.__transition;
   }
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/interrupt.js
-function interrupt_default(node, name) {
-  var schedules = node.__transition, schedule, active, empty2 = true, i;
-  if (!schedules) return;
-  name = name == null ? null : name + "";
-  for (i in schedules) {
-    if ((schedule = schedules[i]).name !== name) {
-      empty2 = false;
-      continue;
-    }
-    active = schedule.state > STARTING && schedule.state < ENDING;
-    schedule.state = ENDED;
-    schedule.timer.stop();
-    schedule.on.call(active ? "interrupt" : "cancel", node, node.__data__, schedule.index, schedule.group);
-    delete schedules[i];
-  }
-  if (empty2) delete node.__transition;
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/selection/interrupt.js
-function interrupt_default2(name) {
-  return this.each(function() {
-    interrupt_default(this, name);
-  });
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/tween.js
-function tweenRemove(id2, name) {
-  var tween0, tween1;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/tween.mjs
+function s6(t10, r11) {
+  var u9, n13;
   return function() {
-    var schedule = set2(this, id2), tween = schedule.tween;
-    if (tween !== tween0) {
-      tween1 = tween0 = tween;
-      for (var i = 0, n = tween1.length; i < n; ++i) {
-        if (tween1[i].name === name) {
-          tween1 = tween1.slice();
-          tween1.splice(i, 1);
-          break;
-        }
+    var e30 = j3(this, t10), a11 = e30.tween;
+    if (a11 !== u9) {
+      n13 = u9 = a11;
+      for (var f15 = 0, o21 = n13.length; f15 < o21; ++f15) if (n13[f15].name === r11) {
+        n13 = n13.slice(), n13.splice(f15, 1);
+        break;
       }
     }
-    schedule.tween = tween1;
+    e30.tween = n13;
   };
 }
-function tweenFunction(id2, name, value) {
-  var tween0, tween1;
-  if (typeof value !== "function") throw new Error();
+function v5(t10, r11, u9) {
+  var n13, e30;
+  if (typeof u9 != "function") throw new Error();
   return function() {
-    var schedule = set2(this, id2), tween = schedule.tween;
-    if (tween !== tween0) {
-      tween1 = (tween0 = tween).slice();
-      for (var t = {
-        name,
-        value
-      }, i = 0, n = tween1.length; i < n; ++i) {
-        if (tween1[i].name === name) {
-          tween1[i] = t;
-          break;
-        }
+    var a11 = j3(this, t10), f15 = a11.tween;
+    if (f15 !== n13) {
+      e30 = (n13 = f15).slice();
+      for (var o21 = {
+        name: r11,
+        value: u9
+      }, i9 = 0, c11 = e30.length; i9 < c11; ++i9) if (e30[i9].name === r11) {
+        e30[i9] = o21;
+        break;
       }
-      if (i === n) tween1.push(t);
+      i9 === c11 && e30.push(o21);
     }
-    schedule.tween = tween1;
+    a11.tween = e30;
   };
 }
-function tween_default(name, value) {
-  var id2 = this._id;
-  name += "";
-  if (arguments.length < 2) {
-    var tween = get2(this.node(), id2).tween;
-    for (var i = 0, n = tween.length, t; i < n; ++i) {
-      if ((t = tween[i]).name === name) {
-        return t.value;
-      }
-    }
+function d2(t10, r11) {
+  var u9 = this._id;
+  if (t10 += "", arguments.length < 2) {
+    for (var n13 = D4(this.node(), u9).tween, e30 = 0, a11 = n13.length, f15; e30 < a11; ++e30) if ((f15 = n13[e30]).name === t10) return f15.value;
     return null;
   }
-  return this.each((value == null ? tweenRemove : tweenFunction)(id2, name, value));
+  return this.each((r11 == null ? s6 : v5)(u9, t10, r11));
 }
-function tweenValue(transition2, name, value) {
-  var id2 = transition2._id;
-  transition2.each(function() {
-    var schedule = set2(this, id2);
-    (schedule.value || (schedule.value = {}))[name] = value.apply(this, arguments);
-  });
-  return function(node) {
-    return get2(node, id2).value[name];
+function p2(t10, r11, u9) {
+  var n13 = t10._id;
+  return t10.each(function() {
+    var e30 = j3(this, n13);
+    (e30.value || (e30.value = {}))[r11] = u9.apply(this, arguments);
+  }), function(e30) {
+    return D4(e30, n13).value[r11];
   };
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/interpolate.js
-function interpolate_default(a2, b) {
-  var c3;
-  return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c3 = color(b)) ? (b = c3, rgb_default) : string_default)(a2, b);
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/interpolate.mjs
+function m3(n13, r11) {
+  var t10;
+  return (typeof r11 == "number" ? x2 : r11 instanceof H3 ? C2 : (t10 = H3(r11)) ? (r11 = t10, C2) : _2)(n13, r11);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/attr.js
-function attrRemove2(name) {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/attr.mjs
+function p3(t10) {
   return function() {
-    this.removeAttribute(name);
+    this.removeAttribute(t10);
   };
 }
-function attrRemoveNS2(fullname) {
+function v6(t10) {
   return function() {
-    this.removeAttributeNS(fullname.space, fullname.local);
+    this.removeAttributeNS(t10.space, t10.local);
   };
 }
-function attrConstant2(name, interpolate, value1) {
-  var string00, string1 = value1 + "", interpolate0;
+function h4(t10, e30, r11) {
+  var i9, u9 = r11 + "", o21;
   return function() {
-    var string0 = this.getAttribute(name);
-    return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate(string00 = string0, value1);
+    var n13 = this.getAttribute(t10);
+    return n13 === u9 ? null : n13 === i9 ? o21 : o21 = e30(i9 = n13, r11);
   };
 }
-function attrConstantNS2(fullname, interpolate, value1) {
-  var string00, string1 = value1 + "", interpolate0;
+function m4(t10, e30, r11) {
+  var i9, u9 = r11 + "", o21;
   return function() {
-    var string0 = this.getAttributeNS(fullname.space, fullname.local);
-    return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate(string00 = string0, value1);
+    var n13 = this.getAttributeNS(t10.space, t10.local);
+    return n13 === u9 ? null : n13 === i9 ? o21 : o21 = e30(i9 = n13, r11);
   };
 }
-function attrFunction2(name, interpolate, value) {
-  var string00, string10, interpolate0;
+function b6(t10, e30, r11) {
+  var i9, u9, o21;
   return function() {
-    var string0, value1 = value(this), string1;
-    if (value1 == null) return void this.removeAttribute(name);
-    string0 = this.getAttribute(name);
-    string1 = value1 + "";
-    return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
+    var n13, a11 = r11(this), s14;
+    return a11 == null ? void this.removeAttribute(t10) : (n13 = this.getAttribute(t10), s14 = a11 + "", n13 === s14 ? null : n13 === i9 && s14 === u9 ? o21 : (u9 = s14, o21 = e30(i9 = n13, a11)));
   };
 }
-function attrFunctionNS2(fullname, interpolate, value) {
-  var string00, string10, interpolate0;
+function A5(t10, e30, r11) {
+  var i9, u9, o21;
   return function() {
-    var string0, value1 = value(this), string1;
-    if (value1 == null) return void this.removeAttributeNS(fullname.space, fullname.local);
-    string0 = this.getAttributeNS(fullname.space, fullname.local);
-    string1 = value1 + "";
-    return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
+    var n13, a11 = r11(this), s14;
+    return a11 == null ? void this.removeAttributeNS(t10.space, t10.local) : (n13 = this.getAttributeNS(t10.space, t10.local), s14 = a11 + "", n13 === s14 ? null : n13 === i9 && s14 === u9 ? o21 : (u9 = s14, o21 = e30(i9 = n13, a11)));
   };
 }
-function attr_default2(name, value) {
-  var fullname = namespace_default(name), i = fullname === "transform" ? interpolateTransformSvg : interpolate_default;
-  return this.attrTween(name, typeof value === "function" ? (fullname.local ? attrFunctionNS2 : attrFunction2)(fullname, i, tweenValue(this, "attr." + name, value)) : value == null ? (fullname.local ? attrRemoveNS2 : attrRemove2)(fullname) : (fullname.local ? attrConstantNS2 : attrConstant2)(fullname, i, value));
+function w7(t10, e30) {
+  var r11 = x(t10), i9 = r11 === "transform" ? Ar : m3;
+  return this.attrTween(t10, typeof e30 == "function" ? (r11.local ? A5 : b6)(r11, i9, p2(this, "attr." + t10, e30)) : e30 == null ? (r11.local ? v6 : p3)(r11) : (r11.local ? m4 : h4)(r11, i9, e30));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/attrTween.js
-function attrInterpolate(name, i) {
-  return function(t) {
-    this.setAttribute(name, i.call(this, t));
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/attrTween.mjs
+function o4(r11, n13) {
+  return function(t10) {
+    this.setAttribute(r11, n13.call(this, t10));
   };
 }
-function attrInterpolateNS(fullname, i) {
-  return function(t) {
-    this.setAttributeNS(fullname.space, fullname.local, i.call(this, t));
+function f3(r11, n13) {
+  return function(t10) {
+    this.setAttributeNS(r11.space, r11.local, n13.call(this, t10));
   };
 }
-function attrTweenNS(fullname, value) {
-  var t03, i0;
-  function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t03 = (i0 = i) && attrInterpolateNS(fullname, i);
-    return t03;
+function l5(r11, n13) {
+  var t10, e30;
+  function u9() {
+    var i9 = n13.apply(this, arguments);
+    return i9 !== e30 && (t10 = (e30 = i9) && f3(r11, i9)), t10;
   }
-  tween._value = value;
-  return tween;
+  return u9._value = n13, u9;
 }
-function attrTween(name, value) {
-  var t03, i0;
-  function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t03 = (i0 = i) && attrInterpolate(name, i);
-    return t03;
+function c4(r11, n13) {
+  var t10, e30;
+  function u9() {
+    var i9 = n13.apply(this, arguments);
+    return i9 !== e30 && (t10 = (e30 = i9) && o4(r11, i9)), t10;
   }
-  tween._value = value;
-  return tween;
+  return u9._value = n13, u9;
 }
-function attrTween_default(name, value) {
-  var key = "attr." + name;
-  if (arguments.length < 2) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
-  var fullname = namespace_default(name);
-  return this.tween(key, (fullname.local ? attrTweenNS : attrTween)(fullname, value));
+function h5(r11, n13) {
+  var t10 = "attr." + r11;
+  if (arguments.length < 2) return (t10 = this.tween(t10)) && t10._value;
+  if (n13 == null) return this.tween(t10, null);
+  if (typeof n13 != "function") throw new Error();
+  var e30 = x(r11);
+  return this.tween(t10, (e30.local ? l5 : c4)(e30, n13));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/delay.js
-function delayFunction(id2, value) {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/delay.mjs
+function o5(n13, t10) {
   return function() {
-    init(this, id2).delay = +value.apply(this, arguments);
+    U3(this, n13).delay = +t10.apply(this, arguments);
   };
 }
-function delayConstant(id2, value) {
-  return value = +value, function() {
-    init(this, id2).delay = value;
+function r(n13, t10) {
+  return t10 = +t10, function() {
+    U3(this, n13).delay = t10;
   };
 }
-function delay_default(value) {
-  var id2 = this._id;
-  return arguments.length ? this.each((typeof value === "function" ? delayFunction : delayConstant)(id2, value)) : get2(this.node(), id2).delay;
+function a4(n13) {
+  var t10 = this._id;
+  return arguments.length ? this.each((typeof n13 == "function" ? o5 : r)(t10, n13)) : D4(this.node(), t10).delay;
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/duration.js
-function durationFunction(id2, value) {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/duration.mjs
+function r2(n13, t10) {
   return function() {
-    set2(this, id2).duration = +value.apply(this, arguments);
+    j3(this, n13).duration = +t10.apply(this, arguments);
   };
 }
-function durationConstant(id2, value) {
-  return value = +value, function() {
-    set2(this, id2).duration = value;
+function u4(n13, t10) {
+  return t10 = +t10, function() {
+    j3(this, n13).duration = t10;
   };
 }
-function duration_default(value) {
-  var id2 = this._id;
-  return arguments.length ? this.each((typeof value === "function" ? durationFunction : durationConstant)(id2, value)) : get2(this.node(), id2).duration;
+function s7(n13) {
+  var t10 = this._id;
+  return arguments.length ? this.each((typeof n13 == "function" ? r2 : u4)(t10, n13)) : D4(this.node(), t10).duration;
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/ease.js
-function easeConstant(id2, value) {
-  if (typeof value !== "function") throw new Error();
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/ease.mjs
+function i2(e30, t10) {
+  if (typeof t10 != "function") throw new Error();
   return function() {
-    set2(this, id2).ease = value;
+    j3(this, e30).ease = t10;
   };
 }
-function ease_default(value) {
-  var id2 = this._id;
-  return arguments.length ? this.each(easeConstant(id2, value)) : get2(this.node(), id2).ease;
+function s8(e30) {
+  var t10 = this._id;
+  return arguments.length ? this.each(i2(t10, e30)) : D4(this.node(), t10).ease;
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/easeVarying.js
-function easeVarying(id2, value) {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/easeVarying.mjs
+function i3(t10, n13) {
   return function() {
-    var v2 = value.apply(this, arguments);
-    if (typeof v2 !== "function") throw new Error();
-    set2(this, id2).ease = v2;
+    var r11 = n13.apply(this, arguments);
+    if (typeof r11 != "function") throw new Error();
+    j3(this, t10).ease = r11;
   };
 }
-function easeVarying_default(value) {
-  if (typeof value !== "function") throw new Error();
-  return this.each(easeVarying(this._id, value));
+function f4(t10) {
+  if (typeof t10 != "function") throw new Error();
+  return this.each(i3(this._id, t10));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/filter.js
-function filter_default2(match) {
-  if (typeof match !== "function") match = matcher_default(match);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && match.call(node, node.__data__, i, group2)) {
-        subgroup.push(node);
-      }
-    }
-  }
-  return new Transition(subgroups, this._parents, this._name, this._id);
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/filter.mjs
+function v7(t10) {
+  typeof t10 != "function" && (t10 = F2(t10));
+  for (var a11 = this._groups, e30 = a11.length, _8 = new Array(e30), r11 = 0; r11 < e30; ++r11) for (var n13 = a11[r11], h9 = n13.length, l9 = _8[r11] = [], f15, i9 = 0; i9 < h9; ++i9) (f15 = n13[i9]) && t10.call(f15, f15.__data__, i9, n13) && l9.push(f15);
+  return new o6(_8, this._parents, this._name, this._id);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/merge.js
-function merge_default2(transition2) {
-  if (transition2._id !== this._id) throw new Error();
-  for (var groups0 = this._groups, groups1 = transition2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group0[i] || group1[i]) {
-        merge2[i] = node;
-      }
-    }
-  }
-  for (; j < m0; ++j) {
-    merges[j] = groups0[j];
-  }
-  return new Transition(merges, this._parents, this._name, this._id);
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/merge.mjs
+function A6(a11) {
+  if (a11._id !== this._id) throw new Error();
+  for (var n13 = this._groups, f15 = a11._groups, h9 = n13.length, w15 = f15.length, l9 = Math.min(h9, w15), i9 = new Array(h9), r11 = 0; r11 < l9; ++r11) for (var e30 = n13[r11], d11 = f15[r11], _8 = e30.length, s14 = i9[r11] = new Array(_8), o21, t10 = 0; t10 < _8; ++t10) (o21 = e30[t10] || d11[t10]) && (s14[t10] = o21);
+  for (; r11 < h9; ++r11) i9[r11] = n13[r11];
+  return new o6(i9, this._parents, this._name, this._id);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/on.js
-function start(name) {
-  return (name + "").trim().split(/^|\s+/).every(function(t) {
-    var i = t.indexOf(".");
-    if (i >= 0) t = t.slice(0, i);
-    return !t || t === "start";
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/on.mjs
+function h6(i9) {
+  return (i9 + "").trim().split(/^|\s+/).every(function(n13) {
+    var t10 = n13.indexOf(".");
+    return t10 >= 0 && (n13 = n13.slice(0, t10)), !n13 || n13 === "start";
   });
 }
-function onFunction(id2, name, listener) {
-  var on0, on1, sit = start(name) ? init : set2;
+function d3(i9, n13, t10) {
+  var o21, r11, u9 = h6(n13) ? U3 : j3;
   return function() {
-    var schedule = sit(this, id2), on = schedule.on;
-    if (on !== on0) (on1 = (on0 = on).copy()).on(name, listener);
-    schedule.on = on1;
+    var e30 = u9(this, i9), s14 = e30.on;
+    s14 !== o21 && (r11 = (o21 = s14).copy()).on(n13, t10), e30.on = r11;
   };
 }
-function on_default2(name, listener) {
-  var id2 = this._id;
-  return arguments.length < 2 ? get2(this.node(), id2).on.on(name) : this.each(onFunction(id2, name, listener));
+function v8(i9, n13) {
+  var t10 = this._id;
+  return arguments.length < 2 ? D4(this.node(), t10).on.on(i9) : this.each(d3(t10, i9, n13));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/remove.js
-function removeFunction(id2) {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/remove.mjs
+function r3(t10) {
   return function() {
-    var parent = this.parentNode;
-    for (var i in this.__transition) if (+i !== id2) return;
-    if (parent) parent.removeChild(this);
+    var n13 = this.parentNode;
+    for (var i9 in this.__transition) if (+i9 !== t10) return;
+    n13 && n13.removeChild(this);
   };
 }
-function remove_default2() {
-  return this.on("end.remove", removeFunction(this._id));
+function e3() {
+  return this.on("end.remove", r3(this._id));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/select.js
-function select_default3(select) {
-  var name = this._name, id2 = this._id;
-  if (typeof select !== "function") select = selector_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && (subnode = select.call(node, node.__data__, i, group2))) {
-        if ("__data__" in node) subnode.__data__ = node.__data__;
-        subgroup[i] = subnode;
-        schedule_default(subgroup[i], name, id2, i, subgroup, get2(node, id2));
-      }
-    }
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/select.mjs
+function T5(a11) {
+  var m12 = this._name, f15 = this._id;
+  typeof a11 != "function" && (a11 = g(a11));
+  for (var e30 = this._groups, l9 = e30.length, v15 = new Array(l9), r11 = 0; r11 < l9; ++r11) for (var i9 = e30[r11], w15 = i9.length, n13 = v15[r11] = new Array(w15), _8, h9, t10 = 0; t10 < w15; ++t10) (_8 = i9[t10]) && (h9 = a11.call(_8, _8.__data__, t10, i9)) && ("__data__" in _8 && (h9.__data__ = _8.__data__), n13[t10] = h9, C3(n13[t10], m12, f15, t10, n13, D4(_8, f15)));
+  return new o6(v15, this._parents, m12, f15);
+}
+
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/selectAll.mjs
+function B4(f15) {
+  var h9 = this._name, m12 = this._id;
+  typeof f15 != "function" && (f15 = V2(f15));
+  for (var n13 = this._groups, u9 = n13.length, v15 = [], l9 = [], o21 = 0; o21 < u9; ++o21) for (var _8 = n13[o21], s14 = _8.length, t10, r11 = 0; r11 < s14; ++r11) if (t10 = _8[r11]) {
+    for (var a11 = f15.call(t10, t10.__data__, r11, _8), p12, e30 = D4(t10, m12), i9 = 0, g7 = a11.length; i9 < g7; ++i9) (p12 = a11[i9]) && C3(p12, h9, m12, i9, a11, e30);
+    v15.push(a11), l9.push(t10);
   }
-  return new Transition(subgroups, this._parents, name, id2);
+  return new o6(v15, l9, h9, m12);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/selectAll.js
-function selectAll_default3(select) {
-  var name = this._name, id2 = this._id;
-  if (typeof select !== "function") select = selectorAll_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        for (var children2 = select.call(node, node.__data__, i, group2), child, inherit2 = get2(node, id2), k2 = 0, l = children2.length; k2 < l; ++k2) {
-          if (child = children2[k2]) {
-            schedule_default(child, name, id2, k2, children2, inherit2);
-          }
-        }
-        subgroups.push(children2);
-        parents.push(node);
-      }
-    }
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/selection.mjs
+var o7 = Ne.prototype.constructor;
+function e4() {
+  return new o7(this._groups, this._parents);
+}
+
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/style.mjs
+function a5(t10, n13) {
+  var i9, r11, s14;
+  return function() {
+    var o21 = ut(this, t10), e30 = (this.style.removeProperty(t10), ut(this, t10));
+    return o21 === e30 ? null : o21 === i9 && e30 === r11 ? s14 : s14 = n13(i9 = o21, r11 = e30);
+  };
+}
+function p4(t10) {
+  return function() {
+    this.style.removeProperty(t10);
+  };
+}
+function T6(t10, n13, i9) {
+  var r11, s14 = i9 + "", o21;
+  return function() {
+    var e30 = ut(this, t10);
+    return e30 === s14 ? null : e30 === r11 ? o21 : o21 = n13(r11 = e30, i9);
+  };
+}
+function w8(t10, n13, i9) {
+  var r11, s14, o21;
+  return function() {
+    var e30 = ut(this, t10), u9 = i9(this), l9 = u9 + "";
+    return u9 == null && (l9 = u9 = (this.style.removeProperty(t10), ut(this, t10))), e30 === l9 ? null : e30 === r11 && l9 === s14 ? o21 : (s14 = l9, o21 = n13(r11 = e30, u9));
+  };
+}
+function m5(t10, n13) {
+  var i9, r11, s14, o21 = "style." + n13, e30 = "end." + o21, u9;
+  return function() {
+    var l9 = j3(this, t10), y11 = l9.on, h9 = l9.value[o21] == null ? u9 || (u9 = p4(n13)) : void 0;
+    (y11 !== i9 || s14 !== h9) && (r11 = (i9 = y11).copy()).on(e30, s14 = h9), l9.on = r11;
+  };
+}
+function x5(t10, n13, i9) {
+  var r11 = (t10 += "") == "transform" ? wr : m3;
+  return n13 == null ? this.styleTween(t10, a5(t10, r11)).on("end.style." + t10, p4(t10)) : typeof n13 == "function" ? this.styleTween(t10, w8(t10, r11, p2(this, "style." + t10, n13))).each(m5(this._id, t10)) : this.styleTween(t10, T6(t10, r11, n13), i9).on("end.style." + t10, null);
+}
+
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/styleTween.mjs
+function s9(n13, e30, r11) {
+  return function(t10) {
+    this.style.setProperty(n13, e30.call(this, t10), r11);
+  };
+}
+function f5(n13, e30, r11) {
+  var t10, i9;
+  function l9() {
+    var u9 = e30.apply(this, arguments);
+    return u9 !== i9 && (t10 = (i9 = u9) && s9(n13, u9, r11)), t10;
   }
-  return new Transition(subgroups, parents, name, id2);
+  return l9._value = e30, l9;
+}
+function o8(n13, e30, r11) {
+  var t10 = "style." + (n13 += "");
+  if (arguments.length < 2) return (t10 = this.tween(t10)) && t10._value;
+  if (e30 == null) return this.tween(t10, null);
+  if (typeof e30 != "function") throw new Error();
+  return this.tween(t10, f5(n13, e30, r11 ?? ""));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/selection.js
-var Selection2 = selection_default.prototype.constructor;
-function selection_default2() {
-  return new Selection2(this._groups, this._parents);
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/text.mjs
+function o9(t10) {
+  return function() {
+    this.textContent = t10;
+  };
+}
+function i4(t10) {
+  return function() {
+    var n13 = t10(this);
+    this.textContent = n13 ?? "";
+  };
+}
+function r4(t10) {
+  return this.tween("text", typeof t10 == "function" ? i4(p2(this, "text", t10)) : o9(t10 == null ? "" : t10 + ""));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/style.js
-function styleNull(name, interpolate) {
-  var string00, string10, interpolate0;
-  return function() {
-    var string0 = styleValue(this, name), string1 = (this.style.removeProperty(name), styleValue(this, name));
-    return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : interpolate0 = interpolate(string00 = string0, string10 = string1);
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/textTween.mjs
+function u5(n13) {
+  return function(t10) {
+    this.textContent = n13.call(this, t10);
   };
 }
-function styleRemove2(name) {
-  return function() {
-    this.style.removeProperty(name);
-  };
-}
-function styleConstant2(name, interpolate, value1) {
-  var string00, string1 = value1 + "", interpolate0;
-  return function() {
-    var string0 = styleValue(this, name);
-    return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate(string00 = string0, value1);
-  };
-}
-function styleFunction2(name, interpolate, value) {
-  var string00, string10, interpolate0;
-  return function() {
-    var string0 = styleValue(this, name), value1 = value(this), string1 = value1 + "";
-    if (value1 == null) string1 = value1 = (this.style.removeProperty(name), styleValue(this, name));
-    return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
-  };
-}
-function styleMaybeRemove(id2, name) {
-  var on0, on1, listener0, key = "style." + name, event = "end." + key, remove2;
-  return function() {
-    var schedule = set2(this, id2), on = schedule.on, listener = schedule.value[key] == null ? remove2 || (remove2 = styleRemove2(name)) : void 0;
-    if (on !== on0 || listener0 !== listener) (on1 = (on0 = on).copy()).on(event, listener0 = listener);
-    schedule.on = on1;
-  };
-}
-function style_default2(name, value, priority) {
-  var i = (name += "") === "transform" ? interpolateTransformCss : interpolate_default;
-  return value == null ? this.styleTween(name, styleNull(name, i)).on("end.style." + name, styleRemove2(name)) : typeof value === "function" ? this.styleTween(name, styleFunction2(name, i, tweenValue(this, "style." + name, value))).each(styleMaybeRemove(this._id, name)) : this.styleTween(name, styleConstant2(name, i, value), priority).on("end.style." + name, null);
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/styleTween.js
-function styleInterpolate(name, i, priority) {
-  return function(t) {
-    this.style.setProperty(name, i.call(this, t), priority);
-  };
-}
-function styleTween(name, value, priority) {
-  var t, i0;
-  function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t = (i0 = i) && styleInterpolate(name, i, priority);
-    return t;
+function f6(n13) {
+  var t10, r11;
+  function i9() {
+    var e30 = n13.apply(this, arguments);
+    return e30 !== r11 && (t10 = (r11 = e30) && u5(e30)), t10;
   }
-  tween._value = value;
-  return tween;
+  return i9._value = n13, i9;
 }
-function styleTween_default(name, value, priority) {
-  var key = "style." + (name += "");
-  if (arguments.length < 2) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
-  return this.tween(key, styleTween(name, value, priority == null ? "" : priority));
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/text.js
-function textConstant2(value) {
-  return function() {
-    this.textContent = value;
-  };
-}
-function textFunction2(value) {
-  return function() {
-    var value1 = value(this);
-    this.textContent = value1 == null ? "" : value1;
-  };
-}
-function text_default2(value) {
-  return this.tween("text", typeof value === "function" ? textFunction2(tweenValue(this, "text", value)) : textConstant2(value == null ? "" : value + ""));
+function o10(n13) {
+  var t10 = "text";
+  if (arguments.length < 1) return (t10 = this.tween(t10)) && t10._value;
+  if (n13 == null) return this.tween(t10, null);
+  if (typeof n13 != "function") throw new Error();
+  return this.tween(t10, f6(n13));
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/textTween.js
-function textInterpolate(i) {
-  return function(t) {
-    this.textContent = i.call(this, t);
-  };
-}
-function textTween(value) {
-  var t03, i0;
-  function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t03 = (i0 = i) && textInterpolate(i);
-    return t03;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/transition.mjs
+function w9() {
+  for (var m12 = this._name, f15 = this._id, s14 = X3(), e30 = this._groups, i9 = e30.length, r11 = 0; r11 < i9; ++r11) for (var d11 = e30[r11], o21 = d11.length, n13, t10 = 0; t10 < o21; ++t10) if (n13 = d11[t10]) {
+    var a11 = D4(n13, f15);
+    C3(n13, m12, s14, t10, d11, {
+      time: a11.time + a11.delay + a11.duration,
+      delay: 0,
+      duration: a11.duration,
+      ease: a11.ease
+    });
   }
-  tween._value = value;
-  return tween;
-}
-function textTween_default(value) {
-  var key = "text";
-  if (arguments.length < 1) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
-  return this.tween(key, textTween(value));
+  return new o6(e30, this._parents, m12, s14);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/transition.js
-function transition_default() {
-  var name = this._name, id0 = this._id, id1 = newId();
-  for (var groups2 = this._groups, m = groups2.length, j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        var inherit2 = get2(node, id0);
-        schedule_default(node, name, id1, i, group2, {
-          time: inherit2.time + inherit2.delay + inherit2.duration,
-          delay: 0,
-          duration: inherit2.duration,
-          ease: inherit2.ease
-        });
-      }
-    }
-  }
-  return new Transition(groups2, this._parents, name, id1);
-}
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/end.js
-function end_default() {
-  var on0, on1, that = this, id2 = that._id, size = that.size();
-  return new Promise(function(resolve, reject) {
-    var cancel = {
-      value: reject
-    }, end = {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/end.mjs
+function d4() {
+  var i9, n13, e30 = this, r11 = e30._id, t10 = e30.size();
+  return new Promise(function(o21, f15) {
+    var u9 = {
+      value: f15
+    }, s14 = {
       value: function() {
-        if (--size === 0) resolve();
+        --t10 === 0 && o21();
       }
     };
-    that.each(function() {
-      var schedule = set2(this, id2), on = schedule.on;
-      if (on !== on0) {
-        on1 = (on0 = on).copy();
-        on1._.cancel.push(cancel);
-        on1._.interrupt.push(cancel);
-        on1._.end.push(end);
-      }
-      schedule.on = on1;
-    });
-    if (size === 0) resolve();
+    e30.each(function() {
+      var c11 = j3(this, r11), a11 = c11.on;
+      a11 !== i9 && (n13 = (i9 = a11).copy(), n13._.cancel.push(u9), n13._.interrupt.push(u9), n13._.end.push(s14)), c11.on = n13;
+    }), t10 === 0 && o21();
   });
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/transition/index.js
-var id = 0;
-function Transition(groups2, parents, name, id2) {
-  this._groups = groups2;
-  this._parents = parents;
-  this._name = name;
-  this._id = id2;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/transition/index.mjs
+var V5 = 0;
+function o6(r11, n13, s14, m12) {
+  this._groups = r11, this._parents = n13, this._name = s14, this._id = m12;
 }
-function transition(name) {
-  return selection_default().transition(name);
+function e5(r11) {
+  return Ne().transition(r11);
 }
-function newId() {
-  return ++id;
+function X3() {
+  return ++V5;
 }
-var selection_prototype = selection_default.prototype;
-Transition.prototype = transition.prototype = {
-  constructor: Transition,
-  select: select_default3,
-  selectAll: selectAll_default3,
-  selectChild: selection_prototype.selectChild,
-  selectChildren: selection_prototype.selectChildren,
-  filter: filter_default2,
-  merge: merge_default2,
-  selection: selection_default2,
-  transition: transition_default,
-  call: selection_prototype.call,
-  nodes: selection_prototype.nodes,
-  node: selection_prototype.node,
-  size: selection_prototype.size,
-  empty: selection_prototype.empty,
-  each: selection_prototype.each,
-  on: on_default2,
-  attr: attr_default2,
-  attrTween: attrTween_default,
-  style: style_default2,
-  styleTween: styleTween_default,
-  text: text_default2,
-  textTween: textTween_default,
-  remove: remove_default2,
-  tween: tween_default,
-  delay: delay_default,
-  duration: duration_default,
-  ease: ease_default,
-  easeVarying: easeVarying_default,
-  end: end_default,
-  [Symbol.iterator]: selection_prototype[Symbol.iterator]
+var t = Ne.prototype;
+o6.prototype = e5.prototype = {
+  constructor: o6,
+  select: T5,
+  selectAll: B4,
+  selectChild: t.selectChild,
+  selectChildren: t.selectChildren,
+  filter: v7,
+  merge: A6,
+  selection: e4,
+  transition: w9,
+  call: t.call,
+  nodes: t.nodes,
+  node: t.node,
+  size: t.size,
+  empty: t.empty,
+  each: t.each,
+  on: v8,
+  attr: w7,
+  attrTween: h5,
+  style: x5,
+  styleTween: o8,
+  text: r4,
+  textTween: o10,
+  remove: e3,
+  tween: d2,
+  delay: a4,
+  duration: s7,
+  ease: s8,
+  easeVarying: f4,
+  end: d4,
+  [Symbol.iterator]: t[Symbol.iterator]
 };
 
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/cubic.js
-function cubicInOut(t) {
-  return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/interrupt.mjs
+function o11(e30, i9) {
+  var r11 = e30.__transition, t10, a11, n13 = true, l9;
+  if (r11) {
+    i9 = i9 == null ? null : i9 + "";
+    for (l9 in r11) {
+      if ((t10 = r11[l9]).name !== i9) {
+        n13 = false;
+        continue;
+      }
+      a11 = t10.state > s5 && t10.state < E4, t10.state = x4, t10.timer.stop(), t10.on.call(a11 ? "interrupt" : "cancel", e30, e30.__data__, t10.index, t10.group), delete r11[l9];
+    }
+    n13 && delete e30.__transition;
+  }
 }
 
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/poly.js
-var exponent = 3;
-var polyIn = function custom(e) {
-  e = +e;
-  function polyIn2(t) {
-    return Math.pow(t, e);
-  }
-  polyIn2.exponent = custom;
-  return polyIn2;
-}(exponent);
-var polyOut = function custom2(e) {
-  e = +e;
-  function polyOut2(t) {
-    return 1 - Math.pow(1 - t, e);
-  }
-  polyOut2.exponent = custom2;
-  return polyOut2;
-}(exponent);
-var polyInOut = function custom3(e) {
-  e = +e;
-  function polyInOut2(t) {
-    return ((t *= 2) <= 1 ? Math.pow(t, e) : 2 - Math.pow(2 - t, e)) / 2;
-  }
-  polyInOut2.exponent = custom3;
-  return polyInOut2;
-}(exponent);
-
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/sin.js
-var pi = Math.PI;
-var halfPi = pi / 2;
-
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/math.js
-function tpmt(x3) {
-  return (Math.pow(2, -10 * x3) - 9765625e-10) * 1.0009775171065494;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/selection/interrupt.mjs
+function n(t10) {
+  return this.each(function() {
+    o11(this, t10);
+  });
 }
 
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/bounce.js
-var b1 = 4 / 11;
-var b2 = 6 / 11;
-var b3 = 8 / 11;
-var b4 = 3 / 4;
-var b5 = 9 / 11;
-var b6 = 10 / 11;
-var b7 = 15 / 16;
-var b8 = 21 / 22;
-var b9 = 63 / 64;
-var b0 = 1 / b1 / b1;
+// deno:https://esm.sh/d3-ease@3.0.1/denonext/d3-ease.mjs
+function b7(n13) {
+  return ((n13 *= 2) <= 1 ? n13 * n13 * n13 : (n13 -= 2) * n13 * n13 + 2) / 2;
+}
+var p5 = 3;
+var Q3 = function n2(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return Math.pow(t10, e30);
+  }
+  return u9.exponent = n2, u9;
+}(p5);
+var S3 = function n3(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return 1 - Math.pow(1 - t10, e30);
+  }
+  return u9.exponent = n3, u9;
+}(p5);
+var m6 = function n4(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return ((t10 *= 2) <= 1 ? Math.pow(t10, e30) : 2 - Math.pow(2 - t10, e30)) / 2;
+  }
+  return u9.exponent = n4, u9;
+}(p5);
+var h7 = Math.PI;
+var M4 = h7 / 2;
+function o12(n13) {
+  return (Math.pow(2, -10 * n13) - 9765625e-10) * 1.0009775171065494;
+}
+var I3 = 0.36363636363636365;
+var F6 = 6 / 11;
+var G5 = 8 / 11;
+var H5 = 3 / 4;
+var J4 = 9 / 11;
+var K3 = 10 / 11;
+var N5 = 15 / 16;
+var R3 = 21 / 22;
+var T7 = 63 / 64;
+var i5 = 1 / I3 / I3;
+var O2 = 1.70158;
+var W4 = function n5(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return (t10 = +t10) * t10 * (e30 * (t10 - 1) + t10);
+  }
+  return u9.overshoot = n5, u9;
+}(O2);
+var X4 = function n6(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return --t10 * t10 * ((t10 + 1) * e30 + t10) + 1;
+  }
+  return u9.overshoot = n6, u9;
+}(O2);
+var y4 = function n7(e30) {
+  e30 = +e30;
+  function u9(t10) {
+    return ((t10 *= 2) < 1 ? t10 * t10 * ((e30 + 1) * t10 - e30) : (t10 -= 2) * t10 * ((e30 + 1) * t10 + e30) + 2) / 2;
+  }
+  return u9.overshoot = n7, u9;
+}(O2);
+var c5 = 2 * Math.PI;
+var x6 = 1;
+var f7 = 0.3;
+var Y3 = function n8(e30, u9) {
+  var t10 = Math.asin(1 / (e30 = Math.max(1, e30))) * (u9 /= c5);
+  function a11(r11) {
+    return e30 * o12(- --r11) * Math.sin((t10 - r11) / u9);
+  }
+  return a11.amplitude = function(r11) {
+    return n8(r11, u9 * c5);
+  }, a11.period = function(r11) {
+    return n8(e30, r11);
+  }, a11;
+}(x6, f7);
+var q5 = function n9(e30, u9) {
+  var t10 = Math.asin(1 / (e30 = Math.max(1, e30))) * (u9 /= c5);
+  function a11(r11) {
+    return 1 - e30 * o12(r11 = +r11) * Math.sin((r11 + t10) / u9);
+  }
+  return a11.amplitude = function(r11) {
+    return n9(r11, u9 * c5);
+  }, a11.period = function(r11) {
+    return n9(e30, r11);
+  }, a11;
+}(x6, f7);
+var Z4 = function n10(e30, u9) {
+  var t10 = Math.asin(1 / (e30 = Math.max(1, e30))) * (u9 /= c5);
+  function a11(r11) {
+    return ((r11 = r11 * 2 - 1) < 0 ? e30 * o12(-r11) * Math.sin((t10 - r11) / u9) : 2 - e30 * o12(r11) * Math.sin((t10 + r11) / u9)) / 2;
+  }
+  return a11.amplitude = function(r11) {
+    return n10(r11, u9 * c5);
+  }, a11.period = function(r11) {
+    return n10(e30, r11);
+  }, a11;
+}(x6, f7);
 
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/back.js
-var overshoot = 1.70158;
-var backIn = function custom4(s2) {
-  s2 = +s2;
-  function backIn2(t) {
-    return (t = +t) * t * (s2 * (t - 1) + t);
-  }
-  backIn2.overshoot = custom4;
-  return backIn2;
-}(overshoot);
-var backOut = function custom5(s2) {
-  s2 = +s2;
-  function backOut2(t) {
-    return --t * t * ((t + 1) * s2 + t) + 1;
-  }
-  backOut2.overshoot = custom5;
-  return backOut2;
-}(overshoot);
-var backInOut = function custom6(s2) {
-  s2 = +s2;
-  function backInOut2(t) {
-    return ((t *= 2) < 1 ? t * t * ((s2 + 1) * t - s2) : (t -= 2) * t * ((s2 + 1) * t + s2) + 2) / 2;
-  }
-  backInOut2.overshoot = custom6;
-  return backInOut2;
-}(overshoot);
-
-// node_modules/.deno/d3-ease@3.0.1/node_modules/d3-ease/src/elastic.js
-var tau = 2 * Math.PI;
-var amplitude = 1;
-var period = 0.3;
-var elasticIn = function custom7(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticIn2(t) {
-    return a2 * tpmt(- --t) * Math.sin((s2 - t) / p);
-  }
-  elasticIn2.amplitude = function(a3) {
-    return custom7(a3, p * tau);
-  };
-  elasticIn2.period = function(p2) {
-    return custom7(a2, p2);
-  };
-  return elasticIn2;
-}(amplitude, period);
-var elasticOut = function custom8(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticOut2(t) {
-    return 1 - a2 * tpmt(t = +t) * Math.sin((t + s2) / p);
-  }
-  elasticOut2.amplitude = function(a3) {
-    return custom8(a3, p * tau);
-  };
-  elasticOut2.period = function(p2) {
-    return custom8(a2, p2);
-  };
-  return elasticOut2;
-}(amplitude, period);
-var elasticInOut = function custom9(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticInOut2(t) {
-    return ((t = t * 2 - 1) < 0 ? a2 * tpmt(-t) * Math.sin((s2 - t) / p) : 2 - a2 * tpmt(t) * Math.sin((s2 + t) / p)) / 2;
-  }
-  elasticInOut2.amplitude = function(a3) {
-    return custom9(a3, p * tau);
-  };
-  elasticInOut2.period = function(p2) {
-    return custom9(a2, p2);
-  };
-  return elasticInOut2;
-}(amplitude, period);
-
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/selection/transition.js
-var defaultTiming = {
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/selection/transition.mjs
+var c6 = {
   time: null,
   delay: 0,
   duration: 250,
-  ease: cubicInOut
+  ease: b7
 };
-function inherit(node, id2) {
-  var timing;
-  while (!(timing = node.__transition) || !(timing = timing[id2])) {
-    if (!(node = node.parentNode)) {
-      throw new Error(`transition ${id2} not found`);
-    }
-  }
-  return timing;
+function d5(t10, i9) {
+  for (var r11; !(r11 = t10.__transition) || !(r11 = r11[i9]); ) if (!(t10 = t10.parentNode)) throw new Error(`transition ${i9} not found`);
+  return r11;
 }
-function transition_default2(name) {
-  var id2, timing;
-  if (name instanceof Transition) {
-    id2 = name._id, name = name._name;
-  } else {
-    id2 = newId(), (timing = defaultTiming).time = now(), name = name == null ? null : name + "";
-  }
-  for (var groups2 = this._groups, m = groups2.length, j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        schedule_default(node, name, id2, i, group2, timing || inherit(node, id2));
-      }
-    }
-  }
-  return new Transition(groups2, this._parents, name, id2);
+function T8(t10) {
+  var i9, r11;
+  t10 instanceof o6 ? (i9 = t10._id, t10 = t10._name) : (i9 = X3(), (r11 = c6).time = w6(), t10 = t10 == null ? null : t10 + "");
+  for (var o21 = this._groups, a11 = o21.length, e30 = 0; e30 < a11; ++e30) for (var f15 = o21[e30], s14 = f15.length, l9, n13 = 0; n13 < s14; ++n13) (l9 = f15[n13]) && C3(l9, t10, i9, n13, f15, r11 || d5(l9, i9));
+  return new o6(o21, this._parents, t10, i9);
 }
 
-// node_modules/.deno/d3-transition@3.0.1/node_modules/d3-transition/src/selection/index.js
-selection_default.prototype.interrupt = interrupt_default2;
-selection_default.prototype.transition = transition_default2;
+// deno:https://esm.sh/d3-transition@3.0.1/denonext/src/selection/index.mjs
+Ne.prototype.interrupt = n;
+Ne.prototype.transition = T8;
 
-// node_modules/.deno/d3-brush@3.0.0/node_modules/d3-brush/src/brush.js
-var { abs, max: max2, min: min2 } = Math;
-function number1(e) {
+// deno:https://esm.sh/d3-brush@3.0.0/denonext/d3-brush.mjs
+var { abs: gt3, max: k3, min: x7 } = Math;
+function wt2(t10) {
   return [
-    +e[0],
-    +e[1]
+    +t10[0],
+    +t10[1]
   ];
 }
-function number2(e) {
+function ut2(t10) {
   return [
-    number1(e[0]),
-    number1(e[1])
+    wt2(t10[0]),
+    wt2(t10[1])
   ];
 }
-var X = {
+var tt3 = {
   name: "x",
   handles: [
     "w",
     "e"
-  ].map(type),
-  input: function(x3, e) {
-    return x3 == null ? null : [
+  ].map(q6),
+  input: function(t10, _8) {
+    return t10 == null ? null : [
       [
-        +x3[0],
-        e[0][1]
+        +t10[0],
+        _8[0][1]
       ],
       [
-        +x3[1],
-        e[1][1]
+        +t10[1],
+        _8[1][1]
       ]
     ];
   },
-  output: function(xy) {
-    return xy && [
-      xy[0][0],
-      xy[1][0]
+  output: function(t10) {
+    return t10 && [
+      t10[0][0],
+      t10[1][0]
     ];
   }
 };
-var Y = {
+var et3 = {
   name: "y",
   handles: [
     "n",
     "s"
-  ].map(type),
-  input: function(y3, e) {
-    return y3 == null ? null : [
+  ].map(q6),
+  input: function(t10, _8) {
+    return t10 == null ? null : [
       [
-        e[0][0],
-        +y3[0]
+        _8[0][0],
+        +t10[0]
       ],
       [
-        e[1][0],
-        +y3[1]
+        _8[1][0],
+        +t10[1]
       ]
     ];
   },
-  output: function(xy) {
-    return xy && [
-      xy[0][1],
-      xy[1][1]
+  output: function(t10) {
+    return t10 && [
+      t10[0][1],
+      t10[1][1]
     ];
   }
 };
-var XY = {
+var Mt2 = {
   name: "xy",
   handles: [
     "n",
@@ -3079,532 +2354,427 @@ var XY = {
     "ne",
     "sw",
     "se"
-  ].map(type),
-  input: function(xy) {
-    return xy == null ? null : number2(xy);
+  ].map(q6),
+  input: function(t10) {
+    return t10 == null ? null : ut2(t10);
   },
-  output: function(xy) {
-    return xy;
+  output: function(t10) {
+    return t10;
   }
 };
-function type(t) {
+function q6(t10) {
   return {
-    type: t
+    type: t10
   };
 }
 
-// node_modules/.deno/d3-chord@3.0.1/node_modules/d3-chord/src/math.js
-var pi2 = Math.PI;
-var halfPi2 = pi2 / 2;
-var tau2 = pi2 * 2;
-
-// node_modules/.deno/d3-path@3.1.0/node_modules/d3-path/src/path.js
-var pi3 = Math.PI;
-var tau3 = 2 * pi3;
-var epsilon = 1e-6;
-var tauEpsilon = tau3 - epsilon;
-function append(strings) {
-  this._ += strings[0];
-  for (let i = 1, n = strings.length; i < n; ++i) {
-    this._ += arguments[i] + strings[i];
-  }
+// deno:https://esm.sh/d3-path@3.1.0/denonext/d3-path.mjs
+var c7 = Math.PI;
+var y6 = 2 * c7;
+var u6 = 1e-6;
+var q7 = y6 - u6;
+function A7($9) {
+  this._ += $9[0];
+  for (let t10 = 1, h9 = $9.length; t10 < h9; ++t10) this._ += arguments[t10] + $9[t10];
 }
-function appendRound(digits) {
-  let d = Math.floor(digits);
-  if (!(d >= 0)) throw new Error(`invalid digits: ${digits}`);
-  if (d > 15) return append;
-  const k2 = 10 ** d;
-  return function(strings) {
-    this._ += strings[0];
-    for (let i = 1, n = strings.length; i < n; ++i) {
-      this._ += Math.round(arguments[i] * k2) / k2 + strings[i];
-    }
+function C4($9) {
+  let t10 = Math.floor($9);
+  if (!(t10 >= 0)) throw new Error(`invalid digits: ${$9}`);
+  if (t10 > 15) return A7;
+  let h9 = 10 ** t10;
+  return function(i9) {
+    this._ += i9[0];
+    for (let s14 = 1, e30 = i9.length; s14 < e30; ++s14) this._ += Math.round(arguments[s14] * h9) / h9 + i9[s14];
   };
 }
-var Path = class {
-  constructor(digits) {
-    this._x0 = this._y0 = this._x1 = this._y1 = null;
-    this._ = "";
-    this._append = digits == null ? append : appendRound(digits);
+var d6 = class {
+  constructor(t10) {
+    this._x0 = this._y0 = this._x1 = this._y1 = null, this._ = "", this._append = t10 == null ? A7 : C4(t10);
   }
-  moveTo(x3, y3) {
-    this._append`M${this._x0 = this._x1 = +x3},${this._y0 = this._y1 = +y3}`;
+  moveTo(t10, h9) {
+    this._append`M${this._x0 = this._x1 = +t10},${this._y0 = this._y1 = +h9}`;
   }
   closePath() {
-    if (this._x1 !== null) {
-      this._x1 = this._x0, this._y1 = this._y0;
-      this._append`Z`;
+    this._x1 !== null && (this._x1 = this._x0, this._y1 = this._y0, this._append`Z`);
+  }
+  lineTo(t10, h9) {
+    this._append`L${this._x1 = +t10},${this._y1 = +h9}`;
+  }
+  quadraticCurveTo(t10, h9, i9, s14) {
+    this._append`Q${+t10},${+h9},${this._x1 = +i9},${this._y1 = +s14}`;
+  }
+  bezierCurveTo(t10, h9, i9, s14, e30, a11) {
+    this._append`C${+t10},${+h9},${+i9},${+s14},${this._x1 = +e30},${this._y1 = +a11}`;
+  }
+  arcTo(t10, h9, i9, s14, e30) {
+    if (t10 = +t10, h9 = +h9, i9 = +i9, s14 = +s14, e30 = +e30, e30 < 0) throw new Error(`negative radius: ${e30}`);
+    let a11 = this._x1, r11 = this._y1, l9 = i9 - t10, p12 = s14 - h9, _8 = a11 - t10, o21 = r11 - h9, n13 = _8 * _8 + o21 * o21;
+    if (this._x1 === null) this._append`M${this._x1 = t10},${this._y1 = h9}`;
+    else if (n13 > u6) if (!(Math.abs(o21 * l9 - p12 * _8) > u6) || !e30) this._append`L${this._x1 = t10},${this._y1 = h9}`;
+    else {
+      let f15 = i9 - a11, M10 = s14 - r11, v15 = l9 * l9 + p12 * p12, L10 = f15 * f15 + M10 * M10, b11 = Math.sqrt(v15), T12 = Math.sqrt(n13), m12 = e30 * Math.tan((c7 - Math.acos((v15 + n13 - L10) / (2 * b11 * T12))) / 2), x15 = m12 / T12, w15 = m12 / b11;
+      Math.abs(x15 - 1) > u6 && this._append`L${t10 + x15 * _8},${h9 + x15 * o21}`, this._append`A${e30},${e30},0,0,${+(o21 * f15 > _8 * M10)},${this._x1 = t10 + w15 * l9},${this._y1 = h9 + w15 * p12}`;
     }
   }
-  lineTo(x3, y3) {
-    this._append`L${this._x1 = +x3},${this._y1 = +y3}`;
+  arc(t10, h9, i9, s14, e30, a11) {
+    if (t10 = +t10, h9 = +h9, i9 = +i9, a11 = !!a11, i9 < 0) throw new Error(`negative radius: ${i9}`);
+    let r11 = i9 * Math.cos(s14), l9 = i9 * Math.sin(s14), p12 = t10 + r11, _8 = h9 + l9, o21 = 1 ^ a11, n13 = a11 ? s14 - e30 : e30 - s14;
+    this._x1 === null ? this._append`M${p12},${_8}` : (Math.abs(this._x1 - p12) > u6 || Math.abs(this._y1 - _8) > u6) && this._append`L${p12},${_8}`, i9 && (n13 < 0 && (n13 = n13 % y6 + y6), n13 > q7 ? this._append`A${i9},${i9},0,1,${o21},${t10 - r11},${h9 - l9}A${i9},${i9},0,1,${o21},${this._x1 = p12},${this._y1 = _8}` : n13 > u6 && this._append`A${i9},${i9},0,${+(n13 >= c7)},${o21},${this._x1 = t10 + i9 * Math.cos(e30)},${this._y1 = h9 + i9 * Math.sin(e30)}`);
   }
-  quadraticCurveTo(x12, y1, x3, y3) {
-    this._append`Q${+x12},${+y1},${this._x1 = +x3},${this._y1 = +y3}`;
-  }
-  bezierCurveTo(x12, y1, x22, y22, x3, y3) {
-    this._append`C${+x12},${+y1},${+x22},${+y22},${this._x1 = +x3},${this._y1 = +y3}`;
-  }
-  arcTo(x12, y1, x22, y22, r) {
-    x12 = +x12, y1 = +y1, x22 = +x22, y22 = +y22, r = +r;
-    if (r < 0) throw new Error(`negative radius: ${r}`);
-    let x02 = this._x1, y0 = this._y1, x21 = x22 - x12, y21 = y22 - y1, x01 = x02 - x12, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
-    if (this._x1 === null) {
-      this._append`M${this._x1 = x12},${this._y1 = y1}`;
-    } else if (!(l01_2 > epsilon)) ;
-    else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon) || !r) {
-      this._append`L${this._x1 = x12},${this._y1 = y1}`;
-    } else {
-      let x20 = x22 - x02, y20 = y22 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi3 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
-      if (Math.abs(t01 - 1) > epsilon) {
-        this._append`L${x12 + t01 * x01},${y1 + t01 * y01}`;
-      }
-      this._append`A${r},${r},0,0,${+(y01 * x20 > x01 * y20)},${this._x1 = x12 + t21 * x21},${this._y1 = y1 + t21 * y21}`;
-    }
-  }
-  arc(x3, y3, r, a0, a1, ccw) {
-    x3 = +x3, y3 = +y3, r = +r, ccw = !!ccw;
-    if (r < 0) throw new Error(`negative radius: ${r}`);
-    let dx = r * Math.cos(a0), dy = r * Math.sin(a0), x02 = x3 + dx, y0 = y3 + dy, cw = 1 ^ ccw, da2 = ccw ? a0 - a1 : a1 - a0;
-    if (this._x1 === null) {
-      this._append`M${x02},${y0}`;
-    } else if (Math.abs(this._x1 - x02) > epsilon || Math.abs(this._y1 - y0) > epsilon) {
-      this._append`L${x02},${y0}`;
-    }
-    if (!r) return;
-    if (da2 < 0) da2 = da2 % tau3 + tau3;
-    if (da2 > tauEpsilon) {
-      this._append`A${r},${r},0,1,${cw},${x3 - dx},${y3 - dy}A${r},${r},0,1,${cw},${this._x1 = x02},${this._y1 = y0}`;
-    } else if (da2 > epsilon) {
-      this._append`A${r},${r},0,${+(da2 >= pi3)},${cw},${this._x1 = x3 + r * Math.cos(a1)},${this._y1 = y3 + r * Math.sin(a1)}`;
-    }
-  }
-  rect(x3, y3, w, h) {
-    this._append`M${this._x0 = this._x1 = +x3},${this._y0 = this._y1 = +y3}h${w = +w}v${+h}h${-w}Z`;
+  rect(t10, h9, i9, s14) {
+    this._append`M${this._x0 = this._x1 = +t10},${this._y0 = this._y1 = +h9}h${i9 = +i9}v${+s14}h${-i9}Z`;
   }
   toString() {
     return this._;
   }
 };
-function path() {
-  return new Path();
+function E5() {
+  return new d6();
 }
-path.prototype = Path.prototype;
+E5.prototype = d6.prototype;
 
-// node_modules/.deno/d3-chord@3.0.1/node_modules/d3-chord/src/array.js
-var slice2 = Array.prototype.slice;
+// deno:https://esm.sh/d3-chord@3.0.1/denonext/d3-chord.mjs
+var k4 = Math.PI;
+var C5 = k4 / 2;
+var q8 = k4 * 2;
+var E6 = Array.prototype.slice;
 
-// node_modules/.deno/d3-contour@4.0.2/node_modules/d3-contour/src/array.js
-var array3 = Array.prototype;
-var slice3 = array3.slice;
+// deno:https://esm.sh/d3-contour@4.0.2/denonext/d3-contour.mjs
+var Y5 = Array.prototype;
+var L3 = Y5.slice;
 
-// node_modules/.deno/robust-predicates@3.0.2/node_modules/robust-predicates/esm/util.js
-var epsilon4 = 11102230246251565e-32;
-var resulterrbound = (3 + 8 * epsilon4) * epsilon4;
-function vec(n) {
-  return new Float64Array(n);
+// deno:https://esm.sh/robust-predicates@3.0.2/denonext/robust-predicates.mjs
+var rt2 = 11102230246251565e-32;
+var Nt2 = (3 + 8 * rt2) * rt2;
+function L4(K9) {
+  return new Float64Array(K9);
 }
+var Cc = (3 + 16 * rt2) * rt2;
+var jc = (2 + 12 * rt2) * rt2;
+var Ac = (9 + 64 * rt2) * rt2 * rt2;
+var xt3 = L4(4);
+var xn = L4(8);
+var yn = L4(12);
+var tc = L4(16);
+var mt2 = L4(4);
+var Dc = (7 + 56 * rt2) * rt2;
+var Fc = (3 + 28 * rt2) * rt2;
+var qc = (26 + 288 * rt2) * rt2 * rt2;
+var yt3 = L4(4);
+var tn = L4(4);
+var nn = L4(4);
+var nc = L4(4);
+var cc = L4(4);
+var sc = L4(4);
+var oc = L4(4);
+var ec = L4(4);
+var rc = L4(4);
+var Cn = L4(8);
+var jn = L4(8);
+var An = L4(8);
+var Ht2 = L4(4);
+var dn = L4(8);
+var ic = L4(8);
+var Ct2 = L4(8);
+var cn = L4(12);
+var on = L4(192);
+var Bn = L4(192);
+var Ic = (10 + 96 * rt2) * rt2;
+var Jc = (4 + 48 * rt2) * rt2;
+var Kc = (44 + 576 * rt2) * rt2 * rt2;
+var Pt2 = L4(4);
+var Rt = L4(4);
+var St2 = L4(4);
+var It2 = L4(4);
+var Jt2 = L4(4);
+var Kt2 = L4(4);
+var vt2 = L4(4);
+var wt3 = L4(4);
+var Qn = L4(8);
+var Dn = L4(8);
+var Fn = L4(8);
+var qn = L4(8);
+var En = L4(8);
+var Gn = L4(8);
+var bn = L4(8);
+var hn = L4(8);
+var _n = L4(8);
+var Vt2 = L4(4);
+var Wt2 = L4(4);
+var Xt2 = L4(4);
+var x8 = L4(8);
+var tt4 = L4(16);
+var lt2 = L4(16);
+var at2 = L4(16);
+var it2 = L4(32);
+var Tt2 = L4(32);
+var ut3 = L4(48);
+var jt2 = L4(64);
+var en = L4(1152);
+var Hn = L4(1152);
+var Pc = (16 + 224 * rt2) * rt2;
+var Rc = (5 + 72 * rt2) * rt2;
+var Sc = (71 + 1408 * rt2) * rt2 * rt2;
+var At3 = L4(4);
+var Bt2 = L4(4);
+var gt4 = L4(4);
+var Yt2 = L4(4);
+var Zt2 = L4(4);
+var Qt2 = L4(4);
+var Dt2 = L4(4);
+var $t2 = L4(4);
+var Ft2 = L4(4);
+var kt2 = L4(4);
+var In = L4(24);
+var Jn = L4(24);
+var Kn = L4(24);
+var Ln = L4(24);
+var Nn = L4(24);
+var On = L4(24);
+var Pn = L4(24);
+var Rn = L4(24);
+var Sn = L4(24);
+var Tn = L4(24);
+var ln = L4(1152);
+var vn = L4(1152);
+var an = L4(1152);
+var wn = L4(1152);
+var lc = L4(1152);
+var Vn = L4(2304);
+var Wn = L4(2304);
+var ac = L4(3456);
+var fc = L4(5760);
+var uc = L4(8);
+var dc = L4(8);
+var bc = L4(8);
+var Tc = L4(16);
+var pn = L4(24);
+var Ut2 = L4(48);
+var Un = L4(48);
+var Mn = L4(96);
+var zt2 = L4(192);
+var hc = L4(384);
+var _c = L4(384);
+var pc = L4(384);
+var Uc = L4(768);
+var Mc = L4(96);
+var mc = L4(96);
+var vc = L4(96);
+var wc = L4(1152);
 
-// node_modules/.deno/robust-predicates@3.0.2/node_modules/robust-predicates/esm/orient2d.js
-var ccwerrboundA = (3 + 16 * epsilon4) * epsilon4;
-var ccwerrboundB = (2 + 12 * epsilon4) * epsilon4;
-var ccwerrboundC = (9 + 64 * epsilon4) * epsilon4 * epsilon4;
-var B2 = vec(4);
-var C1 = vec(8);
-var C2 = vec(12);
-var D2 = vec(16);
-var u = vec(4);
+// deno:https://esm.sh/delaunator@5.0.1/denonext/delaunator.mjs
+var C6 = Math.pow(2, -52);
+var j4 = new Uint32Array(512);
 
-// node_modules/.deno/robust-predicates@3.0.2/node_modules/robust-predicates/esm/orient3d.js
-var o3derrboundA = (7 + 56 * epsilon4) * epsilon4;
-var o3derrboundB = (3 + 28 * epsilon4) * epsilon4;
-var o3derrboundC = (26 + 288 * epsilon4) * epsilon4 * epsilon4;
-var bc = vec(4);
-var ca = vec(4);
-var ab = vec(4);
-var at_b = vec(4);
-var at_c = vec(4);
-var bt_c = vec(4);
-var bt_a = vec(4);
-var ct_a = vec(4);
-var ct_b = vec(4);
-var bct = vec(8);
-var cat = vec(8);
-var abt = vec(8);
-var u2 = vec(4);
-var _8 = vec(8);
-var _8b = vec(8);
-var _16 = vec(8);
-var _12 = vec(12);
-var fin = vec(192);
-var fin2 = vec(192);
+// deno:https://esm.sh/d3-delaunay@6.0.4/denonext/d3-delaunay.mjs
+var q9 = 2 * Math.PI;
 
-// node_modules/.deno/robust-predicates@3.0.2/node_modules/robust-predicates/esm/incircle.js
-var iccerrboundA = (10 + 96 * epsilon4) * epsilon4;
-var iccerrboundB = (4 + 48 * epsilon4) * epsilon4;
-var iccerrboundC = (44 + 576 * epsilon4) * epsilon4 * epsilon4;
-var bc2 = vec(4);
-var ca2 = vec(4);
-var ab2 = vec(4);
-var aa = vec(4);
-var bb = vec(4);
-var cc = vec(4);
-var u3 = vec(4);
-var v = vec(4);
-var axtbc = vec(8);
-var aytbc = vec(8);
-var bxtca = vec(8);
-var bytca = vec(8);
-var cxtab = vec(8);
-var cytab = vec(8);
-var abt2 = vec(8);
-var bct2 = vec(8);
-var cat2 = vec(8);
-var abtt = vec(4);
-var bctt = vec(4);
-var catt = vec(4);
-var _82 = vec(8);
-var _162 = vec(16);
-var _16b = vec(16);
-var _16c = vec(16);
-var _32 = vec(32);
-var _32b = vec(32);
-var _48 = vec(48);
-var _64 = vec(64);
-var fin3 = vec(1152);
-var fin22 = vec(1152);
-
-// node_modules/.deno/robust-predicates@3.0.2/node_modules/robust-predicates/esm/insphere.js
-var isperrboundA = (16 + 224 * epsilon4) * epsilon4;
-var isperrboundB = (5 + 72 * epsilon4) * epsilon4;
-var isperrboundC = (71 + 1408 * epsilon4) * epsilon4 * epsilon4;
-var ab3 = vec(4);
-var bc3 = vec(4);
-var cd = vec(4);
-var de = vec(4);
-var ea = vec(4);
-var ac = vec(4);
-var bd = vec(4);
-var ce = vec(4);
-var da = vec(4);
-var eb = vec(4);
-var abc = vec(24);
-var bcd = vec(24);
-var cde = vec(24);
-var dea = vec(24);
-var eab = vec(24);
-var abd = vec(24);
-var bce = vec(24);
-var cda = vec(24);
-var deb = vec(24);
-var eac = vec(24);
-var adet = vec(1152);
-var bdet = vec(1152);
-var cdet = vec(1152);
-var ddet = vec(1152);
-var edet = vec(1152);
-var abdet = vec(2304);
-var cddet = vec(2304);
-var cdedet = vec(3456);
-var deter = vec(5760);
-var _83 = vec(8);
-var _8b2 = vec(8);
-var _8c = vec(8);
-var _163 = vec(16);
-var _24 = vec(24);
-var _482 = vec(48);
-var _48b = vec(48);
-var _96 = vec(96);
-var _192 = vec(192);
-var _384x = vec(384);
-var _384y = vec(384);
-var _384z = vec(384);
-var _768 = vec(768);
-var xdet = vec(96);
-var ydet = vec(96);
-var zdet = vec(96);
-var fin4 = vec(1152);
-
-// node_modules/.deno/delaunator@5.0.1/node_modules/delaunator/index.js
-var EPSILON = Math.pow(2, -52);
-var EDGE_STACK = new Uint32Array(512);
-
-// node_modules/.deno/d3-delaunay@6.0.4/node_modules/d3-delaunay/src/delaunay.js
-var tau4 = 2 * Math.PI;
-
-// node_modules/.deno/d3-dsv@3.0.1/node_modules/d3-dsv/src/dsv.js
-var EOL = {};
-var EOF = {};
-var QUOTE = 34;
-var NEWLINE = 10;
-var RETURN = 13;
-function objectConverter(columns) {
-  return new Function("d", "return {" + columns.map(function(name, i) {
-    return JSON.stringify(name) + ": d[" + i + '] || ""';
+// deno:https://esm.sh/d3-dsv@3.0.1/denonext/d3-dsv.mjs
+var y7 = {};
+var A8 = {};
+var x9 = 34;
+var w10 = 10;
+var E8 = 13;
+function P4(r11) {
+  return new Function("d", "return {" + r11.map(function(e30, o21) {
+    return JSON.stringify(e30) + ": d[" + o21 + '] || ""';
   }).join(",") + "}");
 }
-function customConverter(columns, f) {
-  var object = objectConverter(columns);
-  return function(row, i) {
-    return f(object(row), i, columns);
+function Z6(r11, e30) {
+  var o21 = P4(r11);
+  return function(a11, s14) {
+    return e30(o21(a11), s14, r11);
   };
 }
-function inferColumns(rows) {
-  var columnSet = /* @__PURE__ */ Object.create(null), columns = [];
-  rows.forEach(function(row) {
-    for (var column in row) {
-      if (!(column in columnSet)) {
-        columns.push(columnSet[column] = column);
-      }
-    }
-  });
-  return columns;
+function D5(r11) {
+  var e30 = /* @__PURE__ */ Object.create(null), o21 = [];
+  return r11.forEach(function(a11) {
+    for (var s14 in a11) s14 in e30 || o21.push(e30[s14] = s14);
+  }), o21;
 }
-function pad(value, width) {
-  var s2 = value + "", length = s2.length;
-  return length < width ? new Array(width - length + 1).join(0) + s2 : s2;
+function c8(r11, e30) {
+  var o21 = r11 + "", a11 = o21.length;
+  return a11 < e30 ? new Array(e30 - a11 + 1).join(0) + o21 : o21;
 }
-function formatYear(year) {
-  return year < 0 ? "-" + pad(-year, 6) : year > 9999 ? "+" + pad(year, 6) : pad(year, 4);
+function H6(r11) {
+  return r11 < 0 ? "-" + c8(-r11, 6) : r11 > 9999 ? "+" + c8(r11, 6) : c8(r11, 4);
 }
-function formatDate(date) {
-  var hours = date.getUTCHours(), minutes = date.getUTCMinutes(), seconds2 = date.getUTCSeconds(), milliseconds2 = date.getUTCMilliseconds();
-  return isNaN(date) ? "Invalid Date" : formatYear(date.getUTCFullYear(), 4) + "-" + pad(date.getUTCMonth() + 1, 2) + "-" + pad(date.getUTCDate(), 2) + (milliseconds2 ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds2, 2) + "." + pad(milliseconds2, 3) + "Z" : seconds2 ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds2, 2) + "Z" : minutes || hours ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + "Z" : "");
+function L5(r11) {
+  var e30 = r11.getUTCHours(), o21 = r11.getUTCMinutes(), a11 = r11.getUTCSeconds(), s14 = r11.getUTCMilliseconds();
+  return isNaN(r11) ? "Invalid Date" : H6(r11.getUTCFullYear(), 4) + "-" + c8(r11.getUTCMonth() + 1, 2) + "-" + c8(r11.getUTCDate(), 2) + (s14 ? "T" + c8(e30, 2) + ":" + c8(o21, 2) + ":" + c8(a11, 2) + "." + c8(s14, 3) + "Z" : a11 ? "T" + c8(e30, 2) + ":" + c8(o21, 2) + ":" + c8(a11, 2) + "Z" : o21 || e30 ? "T" + c8(e30, 2) + ":" + c8(o21, 2) + "Z" : "");
 }
-function dsv_default(delimiter) {
-  var reFormat = new RegExp('["' + delimiter + "\n\r]"), DELIMITER = delimiter.charCodeAt(0);
-  function parse(text, f) {
-    var convert, columns, rows = parseRows(text, function(row, i) {
-      if (convert) return convert(row, i - 1);
-      columns = row, convert = f ? customConverter(row, f) : objectConverter(row);
+function F7(r11) {
+  var e30 = new RegExp('["' + r11 + `
+\r]`), o21 = r11.charCodeAt(0);
+  function a11(t10, n13) {
+    var u9, i9, f15 = s14(t10, function(l9, m12) {
+      if (u9) return u9(l9, m12 - 1);
+      i9 = l9, u9 = n13 ? Z6(l9, n13) : P4(l9);
     });
-    rows.columns = columns || [];
-    return rows;
+    return f15.columns = i9 || [], f15;
   }
-  function parseRows(text, f) {
-    var rows = [], N = text.length, I = 0, n = 0, t, eof = N <= 0, eol = false;
-    if (text.charCodeAt(N - 1) === NEWLINE) --N;
-    if (text.charCodeAt(N - 1) === RETURN) --N;
-    function token() {
-      if (eof) return EOF;
-      if (eol) return eol = false, EOL;
-      var i, j = I, c3;
-      if (text.charCodeAt(j) === QUOTE) {
-        while (I++ < N && text.charCodeAt(I) !== QUOTE || text.charCodeAt(++I) === QUOTE) ;
-        if ((i = I) >= N) eof = true;
-        else if ((c3 = text.charCodeAt(I++)) === NEWLINE) eol = true;
-        else if (c3 === RETURN) {
-          eol = true;
-          if (text.charCodeAt(I) === NEWLINE) ++I;
-        }
-        return text.slice(j + 1, i - 1).replace(/""/g, '"');
+  function s14(t10, n13) {
+    var u9 = [], i9 = t10.length, f15 = 0, l9 = 0, m12, N10 = i9 <= 0, d11 = false;
+    t10.charCodeAt(i9 - 1) === w10 && --i9, t10.charCodeAt(i9 - 1) === E8 && --i9;
+    function U9() {
+      if (N10) return A8;
+      if (d11) return d11 = false, y7;
+      var T12, g7 = f15, R8;
+      if (t10.charCodeAt(g7) === x9) {
+        for (; f15++ < i9 && t10.charCodeAt(f15) !== x9 || t10.charCodeAt(++f15) === x9; ) ;
+        return (T12 = f15) >= i9 ? N10 = true : (R8 = t10.charCodeAt(f15++)) === w10 ? d11 = true : R8 === E8 && (d11 = true, t10.charCodeAt(f15) === w10 && ++f15), t10.slice(g7 + 1, T12 - 1).replace(/""/g, '"');
       }
-      while (I < N) {
-        if ((c3 = text.charCodeAt(i = I++)) === NEWLINE) eol = true;
-        else if (c3 === RETURN) {
-          eol = true;
-          if (text.charCodeAt(I) === NEWLINE) ++I;
-        } else if (c3 !== DELIMITER) continue;
-        return text.slice(j, i);
+      for (; f15 < i9; ) {
+        if ((R8 = t10.charCodeAt(T12 = f15++)) === w10) d11 = true;
+        else if (R8 === E8) d11 = true, t10.charCodeAt(f15) === w10 && ++f15;
+        else if (R8 !== o21) continue;
+        return t10.slice(g7, T12);
       }
-      return eof = true, text.slice(j, N);
+      return N10 = true, t10.slice(g7, i9);
     }
-    while ((t = token()) !== EOF) {
-      var row = [];
-      while (t !== EOL && t !== EOF) row.push(t), t = token();
-      if (f && (row = f(row, n++)) == null) continue;
-      rows.push(row);
+    for (; (m12 = U9()) !== A8; ) {
+      for (var C11 = []; m12 !== y7 && m12 !== A8; ) C11.push(m12), m12 = U9();
+      n13 && (C11 = n13(C11, l9++)) == null || u9.push(C11);
     }
-    return rows;
+    return u9;
   }
-  function preformatBody(rows, columns) {
-    return rows.map(function(row) {
-      return columns.map(function(column) {
-        return formatValue(row[column]);
-      }).join(delimiter);
+  function j9(t10, n13) {
+    return t10.map(function(u9) {
+      return n13.map(function(i9) {
+        return h9(u9[i9]);
+      }).join(r11);
     });
   }
-  function format2(rows, columns) {
-    if (columns == null) columns = inferColumns(rows);
-    return [
-      columns.map(formatValue).join(delimiter)
-    ].concat(preformatBody(rows, columns)).join("\n");
+  function I9(t10, n13) {
+    return n13 == null && (n13 = D5(t10)), [
+      n13.map(h9).join(r11)
+    ].concat(j9(t10, n13)).join(`
+`);
   }
-  function formatBody(rows, columns) {
-    if (columns == null) columns = inferColumns(rows);
-    return preformatBody(rows, columns).join("\n");
+  function O5(t10, n13) {
+    return n13 == null && (n13 = D5(t10)), j9(t10, n13).join(`
+`);
   }
-  function formatRows(rows) {
-    return rows.map(formatRow).join("\n");
+  function M10(t10) {
+    return t10.map(B8).join(`
+`);
   }
-  function formatRow(row) {
-    return row.map(formatValue).join(delimiter);
+  function B8(t10) {
+    return t10.map(h9).join(r11);
   }
-  function formatValue(value) {
-    return value == null ? "" : value instanceof Date ? formatDate(value) : reFormat.test(value += "") ? '"' + value.replace(/"/g, '""') + '"' : value;
+  function h9(t10) {
+    return t10 == null ? "" : t10 instanceof Date ? L5(t10) : e30.test(t10 += "") ? '"' + t10.replace(/"/g, '""') + '"' : t10;
   }
   return {
-    parse,
-    parseRows,
-    format: format2,
-    formatBody,
-    formatRows,
-    formatRow,
-    formatValue
+    parse: a11,
+    parseRows: s14,
+    format: I9,
+    formatBody: O5,
+    formatRows: M10,
+    formatRow: B8,
+    formatValue: h9
   };
 }
+var p6 = F7(",");
+var S5 = p6.parse;
+var Y7 = p6.parseRows;
+var z4 = p6.format;
+var J5 = p6.formatBody;
+var Q4 = p6.formatRows;
+var W5 = p6.formatRow;
+var $4 = p6.formatValue;
+var v9 = F7("	");
+var k5 = v9.parse;
+var q10 = v9.parseRows;
+var G6 = v9.format;
+var K4 = v9.formatBody;
+var X6 = v9.formatRows;
+var _4 = v9.formatRow;
+var b8 = v9.formatValue;
+var rr2 = (/* @__PURE__ */ new Date("2019-01-01T00:00")).getHours() || (/* @__PURE__ */ new Date("2019-07-01T00:00")).getHours();
 
-// node_modules/.deno/d3-dsv@3.0.1/node_modules/d3-dsv/src/csv.js
-var csv = dsv_default(",");
-var csvParse = csv.parse;
-var csvParseRows = csv.parseRows;
-var csvFormat = csv.format;
-var csvFormatBody = csv.formatBody;
-var csvFormatRows = csv.formatRows;
-var csvFormatRow = csv.formatRow;
-var csvFormatValue = csv.formatValue;
-
-// node_modules/.deno/d3-dsv@3.0.1/node_modules/d3-dsv/src/tsv.js
-var tsv = dsv_default("	");
-var tsvParse = tsv.parse;
-var tsvParseRows = tsv.parseRows;
-var tsvFormat = tsv.format;
-var tsvFormatBody = tsv.formatBody;
-var tsvFormatRows = tsv.formatRows;
-var tsvFormatRow = tsv.formatRow;
-var tsvFormatValue = tsv.formatValue;
-
-// node_modules/.deno/d3-dsv@3.0.1/node_modules/d3-dsv/src/autoType.js
-var fixtz = (/* @__PURE__ */ new Date("2019-01-01T00:00")).getHours() || (/* @__PURE__ */ new Date("2019-07-01T00:00")).getHours();
-
-// node_modules/.deno/d3-fetch@3.0.1/node_modules/d3-fetch/src/text.js
-function responseText(response) {
-  if (!response.ok) throw new Error(response.status + " " + response.statusText);
-  return response.text();
+// deno:https://esm.sh/d3-fetch@3.0.1/denonext/d3-fetch.mjs
+function d7(t10) {
+  if (!t10.ok) throw new Error(t10.status + " " + t10.statusText);
+  return t10.text();
 }
-function text_default3(input, init2) {
-  return fetch(input, init2).then(responseText);
+function f8(t10, r11) {
+  return fetch(t10, r11).then(d7);
 }
-
-// node_modules/.deno/d3-fetch@3.0.1/node_modules/d3-fetch/src/dsv.js
-function dsvParse(parse) {
-  return function(input, init2, row) {
-    if (arguments.length === 2 && typeof init2 === "function") row = init2, init2 = void 0;
-    return text_default3(input, init2).then(function(response) {
-      return parse(response, row);
+function s10(t10) {
+  return function(r11, e30, o21) {
+    return arguments.length === 2 && typeof e30 == "function" && (o21 = e30, e30 = void 0), f8(r11, e30).then(function(n13) {
+      return t10(n13, o21);
     });
   };
 }
-var csv2 = dsvParse(csvParse);
-var tsv2 = dsvParse(tsvParse);
+var g4 = s10(S5);
+var w11 = s10(k5);
+function a7(t10) {
+  return (r11, e30) => f8(r11, e30).then((o21) => new DOMParser().parseFromString(o21, t10));
+}
+var E9 = a7("application/xml");
+var k6 = a7("text/html");
+var y8 = a7("image/svg+xml");
 
-// node_modules/.deno/d3-fetch@3.0.1/node_modules/d3-fetch/src/xml.js
-function parser(type2) {
-  return (input, init2) => text_default3(input, init2).then((text) => new DOMParser().parseFromString(text, type2));
+// deno:https://esm.sh/d3-quadtree@3.0.1/denonext/d3-quadtree.mjs
+function k7(i9) {
+  let t10 = +this._x.call(null, i9), e30 = +this._y.call(null, i9);
+  return I4(this.cover(t10, e30), t10, e30, i9);
 }
-var xml_default = parser("application/xml");
-var html = parser("text/html");
-var svg = parser("image/svg+xml");
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/add.js
-function add_default(d) {
-  const x3 = +this._x.call(null, d), y3 = +this._y.call(null, d);
-  return add(this.cover(x3, y3), x3, y3, d);
+function I4(i9, t10, e30, n13) {
+  if (isNaN(t10) || isNaN(e30)) return i9;
+  var r11, o21 = i9._root, s14 = {
+    data: n13
+  }, l9 = i9._x0, h9 = i9._y0, f15 = i9._x1, a11 = i9._y1, u9, _8, p12, y11, w15, x15, d11, g7;
+  if (!o21) return i9._root = s14, i9;
+  for (; o21.length; ) if ((w15 = t10 >= (u9 = (l9 + f15) / 2)) ? l9 = u9 : f15 = u9, (x15 = e30 >= (_8 = (h9 + a11) / 2)) ? h9 = _8 : a11 = _8, r11 = o21, !(o21 = o21[d11 = x15 << 1 | w15])) return r11[d11] = s14, i9;
+  if (p12 = +i9._x.call(null, o21.data), y11 = +i9._y.call(null, o21.data), t10 === p12 && e30 === y11) return s14.next = o21, r11 ? r11[d11] = s14 : i9._root = s14, i9;
+  do
+    r11 = r11 ? r11[d11] = new Array(4) : i9._root = new Array(4), (w15 = t10 >= (u9 = (l9 + f15) / 2)) ? l9 = u9 : f15 = u9, (x15 = e30 >= (_8 = (h9 + a11) / 2)) ? h9 = _8 : a11 = _8;
+  while ((d11 = x15 << 1 | w15) === (g7 = (y11 >= _8) << 1 | p12 >= u9));
+  return r11[g7] = o21, r11[d11] = s14, i9;
 }
-function add(tree, x3, y3, d) {
-  if (isNaN(x3) || isNaN(y3)) return tree;
-  var parent, node = tree._root, leaf = {
-    data: d
-  }, x02 = tree._x0, y0 = tree._y0, x12 = tree._x1, y1 = tree._y1, xm, ym, xp, yp, right, bottom, i, j;
-  if (!node) return tree._root = leaf, tree;
-  while (node.length) {
-    if (right = x3 >= (xm = (x02 + x12) / 2)) x02 = xm;
-    else x12 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-    if (parent = node, !(node = node[i = bottom << 1 | right])) return parent[i] = leaf, tree;
-  }
-  xp = +tree._x.call(null, node.data);
-  yp = +tree._y.call(null, node.data);
-  if (x3 === xp && y3 === yp) return leaf.next = node, parent ? parent[i] = leaf : tree._root = leaf, tree;
-  do {
-    parent = parent ? parent[i] = new Array(4) : tree._root = new Array(4);
-    if (right = x3 >= (xm = (x02 + x12) / 2)) x02 = xm;
-    else x12 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-  } while ((i = bottom << 1 | right) === (j = (yp >= ym) << 1 | xp >= xm));
-  return parent[j] = node, parent[i] = leaf, tree;
-}
-function addAll(data) {
-  var d, i, n = data.length, x3, y3, xz = new Array(n), yz = new Array(n), x02 = Infinity, y0 = Infinity, x12 = -Infinity, y1 = -Infinity;
-  for (i = 0; i < n; ++i) {
-    if (isNaN(x3 = +this._x.call(null, d = data[i])) || isNaN(y3 = +this._y.call(null, d))) continue;
-    xz[i] = x3;
-    yz[i] = y3;
-    if (x3 < x02) x02 = x3;
-    if (x3 > x12) x12 = x3;
-    if (y3 < y0) y0 = y3;
-    if (y3 > y1) y1 = y3;
-  }
-  if (x02 > x12 || y0 > y1) return this;
-  this.cover(x02, y0).cover(x12, y1);
-  for (i = 0; i < n; ++i) {
-    add(this, xz[i], yz[i], data[i]);
-  }
+function Q5(i9) {
+  var t10, e30, n13 = i9.length, r11, o21, s14 = new Array(n13), l9 = new Array(n13), h9 = 1 / 0, f15 = 1 / 0, a11 = -1 / 0, u9 = -1 / 0;
+  for (e30 = 0; e30 < n13; ++e30) isNaN(r11 = +this._x.call(null, t10 = i9[e30])) || isNaN(o21 = +this._y.call(null, t10)) || (s14[e30] = r11, l9[e30] = o21, r11 < h9 && (h9 = r11), r11 > a11 && (a11 = r11), o21 < f15 && (f15 = o21), o21 > u9 && (u9 = o21));
+  if (h9 > a11 || f15 > u9) return this;
+  for (this.cover(h9, f15).cover(a11, u9), e30 = 0; e30 < n13; ++e30) I4(this, s14[e30], l9[e30], i9[e30]);
   return this;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/cover.js
-function cover_default(x3, y3) {
-  if (isNaN(x3 = +x3) || isNaN(y3 = +y3)) return this;
-  var x02 = this._x0, y0 = this._y0, x12 = this._x1, y1 = this._y1;
-  if (isNaN(x02)) {
-    x12 = (x02 = Math.floor(x3)) + 1;
-    y1 = (y0 = Math.floor(y3)) + 1;
-  } else {
-    var z = x12 - x02 || 1, node = this._root, parent, i;
-    while (x02 > x3 || x3 >= x12 || y0 > y3 || y3 >= y1) {
-      i = (y3 < y0) << 1 | x3 < x02;
-      parent = new Array(4), parent[i] = node, node = parent, z *= 2;
-      switch (i) {
-        case 0:
-          x12 = x02 + z, y1 = y0 + z;
-          break;
-        case 1:
-          x02 = x12 - z, y1 = y0 + z;
-          break;
-        case 2:
-          x12 = x02 + z, y0 = y1 - z;
-          break;
-        case 3:
-          x02 = x12 - z, y0 = y1 - z;
-          break;
-      }
+function M5(i9, t10) {
+  if (isNaN(i9 = +i9) || isNaN(t10 = +t10)) return this;
+  var e30 = this._x0, n13 = this._y0, r11 = this._x1, o21 = this._y1;
+  if (isNaN(e30)) r11 = (e30 = Math.floor(i9)) + 1, o21 = (n13 = Math.floor(t10)) + 1;
+  else {
+    for (var s14 = r11 - e30 || 1, l9 = this._root, h9, f15; e30 > i9 || i9 >= r11 || n13 > t10 || t10 >= o21; ) switch (f15 = (t10 < n13) << 1 | i9 < e30, h9 = new Array(4), h9[f15] = l9, l9 = h9, s14 *= 2, f15) {
+      case 0:
+        r11 = e30 + s14, o21 = n13 + s14;
+        break;
+      case 1:
+        e30 = r11 - s14, o21 = n13 + s14;
+        break;
+      case 2:
+        r11 = e30 + s14, n13 = o21 - s14;
+        break;
+      case 3:
+        e30 = r11 - s14, n13 = o21 - s14;
+        break;
     }
-    if (this._root && this._root.length) this._root = node;
+    this._root && this._root.length && (this._root = l9);
   }
-  this._x0 = x02;
-  this._y0 = y0;
-  this._x1 = x12;
-  this._y1 = y1;
-  return this;
+  return this._x0 = e30, this._y0 = n13, this._x1 = r11, this._y1 = o21, this;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/data.js
-function data_default2() {
-  var data = [];
-  this.visit(function(node) {
-    if (!node.length) do
-      data.push(node.data);
-    while (node = node.next);
-  });
-  return data;
+function j5() {
+  var i9 = [];
+  return this.visit(function(t10) {
+    if (!t10.length) do
+      i9.push(t10.data);
+    while (t10 = t10.next);
+  }), i9;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/extent.js
-function extent_default(_) {
-  return arguments.length ? this.cover(+_[0][0], +_[0][1]).cover(+_[1][0], +_[1][1]) : isNaN(this._x0) ? void 0 : [
+function X7(i9) {
+  return arguments.length ? this.cover(+i9[0][0], +i9[0][1]).cover(+i9[1][0], +i9[1][1]) : isNaN(this._x0) ? void 0 : [
     [
       this._x0,
       this._y0
@@ -3615,351 +2785,252 @@ function extent_default(_) {
     ]
   ];
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quad.js
-function quad_default(node, x02, y0, x12, y1) {
-  this.node = node;
-  this.x0 = x02;
-  this.y0 = y0;
-  this.x1 = x12;
-  this.y1 = y1;
+function c9(i9, t10, e30, n13, r11) {
+  this.node = i9, this.x0 = t10, this.y0 = e30, this.x1 = n13, this.y1 = r11;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/find.js
-function find_default(x3, y3, radius) {
-  var data, x02 = this._x0, y0 = this._y0, x12, y1, x22, y22, x32 = this._x1, y32 = this._y1, quads = [], node = this._root, q, i;
-  if (node) quads.push(new quad_default(node, x02, y0, x32, y32));
-  if (radius == null) radius = Infinity;
-  else {
-    x02 = x3 - radius, y0 = y3 - radius;
-    x32 = x3 + radius, y32 = y3 + radius;
-    radius *= radius;
-  }
-  while (q = quads.pop()) {
-    if (!(node = q.node) || (x12 = q.x0) > x32 || (y1 = q.y0) > y32 || (x22 = q.x1) < x02 || (y22 = q.y1) < y0) continue;
-    if (node.length) {
-      var xm = (x12 + x22) / 2, ym = (y1 + y22) / 2;
-      quads.push(new quad_default(node[3], xm, ym, x22, y22), new quad_default(node[2], x12, ym, xm, y22), new quad_default(node[1], xm, y1, x22, ym), new quad_default(node[0], x12, y1, xm, ym));
-      if (i = (y3 >= ym) << 1 | x3 >= xm) {
-        q = quads[quads.length - 1];
-        quads[quads.length - 1] = quads[quads.length - 1 - i];
-        quads[quads.length - 1 - i] = q;
-      }
-    } else {
-      var dx = x3 - +this._x.call(null, node.data), dy = y3 - +this._y.call(null, node.data), d2 = dx * dx + dy * dy;
-      if (d2 < radius) {
-        var d = Math.sqrt(radius = d2);
-        x02 = x3 - d, y0 = y3 - d;
-        x32 = x3 + d, y32 = y3 + d;
-        data = node.data;
-      }
+function Y8(i9, t10, e30) {
+  var n13, r11 = this._x0, o21 = this._y0, s14, l9, h9, f15, a11 = this._x1, u9 = this._y1, _8 = [], p12 = this._root, y11, w15;
+  for (p12 && _8.push(new c9(p12, r11, o21, a11, u9)), e30 == null ? e30 = 1 / 0 : (r11 = i9 - e30, o21 = t10 - e30, a11 = i9 + e30, u9 = t10 + e30, e30 *= e30); y11 = _8.pop(); ) if (!(!(p12 = y11.node) || (s14 = y11.x0) > a11 || (l9 = y11.y0) > u9 || (h9 = y11.x1) < r11 || (f15 = y11.y1) < o21)) if (p12.length) {
+    var x15 = (s14 + h9) / 2, d11 = (l9 + f15) / 2;
+    _8.push(new c9(p12[3], x15, d11, h9, f15), new c9(p12[2], s14, d11, x15, f15), new c9(p12[1], x15, l9, h9, d11), new c9(p12[0], s14, l9, x15, d11)), (w15 = (t10 >= d11) << 1 | i9 >= x15) && (y11 = _8[_8.length - 1], _8[_8.length - 1] = _8[_8.length - 1 - w15], _8[_8.length - 1 - w15] = y11);
+  } else {
+    var g7 = i9 - +this._x.call(null, p12.data), q15 = t10 - +this._y.call(null, p12.data), b11 = g7 * g7 + q15 * q15;
+    if (b11 < e30) {
+      var N10 = Math.sqrt(e30 = b11);
+      r11 = i9 - N10, o21 = t10 - N10, a11 = i9 + N10, u9 = t10 + N10, n13 = p12.data;
     }
   }
-  return data;
+  return n13;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/remove.js
-function remove_default3(d) {
-  if (isNaN(x3 = +this._x.call(null, d)) || isNaN(y3 = +this._y.call(null, d))) return this;
-  var parent, node = this._root, retainer, previous, next, x02 = this._x0, y0 = this._y0, x12 = this._x1, y1 = this._y1, x3, y3, xm, ym, right, bottom, i, j;
-  if (!node) return this;
-  if (node.length) while (true) {
-    if (right = x3 >= (xm = (x02 + x12) / 2)) x02 = xm;
-    else x12 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-    if (!(parent = node, node = node[i = bottom << 1 | right])) return this;
-    if (!node.length) break;
-    if (parent[i + 1 & 3] || parent[i + 2 & 3] || parent[i + 3 & 3]) retainer = parent, j = i;
+function P5(i9) {
+  if (isNaN(a11 = +this._x.call(null, i9)) || isNaN(u9 = +this._y.call(null, i9))) return this;
+  var t10, e30 = this._root, n13, r11, o21, s14 = this._x0, l9 = this._y0, h9 = this._x1, f15 = this._y1, a11, u9, _8, p12, y11, w15, x15, d11;
+  if (!e30) return this;
+  if (e30.length) for (; ; ) {
+    if ((y11 = a11 >= (_8 = (s14 + h9) / 2)) ? s14 = _8 : h9 = _8, (w15 = u9 >= (p12 = (l9 + f15) / 2)) ? l9 = p12 : f15 = p12, t10 = e30, !(e30 = e30[x15 = w15 << 1 | y11])) return this;
+    if (!e30.length) break;
+    (t10[x15 + 1 & 3] || t10[x15 + 2 & 3] || t10[x15 + 3 & 3]) && (n13 = t10, d11 = x15);
   }
-  while (node.data !== d) if (!(previous = node, node = node.next)) return this;
-  if (next = node.next) delete node.next;
-  if (previous) return next ? previous.next = next : delete previous.next, this;
-  if (!parent) return this._root = next, this;
-  next ? parent[i] = next : delete parent[i];
-  if ((node = parent[0] || parent[1] || parent[2] || parent[3]) && node === (parent[3] || parent[2] || parent[1] || parent[0]) && !node.length) {
-    if (retainer) retainer[j] = node;
-    else this._root = node;
-  }
+  for (; e30.data !== i9; ) if (r11 = e30, !(e30 = e30.next)) return this;
+  return (o21 = e30.next) && delete e30.next, r11 ? (o21 ? r11.next = o21 : delete r11.next, this) : t10 ? (o21 ? t10[x15] = o21 : delete t10[x15], (e30 = t10[0] || t10[1] || t10[2] || t10[3]) && e30 === (t10[3] || t10[2] || t10[1] || t10[0]) && !e30.length && (n13 ? n13[d11] = e30 : this._root = e30), this) : (this._root = o21, this);
+}
+function B5(i9) {
+  for (var t10 = 0, e30 = i9.length; t10 < e30; ++t10) this.remove(i9[t10]);
   return this;
 }
-function removeAll(data) {
-  for (var i = 0, n = data.length; i < n; ++i) this.remove(data[i]);
-  return this;
-}
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/root.js
-function root_default() {
+function C7() {
   return this._root;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/size.js
-function size_default2() {
-  var size = 0;
-  this.visit(function(node) {
-    if (!node.length) do
-      ++size;
-    while (node = node.next);
-  });
-  return size;
+function D6() {
+  var i9 = 0;
+  return this.visit(function(t10) {
+    if (!t10.length) do
+      ++i9;
+    while (t10 = t10.next);
+  }), i9;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visit.js
-function visit_default(callback) {
-  var quads = [], q, node = this._root, child, x02, y0, x12, y1;
-  if (node) quads.push(new quad_default(node, this._x0, this._y0, this._x1, this._y1));
-  while (q = quads.pop()) {
-    if (!callback(node = q.node, x02 = q.x0, y0 = q.y0, x12 = q.x1, y1 = q.y1) && node.length) {
-      var xm = (x02 + x12) / 2, ym = (y0 + y1) / 2;
-      if (child = node[3]) quads.push(new quad_default(child, xm, ym, x12, y1));
-      if (child = node[2]) quads.push(new quad_default(child, x02, ym, xm, y1));
-      if (child = node[1]) quads.push(new quad_default(child, xm, y0, x12, ym));
-      if (child = node[0]) quads.push(new quad_default(child, x02, y0, xm, ym));
-    }
+function E10(i9) {
+  var t10 = [], e30, n13 = this._root, r11, o21, s14, l9, h9;
+  for (n13 && t10.push(new c9(n13, this._x0, this._y0, this._x1, this._y1)); e30 = t10.pop(); ) if (!i9(n13 = e30.node, o21 = e30.x0, s14 = e30.y0, l9 = e30.x1, h9 = e30.y1) && n13.length) {
+    var f15 = (o21 + l9) / 2, a11 = (s14 + h9) / 2;
+    (r11 = n13[3]) && t10.push(new c9(r11, f15, a11, l9, h9)), (r11 = n13[2]) && t10.push(new c9(r11, o21, a11, f15, h9)), (r11 = n13[1]) && t10.push(new c9(r11, f15, s14, l9, a11)), (r11 = n13[0]) && t10.push(new c9(r11, o21, s14, f15, a11));
   }
   return this;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/visitAfter.js
-function visitAfter_default(callback) {
-  var quads = [], next = [], q;
-  if (this._root) quads.push(new quad_default(this._root, this._x0, this._y0, this._x1, this._y1));
-  while (q = quads.pop()) {
-    var node = q.node;
-    if (node.length) {
-      var child, x02 = q.x0, y0 = q.y0, x12 = q.x1, y1 = q.y1, xm = (x02 + x12) / 2, ym = (y0 + y1) / 2;
-      if (child = node[0]) quads.push(new quad_default(child, x02, y0, xm, ym));
-      if (child = node[1]) quads.push(new quad_default(child, xm, y0, x12, ym));
-      if (child = node[2]) quads.push(new quad_default(child, x02, ym, xm, y1));
-      if (child = node[3]) quads.push(new quad_default(child, xm, ym, x12, y1));
+function F8(i9) {
+  var t10 = [], e30 = [], n13;
+  for (this._root && t10.push(new c9(this._root, this._x0, this._y0, this._x1, this._y1)); n13 = t10.pop(); ) {
+    var r11 = n13.node;
+    if (r11.length) {
+      var o21, s14 = n13.x0, l9 = n13.y0, h9 = n13.x1, f15 = n13.y1, a11 = (s14 + h9) / 2, u9 = (l9 + f15) / 2;
+      (o21 = r11[0]) && t10.push(new c9(o21, s14, l9, a11, u9)), (o21 = r11[1]) && t10.push(new c9(o21, a11, l9, h9, u9)), (o21 = r11[2]) && t10.push(new c9(o21, s14, u9, a11, f15)), (o21 = r11[3]) && t10.push(new c9(o21, a11, u9, h9, f15));
     }
-    next.push(q);
+    e30.push(n13);
   }
-  while (q = next.pop()) {
-    callback(q.node, q.x0, q.y0, q.x1, q.y1);
-  }
+  for (; n13 = e30.pop(); ) i9(n13.node, n13.x0, n13.y0, n13.x1, n13.y1);
   return this;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/x.js
-function defaultX(d) {
-  return d[0];
+function G7(i9) {
+  return i9[0];
 }
-function x_default(_) {
-  return arguments.length ? (this._x = _, this) : this._x;
+function H7(i9) {
+  return arguments.length ? (this._x = i9, this) : this._x;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/y.js
-function defaultY(d) {
-  return d[1];
+function J6(i9) {
+  return i9[1];
 }
-function y_default(_) {
-  return arguments.length ? (this._y = _, this) : this._y;
+function K5(i9) {
+  return arguments.length ? (this._y = i9, this) : this._y;
 }
-
-// node_modules/.deno/d3-quadtree@3.0.1/node_modules/d3-quadtree/src/quadtree.js
-function quadtree(nodes, x3, y3) {
-  var tree = new Quadtree(x3 == null ? defaultX : x3, y3 == null ? defaultY : y3, NaN, NaN, NaN, NaN);
-  return nodes == null ? tree : tree.addAll(nodes);
+function m7(i9, t10, e30) {
+  var n13 = new A9(t10 ?? G7, e30 ?? J6, NaN, NaN, NaN, NaN);
+  return i9 == null ? n13 : n13.addAll(i9);
 }
-function Quadtree(x3, y3, x02, y0, x12, y1) {
-  this._x = x3;
-  this._y = y3;
-  this._x0 = x02;
-  this._y0 = y0;
-  this._x1 = x12;
-  this._y1 = y1;
-  this._root = void 0;
+function A9(i9, t10, e30, n13, r11, o21) {
+  this._x = i9, this._y = t10, this._x0 = e30, this._y0 = n13, this._x1 = r11, this._y1 = o21, this._root = void 0;
 }
-function leaf_copy(leaf) {
-  var copy3 = {
-    data: leaf.data
-  }, next = copy3;
-  while (leaf = leaf.next) next = next.next = {
-    data: leaf.data
+function L6(i9) {
+  for (var t10 = {
+    data: i9.data
+  }, e30 = t10; i9 = i9.next; ) e30 = e30.next = {
+    data: i9.data
   };
-  return copy3;
+  return t10;
 }
-var treeProto = quadtree.prototype = Quadtree.prototype;
-treeProto.copy = function() {
-  var copy3 = new Quadtree(this._x, this._y, this._x0, this._y0, this._x1, this._y1), node = this._root, nodes, child;
-  if (!node) return copy3;
-  if (!node.length) return copy3._root = leaf_copy(node), copy3;
-  nodes = [
+var v10 = m7.prototype = A9.prototype;
+v10.copy = function() {
+  var i9 = new A9(this._x, this._y, this._x0, this._y0, this._x1, this._y1), t10 = this._root, e30, n13;
+  if (!t10) return i9;
+  if (!t10.length) return i9._root = L6(t10), i9;
+  for (e30 = [
     {
-      source: node,
-      target: copy3._root = new Array(4)
+      source: t10,
+      target: i9._root = new Array(4)
     }
-  ];
-  while (node = nodes.pop()) {
-    for (var i = 0; i < 4; ++i) {
-      if (child = node.source[i]) {
-        if (child.length) nodes.push({
-          source: child,
-          target: node.target[i] = new Array(4)
-        });
-        else node.target[i] = leaf_copy(child);
-      }
-    }
-  }
-  return copy3;
+  ]; t10 = e30.pop(); ) for (var r11 = 0; r11 < 4; ++r11) (n13 = t10.source[r11]) && (n13.length ? e30.push({
+    source: n13,
+    target: t10.target[r11] = new Array(4)
+  }) : t10.target[r11] = L6(n13));
+  return i9;
 };
-treeProto.add = add_default;
-treeProto.addAll = addAll;
-treeProto.cover = cover_default;
-treeProto.data = data_default2;
-treeProto.extent = extent_default;
-treeProto.find = find_default;
-treeProto.remove = remove_default3;
-treeProto.removeAll = removeAll;
-treeProto.root = root_default;
-treeProto.size = size_default2;
-treeProto.visit = visit_default;
-treeProto.visitAfter = visitAfter_default;
-treeProto.x = x_default;
-treeProto.y = y_default;
+v10.add = k7;
+v10.addAll = Q5;
+v10.cover = M5;
+v10.data = j5;
+v10.extent = X7;
+v10.find = Y8;
+v10.remove = P5;
+v10.removeAll = B5;
+v10.root = C7;
+v10.size = D6;
+v10.visit = E10;
+v10.visitAfter = F8;
+v10.x = H7;
+v10.y = K5;
 
-// node_modules/.deno/d3-force@3.0.0/node_modules/d3-force/src/simulation.js
-var initialAngle = Math.PI * (3 - Math.sqrt(5));
+// deno:https://esm.sh/d3-force@3.0.0/denonext/d3-force.mjs
+var U5 = Math.PI * (3 - Math.sqrt(5));
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatDecimal.js
-function formatDecimal_default(x3) {
-  return Math.abs(x3 = Math.round(x3)) >= 1e21 ? x3.toLocaleString("en").replace(/,/g, "") : x3.toString(10);
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatDecimal.mjs
+function r5(e30) {
+  return Math.abs(e30 = Math.round(e30)) >= 1e21 ? e30.toLocaleString("en").replace(/,/g, "") : e30.toString(10);
 }
-function formatDecimalParts(x3, p) {
-  if ((i = (x3 = p ? x3.toExponential(p - 1) : x3.toExponential()).indexOf("e")) < 0) return null;
-  var i, coefficient = x3.slice(0, i);
+function o13(e30, i9) {
+  if ((n13 = (e30 = i9 ? e30.toExponential(i9 - 1) : e30.toExponential()).indexOf("e")) < 0) return null;
+  var n13, t10 = e30.slice(0, n13);
   return [
-    coefficient.length > 1 ? coefficient[0] + coefficient.slice(2) : coefficient,
-    +x3.slice(i + 1)
+    t10.length > 1 ? t10[0] + t10.slice(2) : t10,
+    +e30.slice(n13 + 1)
   ];
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/exponent.js
-function exponent_default(x3) {
-  return x3 = formatDecimalParts(Math.abs(x3)), x3 ? x3[1] : NaN;
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/exponent.mjs
+function o14(t10) {
+  return t10 = o13(Math.abs(t10)), t10 ? t10[1] : NaN;
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatGroup.js
-function formatGroup_default(grouping, thousands) {
-  return function(value, width) {
-    var i = value.length, t = [], j = 0, g = grouping[0], length = 0;
-    while (i > 0 && g > 0) {
-      if (length + g + 1 > width) g = Math.max(1, width - length);
-      t.push(value.substring(i -= g, i + g));
-      if ((length += g + 1) > width) break;
-      g = grouping[j = (j + 1) % grouping.length];
-    }
-    return t.reverse().join(thousands);
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatGroup.mjs
+function s11(t10, l9) {
+  return function(a11, n13) {
+    for (var r11 = a11.length, h9 = [], i9 = 0, e30 = t10[0], f15 = 0; r11 > 0 && e30 > 0 && (f15 + e30 + 1 > n13 && (e30 = Math.max(1, n13 - f15)), h9.push(a11.substring(r11 -= e30, r11 + e30)), !((f15 += e30 + 1) > n13)); ) e30 = t10[i9 = (i9 + 1) % t10.length];
+    return h9.reverse().join(l9);
   };
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatNumerals.js
-function formatNumerals_default(numerals) {
-  return function(value) {
-    return value.replace(/[0-9]/g, function(i) {
-      return numerals[+i];
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatNumerals.mjs
+function e6(n13) {
+  return function(r11) {
+    return r11.replace(/[0-9]/g, function(t10) {
+      return n13[+t10];
     });
   };
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatSpecifier.js
-var re = /^(?:(.)?([<>=^]))?([+\-( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?(~)?([a-z%])?$/i;
-function formatSpecifier(specifier) {
-  if (!(match = re.exec(specifier))) throw new Error("invalid format: " + specifier);
-  var match;
-  return new FormatSpecifier({
-    fill: match[1],
-    align: match[2],
-    sign: match[3],
-    symbol: match[4],
-    zero: match[5],
-    width: match[6],
-    comma: match[7],
-    precision: match[8] && match[8].slice(1),
-    trim: match[9],
-    type: match[10]
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatSpecifier.mjs
+var d8 = /^(?:(.)?([<>=^]))?([+\-( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?(~)?([a-z%])?$/i;
+function o15(t10) {
+  if (!(n13 = d8.exec(t10))) throw new Error("invalid format: " + t10);
+  var n13;
+  return new i6({
+    fill: n13[1],
+    align: n13[2],
+    sign: n13[3],
+    symbol: n13[4],
+    zero: n13[5],
+    width: n13[6],
+    comma: n13[7],
+    precision: n13[8] && n13[8].slice(1),
+    trim: n13[9],
+    type: n13[10]
   });
 }
-formatSpecifier.prototype = FormatSpecifier.prototype;
-function FormatSpecifier(specifier) {
-  this.fill = specifier.fill === void 0 ? " " : specifier.fill + "";
-  this.align = specifier.align === void 0 ? ">" : specifier.align + "";
-  this.sign = specifier.sign === void 0 ? "-" : specifier.sign + "";
-  this.symbol = specifier.symbol === void 0 ? "" : specifier.symbol + "";
-  this.zero = !!specifier.zero;
-  this.width = specifier.width === void 0 ? void 0 : +specifier.width;
-  this.comma = !!specifier.comma;
-  this.precision = specifier.precision === void 0 ? void 0 : +specifier.precision;
-  this.trim = !!specifier.trim;
-  this.type = specifier.type === void 0 ? "" : specifier.type + "";
+o15.prototype = i6.prototype;
+function i6(t10) {
+  this.fill = t10.fill === void 0 ? " " : t10.fill + "", this.align = t10.align === void 0 ? ">" : t10.align + "", this.sign = t10.sign === void 0 ? "-" : t10.sign + "", this.symbol = t10.symbol === void 0 ? "" : t10.symbol + "", this.zero = !!t10.zero, this.width = t10.width === void 0 ? void 0 : +t10.width, this.comma = !!t10.comma, this.precision = t10.precision === void 0 ? void 0 : +t10.precision, this.trim = !!t10.trim, this.type = t10.type === void 0 ? "" : t10.type + "";
 }
-FormatSpecifier.prototype.toString = function() {
+i6.prototype.toString = function() {
   return this.fill + this.align + this.sign + this.symbol + (this.zero ? "0" : "") + (this.width === void 0 ? "" : Math.max(1, this.width | 0)) + (this.comma ? "," : "") + (this.precision === void 0 ? "" : "." + Math.max(0, this.precision | 0)) + (this.trim ? "~" : "") + this.type;
 };
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatTrim.js
-function formatTrim_default(s2) {
-  out: for (var n = s2.length, i = 1, i0 = -1, i1; i < n; ++i) {
-    switch (s2[i]) {
-      case ".":
-        i0 = i1 = i;
-        break;
-      case "0":
-        if (i0 === 0) i0 = i;
-        i1 = i;
-        break;
-      default:
-        if (!+s2[i]) break out;
-        if (i0 > 0) i0 = 0;
-        break;
-    }
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatTrim.mjs
+function c10(r11) {
+  e: for (var t10 = r11.length, e30 = 1, a11 = -1, f15; e30 < t10; ++e30) switch (r11[e30]) {
+    case ".":
+      a11 = f15 = e30;
+      break;
+    case "0":
+      a11 === 0 && (a11 = e30), f15 = e30;
+      break;
+    default:
+      if (!+r11[e30]) break e;
+      a11 > 0 && (a11 = 0);
+      break;
   }
-  return i0 > 0 ? s2.slice(0, i0) + s2.slice(i1 + 1) : s2;
+  return a11 > 0 ? r11.slice(0, a11) + r11.slice(f15 + 1) : r11;
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatPrefixAuto.js
-var prefixExponent;
-function formatPrefixAuto_default(x3, p) {
-  var d = formatDecimalParts(x3, p);
-  if (!d) return x3 + "";
-  var coefficient = d[0], exponent2 = d[1], i = exponent2 - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent2 / 3))) * 3) + 1, n = coefficient.length;
-  return i === n ? coefficient : i > n ? coefficient + new Array(i - n + 1).join("0") : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i) : "0." + new Array(1 - i).join("0") + formatDecimalParts(x3, Math.max(0, p + i - 1))[0];
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatPrefixAuto.mjs
+var m8;
+function l6(t10, i9) {
+  var n13 = o13(t10, i9);
+  if (!n13) return t10 + "";
+  var e30 = n13[0], o21 = n13[1], r11 = o21 - (m8 = Math.max(-8, Math.min(8, Math.floor(o21 / 3))) * 3) + 1, a11 = e30.length;
+  return r11 === a11 ? e30 : r11 > a11 ? e30 + new Array(r11 - a11 + 1).join("0") : r11 > 0 ? e30.slice(0, r11) + "." + e30.slice(r11) : "0." + new Array(1 - r11).join("0") + o13(t10, Math.max(0, i9 + r11 - 1))[0];
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatRounded.js
-function formatRounded_default(x3, p) {
-  var d = formatDecimalParts(x3, p);
-  if (!d) return x3 + "";
-  var coefficient = d[0], exponent2 = d[1];
-  return exponent2 < 0 ? "0." + new Array(-exponent2).join("0") + coefficient : coefficient.length > exponent2 + 1 ? coefficient.slice(0, exponent2 + 1) + "." + coefficient.slice(exponent2 + 1) : coefficient + new Array(exponent2 - coefficient.length + 2).join("0");
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatRounded.mjs
+function f9(t10, i9) {
+  var n13 = o13(t10, i9);
+  if (!n13) return t10 + "";
+  var e30 = n13[0], r11 = n13[1];
+  return r11 < 0 ? "0." + new Array(-r11).join("0") + e30 : e30.length > r11 + 1 ? e30.slice(0, r11 + 1) + "." + e30.slice(r11 + 1) : e30 + new Array(r11 - e30.length + 2).join("0");
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/formatTypes.js
-var formatTypes_default = {
-  "%": (x3, p) => (x3 * 100).toFixed(p),
-  "b": (x3) => Math.round(x3).toString(2),
-  "c": (x3) => x3 + "",
-  "d": formatDecimal_default,
-  "e": (x3, p) => x3.toExponential(p),
-  "f": (x3, p) => x3.toFixed(p),
-  "g": (x3, p) => x3.toPrecision(p),
-  "o": (x3) => Math.round(x3).toString(8),
-  "p": (x3, p) => formatRounded_default(x3 * 100, p),
-  "r": formatRounded_default,
-  "s": formatPrefixAuto_default,
-  "X": (x3) => Math.round(x3).toString(16).toUpperCase(),
-  "x": (x3) => Math.round(x3).toString(16)
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/formatTypes.mjs
+var m9 = {
+  "%": (o21, t10) => (o21 * 100).toFixed(t10),
+  b: (o21) => Math.round(o21).toString(2),
+  c: (o21) => o21 + "",
+  d: r5,
+  e: (o21, t10) => o21.toExponential(t10),
+  f: (o21, t10) => o21.toFixed(t10),
+  g: (o21, t10) => o21.toPrecision(t10),
+  o: (o21) => Math.round(o21).toString(8),
+  p: (o21, t10) => f9(o21 * 100, t10),
+  r: f9,
+  s: l6,
+  X: (o21) => Math.round(o21).toString(16).toUpperCase(),
+  x: (o21) => Math.round(o21).toString(16)
 };
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/identity.js
-function identity_default2(x3) {
-  return x3;
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/identity.mjs
+function e7(t10) {
+  return t10;
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/locale.js
-var map3 = Array.prototype.map;
-var prefixes = [
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/locale.mjs
+var C8 = Array.prototype.map;
+var E11 = [
   "y",
   "z",
   "a",
@@ -3978,82 +3049,66 @@ var prefixes = [
   "Z",
   "Y"
 ];
-function locale_default(locale3) {
-  var group2 = locale3.grouping === void 0 || locale3.thousands === void 0 ? identity_default2 : formatGroup_default(map3.call(locale3.grouping, Number), locale3.thousands + ""), currencyPrefix = locale3.currency === void 0 ? "" : locale3.currency[0] + "", currencySuffix = locale3.currency === void 0 ? "" : locale3.currency[1] + "", decimal = locale3.decimal === void 0 ? "." : locale3.decimal + "", numerals = locale3.numerals === void 0 ? identity_default2 : formatNumerals_default(map3.call(locale3.numerals, String)), percent = locale3.percent === void 0 ? "%" : locale3.percent + "", minus = locale3.minus === void 0 ? "\u2212" : locale3.minus + "", nan = locale3.nan === void 0 ? "NaN" : locale3.nan + "";
-  function newFormat(specifier) {
-    specifier = formatSpecifier(specifier);
-    var fill = specifier.fill, align = specifier.align, sign3 = specifier.sign, symbol = specifier.symbol, zero3 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
-    if (type2 === "n") comma = true, type2 = "g";
-    else if (!formatTypes_default[type2]) precision === void 0 && (precision = 12), trim = true, type2 = "g";
-    if (zero3 || fill === "0" && align === "=") zero3 = true, fill = "0", align = "=";
-    var prefix = symbol === "$" ? currencyPrefix : symbol === "#" && /[boxX]/.test(type2) ? "0" + type2.toLowerCase() : "", suffix = symbol === "$" ? currencySuffix : /[%p]/.test(type2) ? percent : "";
-    var formatType = formatTypes_default[type2], maybeSuffix = /[defgprs%]/.test(type2);
-    precision = precision === void 0 ? 6 : /[gprs]/.test(type2) ? Math.max(1, Math.min(21, precision)) : Math.max(0, Math.min(20, precision));
-    function format2(value) {
-      var valuePrefix = prefix, valueSuffix = suffix, i, n, c3;
-      if (type2 === "c") {
-        valueSuffix = formatType(value) + valueSuffix;
-        value = "";
-      } else {
-        value = +value;
-        var valueNegative = value < 0 || 1 / value < 0;
-        value = isNaN(value) ? nan : formatType(Math.abs(value), precision);
-        if (trim) value = formatTrim_default(value);
-        if (valueNegative && +value === 0 && sign3 !== "+") valueNegative = false;
-        valuePrefix = (valueNegative ? sign3 === "(" ? sign3 : minus : sign3 === "-" || sign3 === "(" ? "" : sign3) + valuePrefix;
-        valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign3 === "(" ? ")" : "");
-        if (maybeSuffix) {
-          i = -1, n = value.length;
-          while (++i < n) {
-            if (c3 = value.charCodeAt(i), 48 > c3 || c3 > 57) {
-              valueSuffix = (c3 === 46 ? decimal + value.slice(i + 1) : value.slice(i)) + valueSuffix;
-              value = value.slice(0, i);
-              break;
-            }
+function nn2(r11) {
+  var M10 = r11.grouping === void 0 || r11.thousands === void 0 ? e7 : s11(C8.call(r11.grouping, Number), r11.thousands + ""), G11 = r11.currency === void 0 ? "" : r11.currency[0] + "", I9 = r11.currency === void 0 ? "" : r11.currency[1] + "", $9 = r11.decimal === void 0 ? "." : r11.decimal + "", j9 = r11.numerals === void 0 ? e7 : e6(C8.call(r11.numerals, String)), F14 = r11.percent === void 0 ? "%" : r11.percent + "", L10 = r11.minus === void 0 ? "\u2212" : r11.minus + "", X12 = r11.nan === void 0 ? "NaN" : r11.nan + "";
+  function w15(t10) {
+    t10 = o15(t10);
+    var h9 = t10.fill, a11 = t10.align, m12 = t10.sign, g7 = t10.symbol, s14 = t10.zero, y11 = t10.width, c11 = t10.comma, d11 = t10.precision, k10 = t10.trim, i9 = t10.type;
+    i9 === "n" ? (c11 = true, i9 = "g") : m9[i9] || (d11 === void 0 && (d11 = 12), k10 = true, i9 = "g"), (s14 || h9 === "0" && a11 === "=") && (s14 = true, h9 = "0", a11 = "=");
+    var Z10 = g7 === "$" ? G11 : g7 === "#" && /[boxX]/.test(i9) ? "0" + i9.toLowerCase() : "", q15 = g7 === "$" ? I9 : /[%p]/.test(i9) ? F14 : "", S10 = m9[i9], B8 = /[defgprs%]/.test(i9);
+    d11 = d11 === void 0 ? 6 : /[gprs]/.test(i9) ? Math.max(1, Math.min(21, d11)) : Math.max(0, Math.min(20, d11));
+    function P10(n13) {
+      var e30 = Z10, f15 = q15, p12, T12, u9;
+      if (i9 === "c") f15 = S10(n13) + f15, n13 = "";
+      else {
+        n13 = +n13;
+        var x15 = n13 < 0 || 1 / n13 < 0;
+        if (n13 = isNaN(n13) ? X12 : S10(Math.abs(n13), d11), k10 && (n13 = c10(n13)), x15 && +n13 == 0 && m12 !== "+" && (x15 = false), e30 = (x15 ? m12 === "(" ? m12 : L10 : m12 === "-" || m12 === "(" ? "" : m12) + e30, f15 = (i9 === "s" ? E11[8 + m8 / 3] : "") + f15 + (x15 && m12 === "(" ? ")" : ""), B8) {
+          for (p12 = -1, T12 = n13.length; ++p12 < T12; ) if (u9 = n13.charCodeAt(p12), 48 > u9 || u9 > 57) {
+            f15 = (u9 === 46 ? $9 + n13.slice(p12 + 1) : n13.slice(p12)) + f15, n13 = n13.slice(0, p12);
+            break;
           }
         }
       }
-      if (comma && !zero3) value = group2(value, Infinity);
-      var length = valuePrefix.length + value.length + valueSuffix.length, padding = length < width ? new Array(width - length + 1).join(fill) : "";
-      if (comma && zero3) value = group2(padding + value, padding.length ? width - valueSuffix.length : Infinity), padding = "";
-      switch (align) {
+      c11 && !s14 && (n13 = M10(n13, 1 / 0));
+      var b11 = e30.length + n13.length + f15.length, o21 = b11 < y11 ? new Array(y11 - b11 + 1).join(h9) : "";
+      switch (c11 && s14 && (n13 = M10(o21 + n13, o21.length ? y11 - f15.length : 1 / 0), o21 = ""), a11) {
         case "<":
-          value = valuePrefix + value + valueSuffix + padding;
+          n13 = e30 + n13 + f15 + o21;
           break;
         case "=":
-          value = valuePrefix + padding + value + valueSuffix;
+          n13 = e30 + o21 + n13 + f15;
           break;
         case "^":
-          value = padding.slice(0, length = padding.length >> 1) + valuePrefix + value + valueSuffix + padding.slice(length);
+          n13 = o21.slice(0, b11 = o21.length >> 1) + e30 + n13 + f15 + o21.slice(b11);
           break;
         default:
-          value = padding + valuePrefix + value + valueSuffix;
+          n13 = o21 + e30 + n13 + f15;
           break;
       }
-      return numerals(value);
+      return j9(n13);
     }
-    format2.toString = function() {
-      return specifier + "";
-    };
-    return format2;
+    return P10.toString = function() {
+      return t10 + "";
+    }, P10;
   }
-  function formatPrefix2(specifier, value) {
-    var f = newFormat((specifier = formatSpecifier(specifier), specifier.type = "f", specifier)), e = Math.max(-8, Math.min(8, Math.floor(exponent_default(value) / 3))) * 3, k2 = Math.pow(10, -e), prefix = prefixes[8 + e / 3];
-    return function(value2) {
-      return f(k2 * value2) + prefix;
+  function Y12(t10, h9) {
+    var a11 = w15((t10 = o15(t10), t10.type = "f", t10)), m12 = Math.max(-8, Math.min(8, Math.floor(o14(h9) / 3))) * 3, g7 = Math.pow(10, -m12), s14 = E11[8 + m12 / 3];
+    return function(y11) {
+      return a11(g7 * y11) + s14;
     };
   }
   return {
-    format: newFormat,
-    formatPrefix: formatPrefix2
+    format: w15,
+    formatPrefix: Y12
   };
 }
 
-// node_modules/.deno/d3-format@3.1.0/node_modules/d3-format/src/defaultLocale.js
-var locale;
-var format;
-var formatPrefix;
-defaultLocale({
+// deno:https://esm.sh/d3-format@3.1.0/denonext/src/defaultLocale.mjs
+var r6;
+var e8;
+var f10;
+o16({
   thousands: ",",
   grouping: [
     3
@@ -4063,416 +3118,272 @@ defaultLocale({
     ""
   ]
 });
-function defaultLocale(definition) {
-  locale = locale_default(definition);
-  format = locale.format;
-  formatPrefix = locale.formatPrefix;
-  return locale;
+function o16(a11) {
+  return r6 = nn2(a11), e8 = r6.format, f10 = r6.formatPrefix, r6;
 }
 
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/math.js
-var epsilon5 = 1e-6;
-var epsilon22 = 1e-12;
-var pi4 = Math.PI;
-var halfPi3 = pi4 / 2;
-var quarterPi = pi4 / 4;
-var tau5 = pi4 * 2;
-var degrees3 = 180 / pi4;
-var radians2 = pi4 / 180;
-var abs3 = Math.abs;
-var atan = Math.atan;
-var atan2 = Math.atan2;
-var cos2 = Math.cos;
-var exp = Math.exp;
-var log = Math.log;
-var sin2 = Math.sin;
-var sign = Math.sign || function(x3) {
-  return x3 > 0 ? 1 : x3 < 0 ? -1 : 0;
+// deno:https://esm.sh/d3-geo@3.1.1/denonext/d3-geo.mjs
+var w12 = 1e-6;
+var vn2 = 1e-12;
+var N6 = Math.PI;
+var F9 = N6 / 2;
+var Xn = N6 / 4;
+var k8 = N6 * 2;
+var I5 = 180 / N6;
+var R4 = N6 / 180;
+var z5 = Math.abs;
+var an2 = Math.atan;
+var G8 = Math.atan2;
+var E12 = Math.cos;
+var St3 = Math.exp;
+var An2 = Math.log;
+var x10 = Math.sin;
+var Q6 = Math.sign || function(n13) {
+  return n13 > 0 ? 1 : n13 < 0 ? -1 : 0;
 };
-var sqrt = Math.sqrt;
-var tan = Math.tan;
-function acos(x3) {
-  return x3 > 1 ? 0 : x3 < -1 ? pi4 : Math.acos(x3);
+var T9 = Math.sqrt;
+var Yn = Math.tan;
+function Rt2(n13) {
+  return n13 > 1 ? 0 : n13 < -1 ? N6 : Math.acos(n13);
 }
-function asin(x3) {
-  return x3 > 1 ? halfPi3 : x3 < -1 ? -halfPi3 : Math.asin(x3);
+function W6(n13) {
+  return n13 > 1 ? F9 : n13 < -1 ? -F9 : Math.asin(n13);
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/noop.js
-function noop2() {
+function $5() {
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/area.js
-var areaRingSum = new Adder();
-var areaSum = new Adder();
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/cartesian.js
-function cartesian(spherical2) {
-  var lambda = spherical2[0], phi2 = spherical2[1], cosPhi = cos2(phi2);
+var nt3 = new V();
+var Mt3 = new V();
+function fn(n13) {
+  var t10 = n13[0], e30 = n13[1], r11 = E12(e30);
   return [
-    cosPhi * cos2(lambda),
-    cosPhi * sin2(lambda),
-    sin2(phi2)
+    r11 * E12(t10),
+    r11 * x10(t10),
+    x10(e30)
   ];
 }
-function cartesianCross(a2, b) {
+function xn2(n13, t10) {
   return [
-    a2[1] * b[2] - a2[2] * b[1],
-    a2[2] * b[0] - a2[0] * b[2],
-    a2[0] * b[1] - a2[1] * b[0]
+    n13[1] * t10[2] - n13[2] * t10[1],
+    n13[2] * t10[0] - n13[0] * t10[2],
+    n13[0] * t10[1] - n13[1] * t10[0]
   ];
 }
-function cartesianNormalizeInPlace(d) {
-  var l = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
-  d[0] /= l, d[1] /= l, d[2] /= l;
+function Nn2(n13) {
+  var t10 = T9(n13[0] * n13[0] + n13[1] * n13[1] + n13[2] * n13[2]);
+  n13[0] /= t10, n13[1] /= t10, n13[2] /= t10;
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/rotation.js
-function rotationIdentity(lambda, phi2) {
-  if (abs3(lambda) > pi4) lambda -= Math.round(lambda / tau5) * tau5;
-  return [
-    lambda,
-    phi2
+function gr2(n13, t10) {
+  return z5(n13) > N6 && (n13 -= Math.round(n13 / k8) * k8), [
+    n13,
+    t10
   ];
 }
-rotationIdentity.invert = rotationIdentity;
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/clip/buffer.js
-function buffer_default2() {
-  var lines = [], line;
+gr2.invert = gr2;
+function Xt3() {
+  var n13 = [], t10;
   return {
-    point: function(x3, y3, m) {
-      line.push([
-        x3,
-        y3,
-        m
+    point: function(e30, r11, i9) {
+      t10.push([
+        e30,
+        r11,
+        i9
       ]);
     },
     lineStart: function() {
-      lines.push(line = []);
+      n13.push(t10 = []);
     },
-    lineEnd: noop2,
+    lineEnd: $5,
     rejoin: function() {
-      if (lines.length > 1) lines.push(lines.pop().concat(lines.shift()));
+      n13.length > 1 && n13.push(n13.pop().concat(n13.shift()));
     },
     result: function() {
-      var result = lines;
-      lines = [];
-      line = null;
-      return result;
+      var e30 = n13;
+      return n13 = [], t10 = null, e30;
     }
   };
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/pointEqual.js
-function pointEqual_default(a2, b) {
-  return abs3(a2[0] - b[0]) < epsilon5 && abs3(a2[1] - b[1]) < epsilon5;
+function Fn2(n13, t10) {
+  return z5(n13[0] - t10[0]) < w12 && z5(n13[1] - t10[1]) < w12;
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rejoin.js
-function Intersection(point6, points, other, entry) {
-  this.x = point6;
-  this.z = points;
-  this.o = other;
-  this.e = entry;
-  this.v = false;
-  this.n = this.p = null;
+function Yt3(n13, t10, e30, r11) {
+  this.x = n13, this.z = t10, this.o = e30, this.e = r11, this.v = false, this.n = this.p = null;
 }
-function rejoin_default(segments, compareIntersection2, startInside, interpolate, stream) {
-  var subject = [], clip = [], i, n;
-  segments.forEach(function(segment) {
-    if ((n2 = segment.length - 1) <= 0) return;
-    var n2, p0 = segment[0], p1 = segment[n2], x3;
-    if (pointEqual_default(p0, p1)) {
-      if (!p0[2] && !p1[2]) {
-        stream.lineStart();
-        for (i = 0; i < n2; ++i) stream.point((p0 = segment[i])[0], p0[1]);
-        stream.lineEnd();
-        return;
+function Dt3(n13, t10, e30, r11, i9) {
+  var o21 = [], a11 = [], u9, l9;
+  if (n13.forEach(function(g7) {
+    if (!((y11 = g7.length - 1) <= 0)) {
+      var y11, S10 = g7[0], P10 = g7[y11], q15;
+      if (Fn2(S10, P10)) {
+        if (!S10[2] && !P10[2]) {
+          for (i9.lineStart(), u9 = 0; u9 < y11; ++u9) i9.point((S10 = g7[u9])[0], S10[1]);
+          i9.lineEnd();
+          return;
+        }
+        P10[0] += 2 * w12;
       }
-      p1[0] += 2 * epsilon5;
+      o21.push(q15 = new Yt3(S10, g7, null, true)), a11.push(q15.o = new Yt3(S10, null, q15, false)), o21.push(q15 = new Yt3(P10, g7, null, false)), a11.push(q15.o = new Yt3(P10, null, q15, true));
     }
-    subject.push(x3 = new Intersection(p0, segment, null, true));
-    clip.push(x3.o = new Intersection(p0, null, x3, false));
-    subject.push(x3 = new Intersection(p1, segment, null, false));
-    clip.push(x3.o = new Intersection(p1, null, x3, true));
-  });
-  if (!subject.length) return;
-  clip.sort(compareIntersection2);
-  link(subject);
-  link(clip);
-  for (i = 0, n = clip.length; i < n; ++i) {
-    clip[i].e = startInside = !startInside;
-  }
-  var start2 = subject[0], points, point6;
-  while (1) {
-    var current = start2, isSubject = true;
-    while (current.v) if ((current = current.n) === start2) return;
-    points = current.z;
-    stream.lineStart();
-    do {
-      current.v = current.o.v = true;
-      if (current.e) {
-        if (isSubject) {
-          for (i = 0, n = points.length; i < n; ++i) stream.point((point6 = points[i])[0], point6[1]);
+  }), !!o21.length) {
+    for (a11.sort(t10), xe3(o21), xe3(a11), u9 = 0, l9 = a11.length; u9 < l9; ++u9) a11[u9].e = e30 = !e30;
+    for (var s14 = o21[0], f15, p12; ; ) {
+      for (var c11 = s14, m12 = true; c11.v; ) if ((c11 = c11.n) === s14) return;
+      f15 = c11.z, i9.lineStart();
+      do {
+        if (c11.v = c11.o.v = true, c11.e) {
+          if (m12) for (u9 = 0, l9 = f15.length; u9 < l9; ++u9) i9.point((p12 = f15[u9])[0], p12[1]);
+          else r11(c11.x, c11.n.x, 1, i9);
+          c11 = c11.n;
         } else {
-          interpolate(current.x, current.n.x, 1, stream);
+          if (m12) for (f15 = c11.p.z, u9 = f15.length - 1; u9 >= 0; --u9) i9.point((p12 = f15[u9])[0], p12[1]);
+          else r11(c11.x, c11.p.x, -1, i9);
+          c11 = c11.p;
         }
-        current = current.n;
-      } else {
-        if (isSubject) {
-          points = current.p.z;
-          for (i = points.length - 1; i >= 0; --i) stream.point((point6 = points[i])[0], point6[1]);
-        } else {
-          interpolate(current.x, current.p.x, -1, stream);
-        }
-        current = current.p;
-      }
-      current = current.o;
-      points = current.z;
-      isSubject = !isSubject;
-    } while (!current.v);
-    stream.lineEnd();
+        c11 = c11.o, f15 = c11.z, m12 = !m12;
+      } while (!c11.v);
+      i9.lineEnd();
+    }
   }
 }
-function link(array4) {
-  if (!(n = array4.length)) return;
-  var n, i = 0, a2 = array4[0], b;
-  while (++i < n) {
-    a2.n = b = array4[i];
-    b.p = a2;
-    a2 = b;
+function xe3(n13) {
+  if (t10 = n13.length) {
+    for (var t10, e30 = 0, r11 = n13[0], i9; ++e30 < t10; ) r11.n = i9 = n13[e30], i9.p = r11, r11 = i9;
+    r11.n = i9 = n13[0], i9.p = r11;
   }
-  a2.n = b = array4[0];
-  b.p = a2;
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/polygonContains.js
-function longitude(point6) {
-  return abs3(point6[0]) <= pi4 ? point6[0] : sign(point6[0]) * ((abs3(point6[0]) + pi4) % tau5 - pi4);
+function vr(n13) {
+  return z5(n13[0]) <= N6 ? n13[0] : Q6(n13[0]) * ((z5(n13[0]) + N6) % k8 - N6);
 }
-function polygonContains_default(polygon, point6) {
-  var lambda = longitude(point6), phi2 = point6[1], sinPhi = sin2(phi2), normal = [
-    sin2(lambda),
-    -cos2(lambda),
+function Ft3(n13, t10) {
+  var e30 = vr(t10), r11 = t10[1], i9 = x10(r11), o21 = [
+    x10(e30),
+    -E12(e30),
     0
-  ], angle = 0, winding = 0;
-  var sum4 = new Adder();
-  if (sinPhi === 1) phi2 = halfPi3 + epsilon5;
-  else if (sinPhi === -1) phi2 = -halfPi3 - epsilon5;
-  for (var i = 0, n = polygon.length; i < n; ++i) {
-    if (!(m = (ring = polygon[i]).length)) continue;
-    var ring, m, point0 = ring[m - 1], lambda0 = longitude(point0), phi0 = point0[1] / 2 + quarterPi, sinPhi0 = sin2(phi0), cosPhi0 = cos2(phi0);
-    for (var j = 0; j < m; ++j, lambda0 = lambda1, sinPhi0 = sinPhi1, cosPhi0 = cosPhi1, point0 = point1) {
-      var point1 = ring[j], lambda1 = longitude(point1), phi1 = point1[1] / 2 + quarterPi, sinPhi1 = sin2(phi1), cosPhi1 = cos2(phi1), delta = lambda1 - lambda0, sign3 = delta >= 0 ? 1 : -1, absDelta = sign3 * delta, antimeridian = absDelta > pi4, k2 = sinPhi0 * sinPhi1;
-      sum4.add(atan2(k2 * sign3 * sin2(absDelta), cosPhi0 * cosPhi1 + k2 * cos2(absDelta)));
-      angle += antimeridian ? delta + sign3 * tau5 : delta;
-      if (antimeridian ^ lambda0 >= lambda ^ lambda1 >= lambda) {
-        var arc = cartesianCross(cartesian(point0), cartesian(point1));
-        cartesianNormalizeInPlace(arc);
-        var intersection2 = cartesianCross(normal, arc);
-        cartesianNormalizeInPlace(intersection2);
-        var phiArc = (antimeridian ^ delta >= 0 ? -1 : 1) * asin(intersection2[2]);
-        if (phi2 > phiArc || phi2 === phiArc && (arc[0] || arc[1])) {
-          winding += antimeridian ^ delta >= 0 ? 1 : -1;
-        }
-      }
+  ], a11 = 0, u9 = 0, l9 = new V();
+  i9 === 1 ? r11 = F9 + w12 : i9 === -1 && (r11 = -F9 - w12);
+  for (var s14 = 0, f15 = n13.length; s14 < f15; ++s14) if (c11 = (p12 = n13[s14]).length) for (var p12, c11, m12 = p12[c11 - 1], g7 = vr(m12), y11 = m12[1] / 2 + Xn, S10 = x10(y11), P10 = E12(y11), q15 = 0; q15 < c11; ++q15, g7 = d11, S10 = A14, P10 = X12, m12 = h9) {
+    var h9 = p12[q15], d11 = vr(h9), M10 = h9[1] / 2 + Xn, A14 = x10(M10), X12 = E12(M10), Y12 = d11 - g7, D9 = Y12 >= 0 ? 1 : -1, H12 = D9 * Y12, C11 = H12 > N6, nn4 = S10 * A14;
+    if (l9.add(G8(nn4 * D9 * x10(H12), P10 * X12 + nn4 * E12(H12))), a11 += C11 ? Y12 + D9 * k8 : Y12, C11 ^ g7 >= e30 ^ d11 >= e30) {
+      var Z10 = xn2(fn(m12), fn(h9));
+      Nn2(Z10);
+      var j9 = xn2(o21, Z10);
+      Nn2(j9);
+      var v15 = (C11 ^ Y12 >= 0 ? -1 : 1) * W6(j9[2]);
+      (r11 > v15 || r11 === v15 && (Z10[0] || Z10[1])) && (u9 += C11 ^ Y12 >= 0 ? 1 : -1);
     }
   }
-  return (angle < -epsilon5 || angle < epsilon5 && sum4 < -epsilon22) ^ winding & 1;
+  return (a11 < -w12 || a11 < w12 && l9 < -vn2) ^ u9 & 1;
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/clip/index.js
-function clip_default(pointVisible, clipLine, interpolate, start2) {
-  return function(sink) {
-    var line = clipLine(sink), ringBuffer = buffer_default2(), ringSink = clipLine(ringBuffer), polygonStarted = false, polygon, segments, ring;
-    var clip = {
-      point: point6,
-      lineStart,
-      lineEnd,
+function jt3(n13, t10, e30, r11) {
+  return function(i9) {
+    var o21 = t10(i9), a11 = Xt3(), u9 = t10(a11), l9 = false, s14, f15, p12, c11 = {
+      point: m12,
+      lineStart: y11,
+      lineEnd: S10,
       polygonStart: function() {
-        clip.point = pointRing;
-        clip.lineStart = ringStart;
-        clip.lineEnd = ringEnd;
-        segments = [];
-        polygon = [];
+        c11.point = P10, c11.lineStart = q15, c11.lineEnd = h9, f15 = [], s14 = [];
       },
       polygonEnd: function() {
-        clip.point = point6;
-        clip.lineStart = lineStart;
-        clip.lineEnd = lineEnd;
-        segments = merge(segments);
-        var startInside = polygonContains_default(polygon, start2);
-        if (segments.length) {
-          if (!polygonStarted) sink.polygonStart(), polygonStarted = true;
-          rejoin_default(segments, compareIntersection, startInside, interpolate, sink);
-        } else if (startInside) {
-          if (!polygonStarted) sink.polygonStart(), polygonStarted = true;
-          sink.lineStart();
-          interpolate(null, null, 1, sink);
-          sink.lineEnd();
-        }
-        if (polygonStarted) sink.polygonEnd(), polygonStarted = false;
-        segments = polygon = null;
+        c11.point = m12, c11.lineStart = y11, c11.lineEnd = S10, f15 = Ee(f15);
+        var d11 = Ft3(s14, r11);
+        f15.length ? (l9 || (i9.polygonStart(), l9 = true), Dt3(f15, hi, d11, e30, i9)) : d11 && (l9 || (i9.polygonStart(), l9 = true), i9.lineStart(), e30(null, null, 1, i9), i9.lineEnd()), l9 && (i9.polygonEnd(), l9 = false), f15 = s14 = null;
       },
       sphere: function() {
-        sink.polygonStart();
-        sink.lineStart();
-        interpolate(null, null, 1, sink);
-        sink.lineEnd();
-        sink.polygonEnd();
+        i9.polygonStart(), i9.lineStart(), e30(null, null, 1, i9), i9.lineEnd(), i9.polygonEnd();
       }
     };
-    function point6(lambda, phi2) {
-      if (pointVisible(lambda, phi2)) sink.point(lambda, phi2);
+    function m12(d11, M10) {
+      n13(d11, M10) && i9.point(d11, M10);
     }
-    function pointLine(lambda, phi2) {
-      line.point(lambda, phi2);
+    function g7(d11, M10) {
+      o21.point(d11, M10);
     }
-    function lineStart() {
-      clip.point = pointLine;
-      line.lineStart();
+    function y11() {
+      c11.point = g7, o21.lineStart();
     }
-    function lineEnd() {
-      clip.point = point6;
-      line.lineEnd();
+    function S10() {
+      c11.point = m12, o21.lineEnd();
     }
-    function pointRing(lambda, phi2) {
-      ring.push([
-        lambda,
-        phi2
-      ]);
-      ringSink.point(lambda, phi2);
+    function P10(d11, M10) {
+      p12.push([
+        d11,
+        M10
+      ]), u9.point(d11, M10);
     }
-    function ringStart() {
-      ringSink.lineStart();
-      ring = [];
+    function q15() {
+      u9.lineStart(), p12 = [];
     }
-    function ringEnd() {
-      pointRing(ring[0][0], ring[0][1]);
-      ringSink.lineEnd();
-      var clean = ringSink.clean(), ringSegments = ringBuffer.result(), i, n = ringSegments.length, m, segment, point7;
-      ring.pop();
-      polygon.push(ring);
-      ring = null;
-      if (!n) return;
-      if (clean & 1) {
-        segment = ringSegments[0];
-        if ((m = segment.length - 1) > 0) {
-          if (!polygonStarted) sink.polygonStart(), polygonStarted = true;
-          sink.lineStart();
-          for (i = 0; i < m; ++i) sink.point((point7 = segment[i])[0], point7[1]);
-          sink.lineEnd();
+    function h9() {
+      P10(p12[0][0], p12[0][1]), u9.lineEnd();
+      var d11 = u9.clean(), M10 = a11.result(), A14, X12 = M10.length, Y12, D9, H12;
+      if (p12.pop(), s14.push(p12), p12 = null, !!X12) {
+        if (d11 & 1) {
+          if (D9 = M10[0], (Y12 = D9.length - 1) > 0) {
+            for (l9 || (i9.polygonStart(), l9 = true), i9.lineStart(), A14 = 0; A14 < Y12; ++A14) i9.point((H12 = D9[A14])[0], H12[1]);
+            i9.lineEnd();
+          }
+          return;
         }
-        return;
+        X12 > 1 && d11 & 2 && M10.push(M10.pop().concat(M10.shift())), f15.push(M10.filter(gi));
       }
-      if (n > 1 && clean & 2) ringSegments.push(ringSegments.pop().concat(ringSegments.shift()));
-      segments.push(ringSegments.filter(validSegment));
     }
-    return clip;
+    return c11;
   };
 }
-function validSegment(segment) {
-  return segment.length > 1;
+function gi(n13) {
+  return n13.length > 1;
 }
-function compareIntersection(a2, b) {
-  return ((a2 = a2.x)[0] < 0 ? a2[1] - halfPi3 - epsilon5 : halfPi3 - a2[1]) - ((b = b.x)[0] < 0 ? b[1] - halfPi3 - epsilon5 : halfPi3 - b[1]);
+function hi(n13, t10) {
+  return ((n13 = n13.x)[0] < 0 ? n13[1] - F9 - w12 : F9 - n13[1]) - ((t10 = t10.x)[0] < 0 ? t10[1] - F9 - w12 : F9 - t10[1]);
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/clip/antimeridian.js
-var antimeridian_default = clip_default(function() {
+var Gt2 = jt3(function() {
   return true;
-}, clipAntimeridianLine, clipAntimeridianInterpolate, [
-  -pi4,
-  -halfPi3
+}, di, xi, [
+  -N6,
+  -F9
 ]);
-function clipAntimeridianLine(stream) {
-  var lambda0 = NaN, phi0 = NaN, sign0 = NaN, clean;
+function di(n13) {
+  var t10 = NaN, e30 = NaN, r11 = NaN, i9;
   return {
     lineStart: function() {
-      stream.lineStart();
-      clean = 1;
+      n13.lineStart(), i9 = 1;
     },
-    point: function(lambda1, phi1) {
-      var sign1 = lambda1 > 0 ? pi4 : -pi4, delta = abs3(lambda1 - lambda0);
-      if (abs3(delta - pi4) < epsilon5) {
-        stream.point(lambda0, phi0 = (phi0 + phi1) / 2 > 0 ? halfPi3 : -halfPi3);
-        stream.point(sign0, phi0);
-        stream.lineEnd();
-        stream.lineStart();
-        stream.point(sign1, phi0);
-        stream.point(lambda1, phi0);
-        clean = 0;
-      } else if (sign0 !== sign1 && delta >= pi4) {
-        if (abs3(lambda0 - sign0) < epsilon5) lambda0 -= sign0 * epsilon5;
-        if (abs3(lambda1 - sign1) < epsilon5) lambda1 -= sign1 * epsilon5;
-        phi0 = clipAntimeridianIntersect(lambda0, phi0, lambda1, phi1);
-        stream.point(sign0, phi0);
-        stream.lineEnd();
-        stream.lineStart();
-        stream.point(sign1, phi0);
-        clean = 0;
-      }
-      stream.point(lambda0 = lambda1, phi0 = phi1);
-      sign0 = sign1;
+    point: function(o21, a11) {
+      var u9 = o21 > 0 ? N6 : -N6, l9 = z5(o21 - t10);
+      z5(l9 - N6) < w12 ? (n13.point(t10, e30 = (e30 + a11) / 2 > 0 ? F9 : -F9), n13.point(r11, e30), n13.lineEnd(), n13.lineStart(), n13.point(u9, e30), n13.point(o21, e30), i9 = 0) : r11 !== u9 && l9 >= N6 && (z5(t10 - r11) < w12 && (t10 -= r11 * w12), z5(o21 - u9) < w12 && (o21 -= u9 * w12), e30 = vi(t10, e30, o21, a11), n13.point(r11, e30), n13.lineEnd(), n13.lineStart(), n13.point(u9, e30), i9 = 0), n13.point(t10 = o21, e30 = a11), r11 = u9;
     },
     lineEnd: function() {
-      stream.lineEnd();
-      lambda0 = phi0 = NaN;
+      n13.lineEnd(), t10 = e30 = NaN;
     },
     clean: function() {
-      return 2 - clean;
+      return 2 - i9;
     }
   };
 }
-function clipAntimeridianIntersect(lambda0, phi0, lambda1, phi1) {
-  var cosPhi0, cosPhi1, sinLambda0Lambda1 = sin2(lambda0 - lambda1);
-  return abs3(sinLambda0Lambda1) > epsilon5 ? atan((sin2(phi0) * (cosPhi1 = cos2(phi1)) * sin2(lambda1) - sin2(phi1) * (cosPhi0 = cos2(phi0)) * sin2(lambda0)) / (cosPhi0 * cosPhi1 * sinLambda0Lambda1)) : (phi0 + phi1) / 2;
+function vi(n13, t10, e30, r11) {
+  var i9, o21, a11 = x10(n13 - e30);
+  return z5(a11) > w12 ? an2((x10(t10) * (o21 = E12(r11)) * x10(e30) - x10(r11) * (i9 = E12(t10)) * x10(n13)) / (i9 * o21 * a11)) : (t10 + r11) / 2;
 }
-function clipAntimeridianInterpolate(from, to, direction, stream) {
-  var phi2;
-  if (from == null) {
-    phi2 = direction * halfPi3;
-    stream.point(-pi4, phi2);
-    stream.point(0, phi2);
-    stream.point(pi4, phi2);
-    stream.point(pi4, 0);
-    stream.point(pi4, -phi2);
-    stream.point(0, -phi2);
-    stream.point(-pi4, -phi2);
-    stream.point(-pi4, 0);
-    stream.point(-pi4, phi2);
-  } else if (abs3(from[0] - to[0]) > epsilon5) {
-    var lambda = from[0] < to[0] ? pi4 : -pi4;
-    phi2 = direction * lambda / 2;
-    stream.point(-lambda, phi2);
-    stream.point(0, phi2);
-    stream.point(lambda, phi2);
-  } else {
-    stream.point(to[0], to[1]);
-  }
+function xi(n13, t10, e30, r11) {
+  var i9;
+  if (n13 == null) i9 = e30 * F9, r11.point(-N6, i9), r11.point(0, i9), r11.point(N6, i9), r11.point(N6, 0), r11.point(N6, -i9), r11.point(0, -i9), r11.point(-N6, -i9), r11.point(-N6, 0), r11.point(-N6, i9);
+  else if (z5(n13[0] - t10[0]) > w12) {
+    var o21 = n13[0] < t10[0] ? N6 : -N6;
+    i9 = e30 * o21 / 2, r11.point(-o21, i9), r11.point(0, i9), r11.point(o21, i9);
+  } else r11.point(t10[0], t10[1]);
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/clip/rectangle.js
-var clipMax = 1e9;
-var clipMin = -clipMax;
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/path/area.js
-var areaSum2 = new Adder();
-var areaRingSum2 = new Adder();
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/path/bounds.js
-var x0 = Infinity;
-var x1 = -x0;
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/path/context.js
-function PathContext(context) {
-  this._context = context;
+var ft2 = 1e9;
+var Wt3 = -ft2;
+var Pr = new V();
+var Mr = new V();
+var Wn2 = 1 / 0;
+var ct2 = -Wn2;
+function Qt3(n13) {
+  this._context = n13;
 }
-PathContext.prototype = {
+Qt3.prototype = {
   _radius: 4.5,
-  pointRadius: function(_) {
-    return this._radius = _, this;
+  pointRadius: function(n13) {
+    return this._radius = n13, this;
   },
   polygonStart: function() {
     this._line = 0;
@@ -4484,48 +3395,40 @@ PathContext.prototype = {
     this._point = 0;
   },
   lineEnd: function() {
-    if (this._line === 0) this._context.closePath();
-    this._point = NaN;
+    this._line === 0 && this._context.closePath(), this._point = NaN;
   },
-  point: function(x3, y3) {
+  point: function(n13, t10) {
     switch (this._point) {
       case 0: {
-        this._context.moveTo(x3, y3);
-        this._point = 1;
+        this._context.moveTo(n13, t10), this._point = 1;
         break;
       }
       case 1: {
-        this._context.lineTo(x3, y3);
+        this._context.lineTo(n13, t10);
         break;
       }
       default: {
-        this._context.moveTo(x3 + this._radius, y3);
-        this._context.arc(x3, y3, this._radius, 0, tau5);
+        this._context.moveTo(n13 + this._radius, t10), this._context.arc(n13, t10, this._radius, 0, k8);
         break;
       }
     }
   },
-  result: noop2
+  result: $5
 };
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/path/measure.js
-var lengthSum = new Adder();
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/transform.js
-function transformer(methods) {
-  return function(stream) {
-    var s2 = new TransformStream();
-    for (var key in methods) s2[key] = methods[key];
-    s2.stream = stream;
-    return s2;
+var Xr2 = new V();
+function Mn2(n13) {
+  return function(t10) {
+    var e30 = new Dr();
+    for (var r11 in n13) e30[r11] = n13[r11];
+    return e30.stream = t10, e30;
   };
 }
-function TransformStream() {
+function Dr() {
 }
-TransformStream.prototype = {
-  constructor: TransformStream,
-  point: function(x3, y3) {
-    this.stream.point(x3, y3);
+Dr.prototype = {
+  constructor: Dr,
+  point: function(n13, t10) {
+    this.stream.point(n13, t10);
   },
   sphere: function() {
     this.stream.sphere();
@@ -4543,1769 +3446,1371 @@ TransformStream.prototype = {
     this.stream.polygonEnd();
   }
 };
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/resample.js
-var cosMinDistance = cos2(30 * radians2);
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/index.js
-var transformRadians = transformer({
-  point: function(x3, y3) {
-    this.stream.point(x3 * radians2, y3 * radians2);
+var Zi = E12(30 * R4);
+var Ji = Mn2({
+  point: function(n13, t10) {
+    this.stream.point(n13 * R4, t10 * R4);
   }
 });
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthal.js
-function azimuthalRaw(scale2) {
-  return function(x3, y3) {
-    var cx = cos2(x3), cy = cos2(y3), k2 = scale2(cx * cy);
-    if (k2 === Infinity) return [
+function nr(n13) {
+  return function(t10, e30) {
+    var r11 = E12(t10), i9 = E12(e30), o21 = n13(r11 * i9);
+    return o21 === 1 / 0 ? [
       2,
       0
-    ];
-    return [
-      k2 * cy * sin2(x3),
-      k2 * sin2(y3)
-    ];
-  };
-}
-function azimuthalInvert(angle) {
-  return function(x3, y3) {
-    var z = sqrt(x3 * x3 + y3 * y3), c3 = angle(z), sc = sin2(c3), cc2 = cos2(c3);
-    return [
-      atan2(x3 * sc, z * cc2),
-      asin(z && y3 * sc / z)
+    ] : [
+      o21 * i9 * x10(t10),
+      o21 * x10(e30)
     ];
   };
 }
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEqualArea.js
-var azimuthalEqualAreaRaw = azimuthalRaw(function(cxcy) {
-  return sqrt(2 / (1 + cxcy));
+function gn(n13) {
+  return function(t10, e30) {
+    var r11 = T9(t10 * t10 + e30 * e30), i9 = n13(r11), o21 = x10(i9), a11 = E12(i9);
+    return [
+      G8(t10 * o21, r11 * a11),
+      W6(r11 && e30 * o21 / r11)
+    ];
+  };
+}
+var Wr = nr(function(n13) {
+  return T9(2 / (1 + n13));
 });
-azimuthalEqualAreaRaw.invert = azimuthalInvert(function(z) {
-  return 2 * asin(z / 2);
+Wr.invert = gn(function(n13) {
+  return 2 * W6(n13 / 2);
 });
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/azimuthalEquidistant.js
-var azimuthalEquidistantRaw = azimuthalRaw(function(c3) {
-  return (c3 = acos(c3)) && c3 / sin2(c3);
+var Hr = nr(function(n13) {
+  return (n13 = Rt2(n13)) && n13 / x10(n13);
 });
-azimuthalEquidistantRaw.invert = azimuthalInvert(function(z) {
-  return z;
+Hr.invert = gn(function(n13) {
+  return n13;
 });
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/mercator.js
-function mercatorRaw(lambda, phi2) {
+function Qn2(n13, t10) {
   return [
-    lambda,
-    log(tan((halfPi3 + phi2) / 2))
+    n13,
+    An2(Yn((F9 + t10) / 2))
   ];
 }
-mercatorRaw.invert = function(x3, y3) {
+Qn2.invert = function(n13, t10) {
   return [
-    x3,
-    2 * atan(exp(y3)) - halfPi3
+    n13,
+    2 * an2(St3(t10)) - F9
   ];
 };
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equirectangular.js
-function equirectangularRaw(lambda, phi2) {
+function Vn2(n13, t10) {
   return [
-    lambda,
-    phi2
+    n13,
+    t10
   ];
 }
-equirectangularRaw.invert = equirectangularRaw;
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/equalEarth.js
-var A1 = 1.340264;
-var A2 = -0.081106;
-var A3 = 893e-6;
-var A4 = 3796e-6;
-var M = sqrt(3) / 2;
-var iterations = 12;
-function equalEarthRaw(lambda, phi2) {
-  var l = asin(M * sin2(phi2)), l2 = l * l, l6 = l2 * l2 * l2;
+Vn2.invert = Vn2;
+var ht3 = 1.340264;
+var dt2 = -0.081106;
+var vt3 = 893e-6;
+var xt4 = 3796e-6;
+var rr3 = T9(3) / 2;
+var oo = 12;
+function Br2(n13, t10) {
+  var e30 = W6(rr3 * x10(t10)), r11 = e30 * e30, i9 = r11 * r11 * r11;
   return [
-    lambda * cos2(l) / (M * (A1 + 3 * A2 * l2 + l6 * (7 * A3 + 9 * A4 * l2))),
-    l * (A1 + A2 * l2 + l6 * (A3 + A4 * l2))
+    n13 * E12(e30) / (rr3 * (ht3 + 3 * dt2 * r11 + i9 * (7 * vt3 + 9 * xt4 * r11))),
+    e30 * (ht3 + dt2 * r11 + i9 * (vt3 + xt4 * r11))
   ];
 }
-equalEarthRaw.invert = function(x3, y3) {
-  var l = y3, l2 = l * l, l6 = l2 * l2 * l2;
-  for (var i = 0, delta, fy, fpy; i < iterations; ++i) {
-    fy = l * (A1 + A2 * l2 + l6 * (A3 + A4 * l2)) - y3;
-    fpy = A1 + 3 * A2 * l2 + l6 * (7 * A3 + 9 * A4 * l2);
-    l -= delta = fy / fpy, l2 = l * l, l6 = l2 * l2 * l2;
-    if (abs3(delta) < epsilon22) break;
-  }
+Br2.invert = function(n13, t10) {
+  for (var e30 = t10, r11 = e30 * e30, i9 = r11 * r11 * r11, o21 = 0, a11, u9, l9; o21 < oo && (u9 = e30 * (ht3 + dt2 * r11 + i9 * (vt3 + xt4 * r11)) - t10, l9 = ht3 + 3 * dt2 * r11 + i9 * (7 * vt3 + 9 * xt4 * r11), e30 -= a11 = u9 / l9, r11 = e30 * e30, i9 = r11 * r11 * r11, !(z5(a11) < vn2)); ++o21) ;
   return [
-    M * x3 * (A1 + 3 * A2 * l2 + l6 * (7 * A3 + 9 * A4 * l2)) / cos2(l),
-    asin(sin2(l) / M)
+    rr3 * n13 * (ht3 + 3 * dt2 * r11 + i9 * (7 * vt3 + 9 * xt4 * r11)) / E12(e30),
+    W6(x10(e30) / rr3)
   ];
 };
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/gnomonic.js
-function gnomonicRaw(x3, y3) {
-  var cy = cos2(y3), k2 = cos2(x3) * cy;
+function Zr(n13, t10) {
+  var e30 = E12(t10), r11 = E12(n13) * e30;
   return [
-    cy * sin2(x3) / k2,
-    sin2(y3) / k2
+    e30 * x10(n13) / r11,
+    x10(t10) / r11
   ];
 }
-gnomonicRaw.invert = azimuthalInvert(atan);
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/naturalEarth1.js
-function naturalEarth1Raw(lambda, phi2) {
-  var phi22 = phi2 * phi2, phi4 = phi22 * phi22;
+Zr.invert = gn(an2);
+function kr2(n13, t10) {
+  var e30 = t10 * t10, r11 = e30 * e30;
   return [
-    lambda * (0.8707 - 0.131979 * phi22 + phi4 * (-0.013791 + phi4 * (3971e-6 * phi22 - 1529e-6 * phi4))),
-    phi2 * (1.007226 + phi22 * (0.015085 + phi4 * (-0.044475 + 0.028874 * phi22 - 5916e-6 * phi4)))
+    n13 * (0.8707 - 0.131979 * e30 + r11 * (-0.013791 + r11 * (3971e-6 * e30 - 1529e-6 * r11))),
+    t10 * (1.007226 + e30 * (0.015085 + r11 * (-0.044475 + 0.028874 * e30 - 5916e-6 * r11)))
   ];
 }
-naturalEarth1Raw.invert = function(x3, y3) {
-  var phi2 = y3, i = 25, delta;
+kr2.invert = function(n13, t10) {
+  var e30 = t10, r11 = 25, i9;
   do {
-    var phi22 = phi2 * phi2, phi4 = phi22 * phi22;
-    phi2 -= delta = (phi2 * (1.007226 + phi22 * (0.015085 + phi4 * (-0.044475 + 0.028874 * phi22 - 5916e-6 * phi4))) - y3) / (1.007226 + phi22 * (0.015085 * 3 + phi4 * (-0.044475 * 7 + 0.028874 * 9 * phi22 - 5916e-6 * 11 * phi4)));
-  } while (abs3(delta) > epsilon5 && --i > 0);
+    var o21 = e30 * e30, a11 = o21 * o21;
+    e30 -= i9 = (e30 * (1.007226 + o21 * (0.015085 + a11 * (-0.044475 + 0.028874 * o21 - 5916e-6 * a11))) - t10) / (1.007226 + o21 * (0.015085 * 3 + a11 * (-0.044475 * 7 + 0.028874 * 9 * o21 - 5916e-6 * 11 * a11)));
+  } while (z5(i9) > w12 && --r11 > 0);
   return [
-    x3 / (0.8707 + (phi22 = phi2 * phi2) * (-0.131979 + phi22 * (-0.013791 + phi22 * phi22 * phi22 * (3971e-6 - 1529e-6 * phi22)))),
-    phi2
+    n13 / (0.8707 + (o21 = e30 * e30) * (-0.131979 + o21 * (-0.013791 + o21 * o21 * o21 * (3971e-6 - 1529e-6 * o21)))),
+    e30
   ];
 };
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/orthographic.js
-function orthographicRaw(x3, y3) {
+function Ur(n13, t10) {
   return [
-    cos2(y3) * sin2(x3),
-    sin2(y3)
+    E12(t10) * x10(n13),
+    x10(t10)
   ];
 }
-orthographicRaw.invert = azimuthalInvert(asin);
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/stereographic.js
-function stereographicRaw(x3, y3) {
-  var cy = cos2(y3), k2 = 1 + cos2(x3) * cy;
+Ur.invert = gn(W6);
+function Jr(n13, t10) {
+  var e30 = E12(t10), r11 = 1 + E12(n13) * e30;
   return [
-    cy * sin2(x3) / k2,
-    sin2(y3) / k2
+    e30 * x10(n13) / r11,
+    x10(t10) / r11
   ];
 }
-stereographicRaw.invert = azimuthalInvert(function(z) {
-  return 2 * atan(z);
+Jr.invert = gn(function(n13) {
+  return 2 * an2(n13);
 });
-
-// node_modules/.deno/d3-geo@3.1.1/node_modules/d3-geo/src/projection/transverseMercator.js
-function transverseMercatorRaw(lambda, phi2) {
+function Kr(n13, t10) {
   return [
-    log(tan((halfPi3 + phi2) / 2)),
-    -lambda
+    An2(Yn((F9 + t10) / 2)),
+    -n13
   ];
 }
-transverseMercatorRaw.invert = function(x3, y3) {
+Kr.invert = function(n13, t10) {
   return [
-    -y3,
-    2 * atan(exp(x3)) - halfPi3
+    -t10,
+    2 * an2(St3(n13)) - F9
   ];
 };
 
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/count.js
-function count2(node) {
-  var sum4 = 0, children2 = node.children, i = children2 && children2.length;
-  if (!i) sum4 = 1;
-  else while (--i >= 0) sum4 += children2[i].value;
-  node.value = sum4;
+// deno:https://esm.sh/d3-hierarchy@3.1.2/denonext/d3-hierarchy.mjs
+function Ce2(e30) {
+  var t10 = 0, r11 = e30.children, n13 = r11 && r11.length;
+  if (!n13) t10 = 1;
+  else for (; --n13 >= 0; ) t10 += r11[n13].value;
+  e30.value = t10;
 }
-function count_default() {
-  return this.eachAfter(count2);
+function re3() {
+  return this.eachAfter(Ce2);
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/each.js
-function each_default2(callback, that) {
-  let index2 = -1;
-  for (const node of this) {
-    callback.call(that, node, ++index2, this);
-  }
+function ne3(e30, t10) {
+  let r11 = -1;
+  for (let n13 of this) e30.call(t10, n13, ++r11, this);
   return this;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachBefore.js
-function eachBefore_default(callback, that) {
-  var node = this, nodes = [
-    node
-  ], children2, i, index2 = -1;
-  while (node = nodes.pop()) {
-    callback.call(that, node, ++index2, this);
-    if (children2 = node.children) {
-      for (i = children2.length - 1; i >= 0; --i) {
-        nodes.push(children2[i]);
-      }
-    }
-  }
+function ie3(e30, t10) {
+  for (var r11 = this, n13 = [
+    r11
+  ], i9, u9, o21 = -1; r11 = n13.pop(); ) if (e30.call(t10, r11, ++o21, this), i9 = r11.children) for (u9 = i9.length - 1; u9 >= 0; --u9) n13.push(i9[u9]);
   return this;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/eachAfter.js
-function eachAfter_default(callback, that) {
-  var node = this, nodes = [
-    node
-  ], next = [], children2, i, n, index2 = -1;
-  while (node = nodes.pop()) {
-    next.push(node);
-    if (children2 = node.children) {
-      for (i = 0, n = children2.length; i < n; ++i) {
-        nodes.push(children2[i]);
-      }
-    }
-  }
-  while (node = next.pop()) {
-    callback.call(that, node, ++index2, this);
-  }
+function ue3(e30, t10) {
+  for (var r11 = this, n13 = [
+    r11
+  ], i9 = [], u9, o21, h9, l9 = -1; r11 = n13.pop(); ) if (i9.push(r11), u9 = r11.children) for (o21 = 0, h9 = u9.length; o21 < h9; ++o21) n13.push(u9[o21]);
+  for (; r11 = i9.pop(); ) e30.call(t10, r11, ++l9, this);
   return this;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/find.js
-function find_default2(callback, that) {
-  let index2 = -1;
-  for (const node of this) {
-    if (callback.call(that, node, ++index2, this)) {
-      return node;
-    }
-  }
+function ae4(e30, t10) {
+  let r11 = -1;
+  for (let n13 of this) if (e30.call(t10, n13, ++r11, this)) return n13;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sum.js
-function sum_default(value) {
-  return this.eachAfter(function(node) {
-    var sum4 = +value(node.data) || 0, children2 = node.children, i = children2 && children2.length;
-    while (--i >= 0) sum4 += children2[i].value;
-    node.value = sum4;
+function fe3(e30) {
+  return this.eachAfter(function(t10) {
+    for (var r11 = +e30(t10.data) || 0, n13 = t10.children, i9 = n13 && n13.length; --i9 >= 0; ) r11 += n13[i9].value;
+    t10.value = r11;
   });
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/sort.js
-function sort_default2(compare) {
-  return this.eachBefore(function(node) {
-    if (node.children) {
-      node.children.sort(compare);
-    }
+function oe4(e30) {
+  return this.eachBefore(function(t10) {
+    t10.children && t10.children.sort(e30);
   });
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/path.js
-function path_default2(end) {
-  var start2 = this, ancestor = leastCommonAncestor(start2, end), nodes = [
-    start2
-  ];
-  while (start2 !== ancestor) {
-    start2 = start2.parent;
-    nodes.push(start2);
-  }
-  var k2 = nodes.length;
-  while (end !== ancestor) {
-    nodes.splice(k2, 0, end);
-    end = end.parent;
-  }
-  return nodes;
+function le3(e30) {
+  for (var t10 = this, r11 = De(t10, e30), n13 = [
+    t10
+  ]; t10 !== r11; ) t10 = t10.parent, n13.push(t10);
+  for (var i9 = n13.length; e30 !== r11; ) n13.splice(i9, 0, e30), e30 = e30.parent;
+  return n13;
 }
-function leastCommonAncestor(a2, b) {
-  if (a2 === b) return a2;
-  var aNodes = a2.ancestors(), bNodes = b.ancestors(), c3 = null;
-  a2 = aNodes.pop();
-  b = bNodes.pop();
-  while (a2 === b) {
-    c3 = a2;
-    a2 = aNodes.pop();
-    b = bNodes.pop();
-  }
-  return c3;
+function De(e30, t10) {
+  if (e30 === t10) return e30;
+  var r11 = e30.ancestors(), n13 = t10.ancestors(), i9 = null;
+  for (e30 = r11.pop(), t10 = n13.pop(); e30 === t10; ) i9 = e30, e30 = r11.pop(), t10 = n13.pop();
+  return i9;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/ancestors.js
-function ancestors_default() {
-  var node = this, nodes = [
-    node
-  ];
-  while (node = node.parent) {
-    nodes.push(node);
-  }
-  return nodes;
+function ce3() {
+  for (var e30 = this, t10 = [
+    e30
+  ]; e30 = e30.parent; ) t10.push(e30);
+  return t10;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/descendants.js
-function descendants_default() {
+function he3() {
   return Array.from(this);
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/leaves.js
-function leaves_default() {
-  var leaves = [];
-  this.eachBefore(function(node) {
-    if (!node.children) {
-      leaves.push(node);
-    }
-  });
-  return leaves;
+function se3() {
+  var e30 = [];
+  return this.eachBefore(function(t10) {
+    t10.children || e30.push(t10);
+  }), e30;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/links.js
-function links_default() {
-  var root2 = this, links = [];
-  root2.each(function(node) {
-    if (node !== root2) {
-      links.push({
-        source: node.parent,
-        target: node
-      });
-    }
-  });
-  return links;
+function pe3() {
+  var e30 = this, t10 = [];
+  return e30.each(function(r11) {
+    r11 !== e30 && t10.push({
+      source: r11.parent,
+      target: r11
+    });
+  }), t10;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/iterator.js
-function* iterator_default2() {
-  var node = this, current, next = [
-    node
-  ], children2, i, n;
-  do {
-    current = next.reverse(), next = [];
-    while (node = current.pop()) {
-      yield node;
-      if (children2 = node.children) {
-        for (i = 0, n = children2.length; i < n; ++i) {
-          next.push(children2[i]);
-        }
-      }
-    }
-  } while (next.length);
-}
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/hierarchy/index.js
-function hierarchy(data, children2) {
-  if (data instanceof Map) {
-    data = [
-      void 0,
-      data
-    ];
-    if (children2 === void 0) children2 = mapChildren;
-  } else if (children2 === void 0) {
-    children2 = objectChildren;
-  }
-  var root2 = new Node(data), node, nodes = [
-    root2
-  ], child, childs, i, n;
-  while (node = nodes.pop()) {
-    if ((childs = children2(node.data)) && (n = (childs = Array.from(childs)).length)) {
-      node.children = childs;
-      for (i = n - 1; i >= 0; --i) {
-        nodes.push(child = childs[i] = new Node(childs[i]));
-        child.parent = node;
-        child.depth = node.depth + 1;
-      }
-    }
-  }
-  return root2.eachBefore(computeHeight);
-}
-function node_copy() {
-  return hierarchy(this).eachBefore(copyData);
-}
-function objectChildren(d) {
-  return d.children;
-}
-function mapChildren(d) {
-  return Array.isArray(d) ? d[1] : null;
-}
-function copyData(node) {
-  if (node.data.value !== void 0) node.value = node.data.value;
-  node.data = node.data.data;
-}
-function computeHeight(node) {
-  var height = 0;
+function* de4() {
+  var e30 = this, t10, r11 = [
+    e30
+  ], n13, i9, u9;
   do
-    node.height = height;
-  while ((node = node.parent) && node.height < ++height);
+    for (t10 = r11.reverse(), r11 = []; e30 = t10.pop(); ) if (yield e30, n13 = e30.children) for (i9 = 0, u9 = n13.length; i9 < u9; ++i9) r11.push(n13[i9]);
+  while (r11.length);
 }
-function Node(data) {
-  this.data = data;
-  this.depth = this.height = 0;
-  this.parent = null;
+function T10(e30, t10) {
+  e30 instanceof Map ? (e30 = [
+    void 0,
+    e30
+  ], t10 === void 0 && (t10 = Oe)) : t10 === void 0 && (t10 = be4);
+  for (var r11 = new M6(e30), n13, i9 = [
+    r11
+  ], u9, o21, h9, l9; n13 = i9.pop(); ) if ((o21 = t10(n13.data)) && (l9 = (o21 = Array.from(o21)).length)) for (n13.children = o21, h9 = l9 - 1; h9 >= 0; --h9) i9.push(u9 = o21[h9] = new M6(o21[h9])), u9.parent = n13, u9.depth = n13.depth + 1;
+  return r11.eachBefore(Z7);
 }
-Node.prototype = hierarchy.prototype = {
-  constructor: Node,
-  count: count_default,
-  each: each_default2,
-  eachAfter: eachAfter_default,
-  eachBefore: eachBefore_default,
-  find: find_default2,
-  sum: sum_default,
-  sort: sort_default2,
-  path: path_default2,
-  ancestors: ancestors_default,
-  descendants: descendants_default,
-  leaves: leaves_default,
-  links: links_default,
-  copy: node_copy,
-  [Symbol.iterator]: iterator_default2
+function Te() {
+  return T10(this).eachBefore(Ve);
+}
+function be4(e30) {
+  return e30.children;
+}
+function Oe(e30) {
+  return Array.isArray(e30) ? e30[1] : null;
+}
+function Ve(e30) {
+  e30.data.value !== void 0 && (e30.value = e30.data.value), e30.data = e30.data.data;
+}
+function Z7(e30) {
+  var t10 = 0;
+  do
+    e30.height = t10;
+  while ((e30 = e30.parent) && e30.height < ++t10);
+}
+function M6(e30) {
+  this.data = e30, this.depth = this.height = 0, this.parent = null;
+}
+M6.prototype = T10.prototype = {
+  constructor: M6,
+  count: re3,
+  each: ne3,
+  eachAfter: ue3,
+  eachBefore: ie3,
+  find: ae4,
+  sum: fe3,
+  sort: oe4,
+  path: le3,
+  ancestors: ce3,
+  descendants: he3,
+  leaves: se3,
+  links: pe3,
+  copy: Te,
+  [Symbol.iterator]: de4
 };
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/dice.js
-function dice_default(parent, x02, y0, x12, y1) {
-  var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (x12 - x02) / parent.value;
-  while (++i < n) {
-    node = nodes[i], node.y0 = y0, node.y1 = y1;
-    node.x0 = x02, node.x1 = x02 += node.value * k2;
-  }
+function S6(e30, t10, r11, n13, i9) {
+  for (var u9 = e30.children, o21, h9 = -1, l9 = u9.length, f15 = e30.value && (n13 - t10) / e30.value; ++h9 < l9; ) o21 = u9[h9], o21.y0 = r11, o21.y1 = i9, o21.x0 = t10, o21.x1 = t10 += o21.value * f15;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/tree.js
-function TreeNode(node, i) {
-  this._ = node;
-  this.parent = null;
-  this.children = null;
-  this.A = null;
-  this.a = this;
-  this.z = 0;
-  this.m = 0;
-  this.c = 0;
-  this.s = 0;
-  this.t = null;
-  this.i = i;
+function W7(e30, t10) {
+  this._ = e30, this.parent = null, this.children = null, this.A = null, this.a = this, this.z = 0, this.m = 0, this.c = 0, this.s = 0, this.t = null, this.i = t10;
 }
-TreeNode.prototype = Object.create(Node.prototype);
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/slice.js
-function slice_default(parent, x02, y0, x12, y1) {
-  var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (y1 - y0) / parent.value;
-  while (++i < n) {
-    node = nodes[i], node.x0 = x02, node.x1 = x12;
-    node.y0 = y0, node.y1 = y0 += node.value * k2;
-  }
+W7.prototype = Object.create(M6.prototype);
+function E13(e30, t10, r11, n13, i9) {
+  for (var u9 = e30.children, o21, h9 = -1, l9 = u9.length, f15 = e30.value && (i9 - r11) / e30.value; ++h9 < l9; ) o21 = u9[h9], o21.x0 = t10, o21.x1 = n13, o21.y0 = r11, o21.y1 = r11 += o21.value * f15;
 }
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/squarify.js
-var phi = (1 + Math.sqrt(5)) / 2;
-function squarifyRatio(ratio, parent, x02, y0, x12, y1) {
-  var rows = [], nodes = parent.children, row, nodeValue, i0 = 0, i1 = 0, n = nodes.length, dx, dy, value = parent.value, sumValue, minValue, maxValue, newRatio, minRatio, alpha, beta;
-  while (i0 < n) {
-    dx = x12 - x02, dy = y1 - y0;
+var Q7 = (1 + Math.sqrt(5)) / 2;
+function U6(e30, t10, r11, n13, i9, u9) {
+  for (var o21 = [], h9 = t10.children, l9, f15, c11 = 0, s14 = 0, a11 = h9.length, p12, d11, m12 = t10.value, x15, g7, y11, _8, w15, v15, z9; c11 < a11; ) {
+    p12 = i9 - r11, d11 = u9 - n13;
     do
-      sumValue = nodes[i1++].value;
-    while (!sumValue && i1 < n);
-    minValue = maxValue = sumValue;
-    alpha = Math.max(dy / dx, dx / dy) / (value * ratio);
-    beta = sumValue * sumValue * alpha;
-    minRatio = Math.max(maxValue / beta, beta / minValue);
-    for (; i1 < n; ++i1) {
-      sumValue += nodeValue = nodes[i1].value;
-      if (nodeValue < minValue) minValue = nodeValue;
-      if (nodeValue > maxValue) maxValue = nodeValue;
-      beta = sumValue * sumValue * alpha;
-      newRatio = Math.max(maxValue / beta, beta / minValue);
-      if (newRatio > minRatio) {
-        sumValue -= nodeValue;
+      x15 = h9[s14++].value;
+    while (!x15 && s14 < a11);
+    for (g7 = y11 = x15, v15 = Math.max(d11 / p12, p12 / d11) / (m12 * e30), z9 = x15 * x15 * v15, w15 = Math.max(y11 / z9, z9 / g7); s14 < a11; ++s14) {
+      if (x15 += f15 = h9[s14].value, f15 < g7 && (g7 = f15), f15 > y11 && (y11 = f15), z9 = x15 * x15 * v15, _8 = Math.max(y11 / z9, z9 / g7), _8 > w15) {
+        x15 -= f15;
         break;
       }
-      minRatio = newRatio;
+      w15 = _8;
     }
-    rows.push(row = {
-      value: sumValue,
-      dice: dx < dy,
-      children: nodes.slice(i0, i1)
-    });
-    if (row.dice) dice_default(row, x02, y0, x12, value ? y0 += dy * sumValue / value : y1);
-    else slice_default(row, x02, y0, value ? x02 += dx * sumValue / value : x12, y1);
-    value -= sumValue, i0 = i1;
+    o21.push(l9 = {
+      value: x15,
+      dice: p12 < d11,
+      children: h9.slice(c11, s14)
+    }), l9.dice ? S6(l9, r11, n13, i9, m12 ? n13 += d11 * x15 / m12 : u9) : E13(l9, r11, n13, m12 ? r11 += p12 * x15 / m12 : i9, u9), m12 -= x15, c11 = s14;
   }
-  return rows;
+  return o21;
 }
-var squarify_default = function custom10(ratio) {
-  function squarify(parent, x02, y0, x12, y1) {
-    squarifyRatio(ratio, parent, x02, y0, x12, y1);
+var ee3 = function e9(t10) {
+  function r11(n13, i9, u9, o21, h9) {
+    U6(t10, n13, i9, u9, o21, h9);
   }
-  squarify.ratio = function(x3) {
-    return custom10((x3 = +x3) > 1 ? x3 : 1);
-  };
-  return squarify;
-}(phi);
-
-// node_modules/.deno/d3-hierarchy@3.1.2/node_modules/d3-hierarchy/src/treemap/resquarify.js
-var resquarify_default = function custom11(ratio) {
-  function resquarify(parent, x02, y0, x12, y1) {
-    if ((rows = parent._squarify) && rows.ratio === ratio) {
-      var rows, row, nodes, i, j = -1, n, m = rows.length, value = parent.value;
-      while (++j < m) {
-        row = rows[j], nodes = row.children;
-        for (i = row.value = 0, n = nodes.length; i < n; ++i) row.value += nodes[i].value;
-        if (row.dice) dice_default(row, x02, y0, x12, value ? y0 += (y1 - y0) * row.value / value : y1);
-        else slice_default(row, x02, y0, value ? x02 += (x12 - x02) * row.value / value : x12, y1);
-        value -= row.value;
-      }
-    } else {
-      parent._squarify = rows = squarifyRatio(ratio, parent, x02, y0, x12, y1);
-      rows.ratio = ratio;
+  return r11.ratio = function(n13) {
+    return e9((n13 = +n13) > 1 ? n13 : 1);
+  }, r11;
+}(Q7);
+var ot2 = function e10(t10) {
+  function r11(n13, i9, u9, o21, h9) {
+    if ((l9 = n13._squarify) && l9.ratio === t10) for (var l9, f15, c11, s14, a11 = -1, p12, d11 = l9.length, m12 = n13.value; ++a11 < d11; ) {
+      for (f15 = l9[a11], c11 = f15.children, s14 = f15.value = 0, p12 = c11.length; s14 < p12; ++s14) f15.value += c11[s14].value;
+      f15.dice ? S6(f15, i9, u9, o21, m12 ? u9 += (h9 - u9) * f15.value / m12 : h9) : E13(f15, i9, u9, m12 ? i9 += (o21 - i9) * f15.value / m12 : o21, h9), m12 -= f15.value;
     }
+    else n13._squarify = l9 = U6(t10, n13, i9, u9, o21, h9), l9.ratio = t10;
   }
-  resquarify.ratio = function(x3) {
-    return custom11((x3 = +x3) > 1 ? x3 : 1);
-  };
-  return resquarify;
-}(phi);
+  return r11.ratio = function(n13) {
+    return e10((n13 = +n13) > 1 ? n13 : 1);
+  }, r11;
+}(Q7);
 
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/defaultSource.js
-var defaultSource_default = Math.random;
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/uniform.js
-var uniform_default = function sourceRandomUniform(source) {
-  function randomUniform(min4, max5) {
-    min4 = min4 == null ? 0 : +min4;
-    max5 = max5 == null ? 1 : +max5;
-    if (arguments.length === 1) max5 = min4, min4 = 0;
-    else max5 -= min4;
-    return function() {
-      return source() * max5 + min4;
+// deno:https://esm.sh/d3-random@3.0.1/denonext/d3-random.mjs
+var a8 = Math.random;
+var N7 = function e11(t10) {
+  function n13(r11, o21) {
+    return r11 = r11 == null ? 0 : +r11, o21 = o21 == null ? 1 : +o21, arguments.length === 1 ? (o21 = r11, r11 = 0) : o21 -= r11, function() {
+      return t10() * o21 + r11;
     };
   }
-  randomUniform.source = sourceRandomUniform;
-  return randomUniform;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/int.js
-var int_default = function sourceRandomInt(source) {
-  function randomInt(min4, max5) {
-    if (arguments.length < 2) max5 = min4, min4 = 0;
-    min4 = Math.floor(min4);
-    max5 = Math.floor(max5) - min4;
-    return function() {
-      return Math.floor(source() * max5 + min4);
+  return n13.source = e11, n13;
+}(a8);
+var E14 = function e12(t10) {
+  function n13(r11, o21) {
+    return arguments.length < 2 && (o21 = r11, r11 = 0), r11 = Math.floor(r11), o21 = Math.floor(o21) - r11, function() {
+      return Math.floor(t10() * o21 + r11);
     };
   }
-  randomInt.source = sourceRandomInt;
-  return randomInt;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/normal.js
-var normal_default = function sourceRandomNormal(source) {
-  function randomNormal(mu, sigma) {
-    var x3, r;
-    mu = mu == null ? 0 : +mu;
-    sigma = sigma == null ? 1 : +sigma;
-    return function() {
-      var y3;
-      if (x3 != null) y3 = x3, x3 = null;
-      else do {
-        x3 = source() * 2 - 1;
-        y3 = source() * 2 - 1;
-        r = x3 * x3 + y3 * y3;
-      } while (!r || r > 1);
-      return mu + sigma * y3 * Math.sqrt(-2 * Math.log(r) / r);
+  return n13.source = e12, n13;
+}(a8);
+var s12 = function e13(t10) {
+  function n13(r11, o21) {
+    var u9, f15;
+    return r11 = r11 == null ? 0 : +r11, o21 = o21 == null ? 1 : +o21, function() {
+      var l9;
+      if (u9 != null) l9 = u9, u9 = null;
+      else do
+        u9 = t10() * 2 - 1, l9 = t10() * 2 - 1, f15 = u9 * u9 + l9 * l9;
+      while (!f15 || f15 > 1);
+      return r11 + o21 * l9 * Math.sqrt(-2 * Math.log(f15) / f15);
     };
   }
-  randomNormal.source = sourceRandomNormal;
-  return randomNormal;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/logNormal.js
-var logNormal_default = function sourceRandomLogNormal(source) {
-  var N = normal_default.source(source);
-  function randomLogNormal() {
-    var randomNormal = N.apply(this, arguments);
+  return n13.source = e13, n13;
+}(a8);
+var L7 = function e14(t10) {
+  var n13 = s12.source(t10);
+  function r11() {
+    var o21 = n13.apply(this, arguments);
     return function() {
-      return Math.exp(randomNormal());
+      return Math.exp(o21());
     };
   }
-  randomLogNormal.source = sourceRandomLogNormal;
-  return randomLogNormal;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/irwinHall.js
-var irwinHall_default = function sourceRandomIrwinHall(source) {
-  function randomIrwinHall(n) {
-    if ((n = +n) <= 0) return () => 0;
-    return function() {
-      for (var sum4 = 0, i = n; i > 1; --i) sum4 += source();
-      return sum4 + i * source();
+  return r11.source = e14, r11;
+}(a8);
+var x11 = function e15(t10) {
+  function n13(r11) {
+    return (r11 = +r11) <= 0 ? () => 0 : function() {
+      for (var o21 = 0, u9 = r11; u9 > 1; --u9) o21 += t10();
+      return o21 + u9 * t10();
     };
   }
-  randomIrwinHall.source = sourceRandomIrwinHall;
-  return randomIrwinHall;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/bates.js
-var bates_default = function sourceRandomBates(source) {
-  var I = irwinHall_default.source(source);
-  function randomBates(n) {
-    if ((n = +n) === 0) return source;
-    var randomIrwinHall = I(n);
+  return n13.source = e15, n13;
+}(a8);
+var P6 = function e16(t10) {
+  var n13 = x11.source(t10);
+  function r11(o21) {
+    if ((o21 = +o21) == 0) return t10;
+    var u9 = n13(o21);
     return function() {
-      return randomIrwinHall() / n;
+      return u9() / o21;
     };
   }
-  randomBates.source = sourceRandomBates;
-  return randomBates;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/exponential.js
-var exponential_default = function sourceRandomExponential(source) {
-  function randomExponential(lambda) {
+  return r11.source = e16, r11;
+}(a8);
+var H8 = function e17(t10) {
+  function n13(r11) {
     return function() {
-      return -Math.log1p(-source()) / lambda;
+      return -Math.log1p(-t10()) / r11;
     };
   }
-  randomExponential.source = sourceRandomExponential;
-  return randomExponential;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/pareto.js
-var pareto_default = function sourceRandomPareto(source) {
-  function randomPareto(alpha) {
-    if ((alpha = +alpha) < 0) throw new RangeError("invalid alpha");
-    alpha = 1 / -alpha;
-    return function() {
-      return Math.pow(1 - source(), alpha);
+  return n13.source = e17, n13;
+}(a8);
+var C9 = function e18(t10) {
+  function n13(r11) {
+    if ((r11 = +r11) < 0) throw new RangeError("invalid alpha");
+    return r11 = 1 / -r11, function() {
+      return Math.pow(1 - t10(), r11);
     };
   }
-  randomPareto.source = sourceRandomPareto;
-  return randomPareto;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/bernoulli.js
-var bernoulli_default = function sourceRandomBernoulli(source) {
-  function randomBernoulli(p) {
-    if ((p = +p) < 0 || p > 1) throw new RangeError("invalid p");
+  return n13.source = e18, n13;
+}(a8);
+var F10 = function e19(t10) {
+  function n13(r11) {
+    if ((r11 = +r11) < 0 || r11 > 1) throw new RangeError("invalid p");
     return function() {
-      return Math.floor(source() + p);
+      return Math.floor(t10() + r11);
     };
   }
-  randomBernoulli.source = sourceRandomBernoulli;
-  return randomBernoulli;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/geometric.js
-var geometric_default = function sourceRandomGeometric(source) {
-  function randomGeometric(p) {
-    if ((p = +p) < 0 || p > 1) throw new RangeError("invalid p");
-    if (p === 0) return () => Infinity;
-    if (p === 1) return () => 1;
-    p = Math.log1p(-p);
-    return function() {
-      return 1 + Math.floor(Math.log1p(-source()) / p);
-    };
+  return n13.source = e19, n13;
+}(a8);
+var g5 = function e20(t10) {
+  function n13(r11) {
+    if ((r11 = +r11) < 0 || r11 > 1) throw new RangeError("invalid p");
+    return r11 === 0 ? () => 1 / 0 : r11 === 1 ? () => 1 : (r11 = Math.log1p(-r11), function() {
+      return 1 + Math.floor(Math.log1p(-t10()) / r11);
+    });
   }
-  randomGeometric.source = sourceRandomGeometric;
-  return randomGeometric;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/gamma.js
-var gamma_default = function sourceRandomGamma(source) {
-  var randomNormal = normal_default.source(source)();
-  function randomGamma(k2, theta) {
-    if ((k2 = +k2) < 0) throw new RangeError("invalid k");
-    if (k2 === 0) return () => 0;
-    theta = theta == null ? 1 : +theta;
-    if (k2 === 1) return () => -Math.log1p(-source()) * theta;
-    var d = (k2 < 1 ? k2 + 1 : k2) - 1 / 3, c3 = 1 / (3 * Math.sqrt(d)), multiplier = k2 < 1 ? () => Math.pow(source(), 1 / k2) : () => 1;
+  return n13.source = e20, n13;
+}(a8);
+var p7 = function e21(t10) {
+  var n13 = s12.source(t10)();
+  function r11(o21, u9) {
+    if ((o21 = +o21) < 0) throw new RangeError("invalid k");
+    if (o21 === 0) return () => 0;
+    if (u9 = u9 == null ? 1 : +u9, o21 === 1) return () => -Math.log1p(-t10()) * u9;
+    var f15 = (o21 < 1 ? o21 + 1 : o21) - 1 / 3, l9 = 1 / (3 * Math.sqrt(f15)), m12 = o21 < 1 ? () => Math.pow(t10(), 1 / o21) : () => 1;
     return function() {
       do {
-        do {
-          var x3 = randomNormal(), v2 = 1 + c3 * x3;
-        } while (v2 <= 0);
-        v2 *= v2 * v2;
-        var u4 = 1 - source();
-      } while (u4 >= 1 - 0.0331 * x3 * x3 * x3 * x3 && Math.log(u4) >= 0.5 * x3 * x3 + d * (1 - v2 + Math.log(v2)));
-      return d * v2 * multiplier() * theta;
+        do
+          var i9 = n13(), c11 = 1 + l9 * i9;
+        while (c11 <= 0);
+        c11 *= c11 * c11;
+        var d11 = 1 - t10();
+      } while (d11 >= 1 - 0.0331 * i9 * i9 * i9 * i9 && Math.log(d11) >= 0.5 * i9 * i9 + f15 * (1 - c11 + Math.log(c11)));
+      return f15 * c11 * m12() * u9;
     };
   }
-  randomGamma.source = sourceRandomGamma;
-  return randomGamma;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/beta.js
-var beta_default = function sourceRandomBeta(source) {
-  var G = gamma_default.source(source);
-  function randomBeta(alpha, beta) {
-    var X2 = G(alpha), Y2 = G(beta);
+  return r11.source = e21, r11;
+}(a8);
+var M7 = function e22(t10) {
+  var n13 = p7.source(t10);
+  function r11(o21, u9) {
+    var f15 = n13(o21), l9 = n13(u9);
     return function() {
-      var x3 = X2();
-      return x3 === 0 ? 0 : x3 / (x3 + Y2());
+      var m12 = f15();
+      return m12 === 0 ? 0 : m12 / (m12 + l9());
     };
   }
-  randomBeta.source = sourceRandomBeta;
-  return randomBeta;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/binomial.js
-var binomial_default = function sourceRandomBinomial(source) {
-  var G = geometric_default.source(source), B3 = beta_default.source(source);
-  function randomBinomial(n, p) {
-    n = +n;
-    if ((p = +p) >= 1) return () => n;
-    if (p <= 0) return () => 0;
-    return function() {
-      var acc = 0, nn = n, pp = p;
-      while (nn * pp > 16 && nn * (1 - pp) > 16) {
-        var i = Math.floor((nn + 1) * pp), y3 = B3(i, nn - i + 1)();
-        if (y3 <= pp) {
-          acc += i;
-          nn -= i;
-          pp = (pp - y3) / (1 - y3);
-        } else {
-          nn = i - 1;
-          pp /= y3;
-        }
+  return r11.source = e22, r11;
+}(a8);
+var v11 = function e23(t10) {
+  var n13 = g5.source(t10), r11 = M7.source(t10);
+  function o21(u9, f15) {
+    return u9 = +u9, (f15 = +f15) >= 1 ? () => u9 : f15 <= 0 ? () => 0 : function() {
+      for (var l9 = 0, m12 = u9, i9 = f15; m12 * i9 > 16 && m12 * (1 - i9) > 16; ) {
+        var c11 = Math.floor((m12 + 1) * i9), d11 = r11(c11, m12 - c11 + 1)();
+        d11 <= i9 ? (l9 += c11, m12 -= c11, i9 = (i9 - d11) / (1 - d11)) : (m12 = c11 - 1, i9 /= d11);
       }
-      var sign3 = pp < 0.5, pFinal = sign3 ? pp : 1 - pp, g = G(pFinal);
-      for (var s2 = g(), k2 = 0; s2 <= nn; ++k2) s2 += g();
-      return acc + (sign3 ? k2 : nn - k2);
+      for (var w15 = i9 < 0.5, G11 = w15 ? i9 : 1 - i9, R8 = n13(G11), S10 = R8(), h9 = 0; S10 <= m12; ++h9) S10 += R8();
+      return l9 + (w15 ? h9 : m12 - h9);
     };
   }
-  randomBinomial.source = sourceRandomBinomial;
-  return randomBinomial;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/weibull.js
-var weibull_default = function sourceRandomWeibull(source) {
-  function randomWeibull(k2, a2, b) {
-    var outerFunc;
-    if ((k2 = +k2) === 0) {
-      outerFunc = (x3) => -Math.log(x3);
-    } else {
-      k2 = 1 / k2;
-      outerFunc = (x3) => Math.pow(x3, k2);
-    }
-    a2 = a2 == null ? 0 : +a2;
-    b = b == null ? 1 : +b;
-    return function() {
-      return a2 + b * outerFunc(-Math.log1p(-source()));
+  return o21.source = e23, o21;
+}(a8);
+var y9 = function e24(t10) {
+  function n13(r11, o21, u9) {
+    var f15;
+    return (r11 = +r11) == 0 ? f15 = (l9) => -Math.log(l9) : (r11 = 1 / r11, f15 = (l9) => Math.pow(l9, r11)), o21 = o21 == null ? 0 : +o21, u9 = u9 == null ? 1 : +u9, function() {
+      return o21 + u9 * f15(-Math.log1p(-t10()));
     };
   }
-  randomWeibull.source = sourceRandomWeibull;
-  return randomWeibull;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/cauchy.js
-var cauchy_default = function sourceRandomCauchy(source) {
-  function randomCauchy(a2, b) {
-    a2 = a2 == null ? 0 : +a2;
-    b = b == null ? 1 : +b;
-    return function() {
-      return a2 + b * Math.tan(Math.PI * source());
+  return n13.source = e24, n13;
+}(a8);
+var U7 = function e25(t10) {
+  function n13(r11, o21) {
+    return r11 = r11 == null ? 0 : +r11, o21 = o21 == null ? 1 : +o21, function() {
+      return r11 + o21 * Math.tan(Math.PI * t10());
     };
   }
-  randomCauchy.source = sourceRandomCauchy;
-  return randomCauchy;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/logistic.js
-var logistic_default = function sourceRandomLogistic(source) {
-  function randomLogistic(a2, b) {
-    a2 = a2 == null ? 0 : +a2;
-    b = b == null ? 1 : +b;
-    return function() {
-      var u4 = source();
-      return a2 + b * Math.log(u4 / (1 - u4));
+  return n13.source = e25, n13;
+}(a8);
+var W8 = function e26(t10) {
+  function n13(r11, o21) {
+    return r11 = r11 == null ? 0 : +r11, o21 = o21 == null ? 1 : +o21, function() {
+      var u9 = t10();
+      return r11 + o21 * Math.log(u9 / (1 - u9));
     };
   }
-  randomLogistic.source = sourceRandomLogistic;
-  return randomLogistic;
-}(defaultSource_default);
-
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/poisson.js
-var poisson_default = function sourceRandomPoisson(source) {
-  var G = gamma_default.source(source), B3 = binomial_default.source(source);
-  function randomPoisson(lambda) {
+  return n13.source = e26, n13;
+}(a8);
+var q11 = function e27(t10) {
+  var n13 = p7.source(t10), r11 = v11.source(t10);
+  function o21(u9) {
     return function() {
-      var acc = 0, l = lambda;
-      while (l > 16) {
-        var n = Math.floor(0.875 * l), t = G(n)();
-        if (t > l) return acc + B3(n - 1, l / t)();
-        acc += n;
-        l -= t;
+      for (var f15 = 0, l9 = u9; l9 > 16; ) {
+        var m12 = Math.floor(0.875 * l9), i9 = n13(m12)();
+        if (i9 > l9) return f15 + r11(m12 - 1, l9 / i9)();
+        f15 += m12, l9 -= i9;
       }
-      for (var s2 = -Math.log1p(-source()), k2 = 0; s2 <= l; ++k2) s2 -= Math.log1p(-source());
-      return acc + k2;
+      for (var c11 = -Math.log1p(-t10()), d11 = 0; c11 <= l9; ++d11) c11 -= Math.log1p(-t10());
+      return f15 + d11;
     };
   }
-  randomPoisson.source = sourceRandomPoisson;
-  return randomPoisson;
-}(defaultSource_default);
+  return o21.source = e27, o21;
+}(a8);
 
-// node_modules/.deno/d3-random@3.0.1/node_modules/d3-random/src/lcg.js
-var eps = 1 / 4294967296;
+// deno:https://esm.sh/d3-scale-chromatic@3.1.0/denonext/d3-scale-chromatic.mjs
+function f11(e30) {
+  for (var d11 = e30.length / 6 | 0, b11 = new Array(d11), r11 = 0; r11 < d11; ) b11[r11] = "#" + e30.slice(r11 * 6, ++r11 * 6);
+  return b11;
+}
+var W9 = f11("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf");
+var j6 = f11("7fc97fbeaed4fdc086ffff99386cb0f0027fbf5b17666666");
+var q12 = f11("1b9e77d95f027570b3e7298a66a61ee6ab02a6761d666666");
+var z6 = f11("4269d0efb118ff725c6cc5b03ca951ff8ab7a463f297bbf59c6b4e9498a0");
+var E15 = f11("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
+var F11 = f11("fbb4aeb3cde3ccebc5decbe4fed9a6ffffcce5d8bdfddaecf2f2f2");
+var H9 = f11("b3e2cdfdcdaccbd5e8f4cae4e6f5c9fff2aef1e2cccccccc");
+var J7 = f11("e41a1c377eb84daf4a984ea3ff7f00ffff33a65628f781bf999999");
+var K6 = f11("66c2a5fc8d628da0cbe78ac3a6d854ffd92fe5c494b3b3b3");
+var N8 = f11("8dd3c7ffffb3bebadafb807280b1d3fdb462b3de69fccde5d9d9d9bc80bdccebc5ffed6f");
+var Q8 = f11("4e79a7f28e2ce1575976b7b259a14fedc949af7aa1ff9da79c755fbab0ab");
+var a9 = (e30) => sr(e30[e30.length - 1]);
+var p8 = new Array(3).concat("d8b365f5f5f55ab4ac", "a6611adfc27d80cdc1018571", "a6611adfc27df5f5f580cdc1018571", "8c510ad8b365f6e8c3c7eae55ab4ac01665e", "8c510ad8b365f6e8c3f5f5f5c7eae55ab4ac01665e", "8c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e", "8c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e", "5430058c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e003c30", "5430058c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e003c30").map(f11);
+var X8 = a9(p8);
+var s13 = new Array(3).concat("af8dc3f7f7f77fbf7b", "7b3294c2a5cfa6dba0008837", "7b3294c2a5cff7f7f7a6dba0008837", "762a83af8dc3e7d4e8d9f0d37fbf7b1b7837", "762a83af8dc3e7d4e8f7f7f7d9f0d37fbf7b1b7837", "762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b7837", "762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b7837", "40004b762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b783700441b", "40004b762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b783700441b").map(f11);
+var Z8 = a9(s13);
+var l7 = new Array(3).concat("e9a3c9f7f7f7a1d76a", "d01c8bf1b6dab8e1864dac26", "d01c8bf1b6daf7f7f7b8e1864dac26", "c51b7de9a3c9fde0efe6f5d0a1d76a4d9221", "c51b7de9a3c9fde0eff7f7f7e6f5d0a1d76a4d9221", "c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221", "c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221", "8e0152c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221276419", "8e0152c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221276419").map(f11);
+var $6 = a9(l7);
+var n12 = new Array(3).concat("998ec3f7f7f7f1a340", "5e3c99b2abd2fdb863e66101", "5e3c99b2abd2f7f7f7fdb863e66101", "542788998ec3d8daebfee0b6f1a340b35806", "542788998ec3d8daebf7f7f7fee0b6f1a340b35806", "5427888073acb2abd2d8daebfee0b6fdb863e08214b35806", "5427888073acb2abd2d8daebf7f7f7fee0b6fdb863e08214b35806", "2d004b5427888073acb2abd2d8daebfee0b6fdb863e08214b358067f3b08", "2d004b5427888073acb2abd2d8daebf7f7f7fee0b6fdb863e08214b358067f3b08").map(f11);
+var ff = a9(n12);
+var i7 = new Array(3).concat("ef8a62f7f7f767a9cf", "ca0020f4a58292c5de0571b0", "ca0020f4a582f7f7f792c5de0571b0", "b2182bef8a62fddbc7d1e5f067a9cf2166ac", "b2182bef8a62fddbc7f7f7f7d1e5f067a9cf2166ac", "b2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac", "b2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac", "67001fb2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac053061", "67001fb2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac053061").map(f11);
+var ef = a9(i7);
+var u7 = new Array(3).concat("ef8a62ffffff999999", "ca0020f4a582bababa404040", "ca0020f4a582ffffffbababa404040", "b2182bef8a62fddbc7e0e0e09999994d4d4d", "b2182bef8a62fddbc7ffffffe0e0e09999994d4d4d", "b2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d", "b2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d", "67001fb2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d1a1a1a", "67001fb2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d1a1a1a").map(f11);
+var af = a9(u7);
+var x12 = new Array(3).concat("fc8d59ffffbf91bfdb", "d7191cfdae61abd9e92c7bb6", "d7191cfdae61ffffbfabd9e92c7bb6", "d73027fc8d59fee090e0f3f891bfdb4575b4", "d73027fc8d59fee090ffffbfe0f3f891bfdb4575b4", "d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4", "d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4", "a50026d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4313695", "a50026d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4313695").map(f11);
+var df = a9(x12);
+var h8 = new Array(3).concat("fc8d59ffffbf91cf60", "d7191cfdae61a6d96a1a9641", "d7191cfdae61ffffbfa6d96a1a9641", "d73027fc8d59fee08bd9ef8b91cf601a9850", "d73027fc8d59fee08bffffbfd9ef8b91cf601a9850", "d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850", "d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850", "a50026d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850006837", "a50026d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850006837").map(f11);
+var cf = a9(h8);
+var v12 = new Array(3).concat("fc8d59ffffbf99d594", "d7191cfdae61abdda42b83ba", "d7191cfdae61ffffbfabdda42b83ba", "d53e4ffc8d59fee08be6f59899d5943288bd", "d53e4ffc8d59fee08bffffbfe6f59899d5943288bd", "d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd", "d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd", "9e0142d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd5e4fa2", "9e0142d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd5e4fa2").map(f11);
+var bf = a9(v12);
+var M8 = new Array(3).concat("e5f5f999d8c92ca25f", "edf8fbb2e2e266c2a4238b45", "edf8fbb2e2e266c2a42ca25f006d2c", "edf8fbccece699d8c966c2a42ca25f006d2c", "edf8fbccece699d8c966c2a441ae76238b45005824", "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45005824", "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45006d2c00441b").map(f11);
+var rf = a9(M8);
+var w13 = new Array(3).concat("e0ecf49ebcda8856a7", "edf8fbb3cde38c96c688419d", "edf8fbb3cde38c96c68856a7810f7c", "edf8fbbfd3e69ebcda8c96c68856a7810f7c", "edf8fbbfd3e69ebcda8c96c68c6bb188419d6e016b", "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d6e016b", "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d810f7c4d004b").map(f11);
+var of = a9(w13);
+var y10 = new Array(3).concat("e0f3dba8ddb543a2ca", "f0f9e8bae4bc7bccc42b8cbe", "f0f9e8bae4bc7bccc443a2ca0868ac", "f0f9e8ccebc5a8ddb57bccc443a2ca0868ac", "f0f9e8ccebc5a8ddb57bccc44eb3d32b8cbe08589e", "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe08589e", "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe0868ac084081").map(f11);
+var tf = a9(y10);
+var A10 = new Array(3).concat("fee8c8fdbb84e34a33", "fef0d9fdcc8afc8d59d7301f", "fef0d9fdcc8afc8d59e34a33b30000", "fef0d9fdd49efdbb84fc8d59e34a33b30000", "fef0d9fdd49efdbb84fc8d59ef6548d7301f990000", "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301f990000", "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301fb300007f0000").map(f11);
+var mf = a9(A10);
+var B6 = new Array(3).concat("ece2f0a6bddb1c9099", "f6eff7bdc9e167a9cf02818a", "f6eff7bdc9e167a9cf1c9099016c59", "f6eff7d0d1e6a6bddb67a9cf1c9099016c59", "f6eff7d0d1e6a6bddb67a9cf3690c002818a016450", "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016450", "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016c59014636").map(f11);
+var pf = a9(B6);
+var P7 = new Array(3).concat("ece7f2a6bddb2b8cbe", "f1eef6bdc9e174a9cf0570b0", "f1eef6bdc9e174a9cf2b8cbe045a8d", "f1eef6d0d1e6a6bddb74a9cf2b8cbe045a8d", "f1eef6d0d1e6a6bddb74a9cf3690c00570b0034e7b", "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0034e7b", "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0045a8d023858").map(f11);
+var sf = a9(P7);
+var G9 = new Array(3).concat("e7e1efc994c7dd1c77", "f1eef6d7b5d8df65b0ce1256", "f1eef6d7b5d8df65b0dd1c77980043", "f1eef6d4b9dac994c7df65b0dd1c77980043", "f1eef6d4b9dac994c7df65b0e7298ace125691003f", "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125691003f", "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125698004367001f").map(f11);
+var lf = a9(G9);
+var R5 = new Array(3).concat("fde0ddfa9fb5c51b8a", "feebe2fbb4b9f768a1ae017e", "feebe2fbb4b9f768a1c51b8a7a0177", "feebe2fcc5c0fa9fb5f768a1c51b8a7a0177", "feebe2fcc5c0fa9fb5f768a1dd3497ae017e7a0177", "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a0177", "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a017749006a").map(f11);
+var nf = a9(R5);
+var g6 = new Array(3).concat("edf8b17fcdbb2c7fb8", "ffffcca1dab441b6c4225ea8", "ffffcca1dab441b6c42c7fb8253494", "ffffccc7e9b47fcdbb41b6c42c7fb8253494", "ffffccc7e9b47fcdbb41b6c41d91c0225ea80c2c84", "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea80c2c84", "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea8253494081d58").map(f11);
+var uf = a9(g6);
+var Y9 = new Array(3).concat("f7fcb9addd8e31a354", "ffffccc2e69978c679238443", "ffffccc2e69978c67931a354006837", "ffffccd9f0a3addd8e78c67931a354006837", "ffffccd9f0a3addd8e78c67941ab5d238443005a32", "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443005a32", "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443006837004529").map(f11);
+var xf = a9(Y9);
+var O3 = new Array(3).concat("fff7bcfec44fd95f0e", "ffffd4fed98efe9929cc4c02", "ffffd4fed98efe9929d95f0e993404", "ffffd4fee391fec44ffe9929d95f0e993404", "ffffd4fee391fec44ffe9929ec7014cc4c028c2d04", "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c028c2d04", "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c02993404662506").map(f11);
+var hf = a9(O3);
+var C10 = new Array(3).concat("ffeda0feb24cf03b20", "ffffb2fecc5cfd8d3ce31a1c", "ffffb2fecc5cfd8d3cf03b20bd0026", "ffffb2fed976feb24cfd8d3cf03b20bd0026", "ffffb2fed976feb24cfd8d3cfc4e2ae31a1cb10026", "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cb10026", "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cbd0026800026").map(f11);
+var vf = a9(C10);
+var S7 = new Array(3).concat("deebf79ecae13182bd", "eff3ffbdd7e76baed62171b5", "eff3ffbdd7e76baed63182bd08519c", "eff3ffc6dbef9ecae16baed63182bd08519c", "eff3ffc6dbef9ecae16baed64292c62171b5084594", "f7fbffdeebf7c6dbef9ecae16baed64292c62171b5084594", "f7fbffdeebf7c6dbef9ecae16baed64292c62171b508519c08306b").map(f11);
+var Mf = a9(S7);
+var I6 = new Array(3).concat("e5f5e0a1d99b31a354", "edf8e9bae4b374c476238b45", "edf8e9bae4b374c47631a354006d2c", "edf8e9c7e9c0a1d99b74c47631a354006d2c", "edf8e9c7e9c0a1d99b74c47641ab5d238b45005a32", "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45005a32", "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45006d2c00441b").map(f11);
+var wf = a9(I6);
+var _5 = new Array(3).concat("f0f0f0bdbdbd636363", "f7f7f7cccccc969696525252", "f7f7f7cccccc969696636363252525", "f7f7f7d9d9d9bdbdbd969696636363252525", "f7f7f7d9d9d9bdbdbd969696737373525252252525", "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525", "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525000000").map(f11);
+var yf = a9(_5);
+var D7 = new Array(3).concat("efedf5bcbddc756bb1", "f2f0f7cbc9e29e9ac86a51a3", "f2f0f7cbc9e29e9ac8756bb154278f", "f2f0f7dadaebbcbddc9e9ac8756bb154278f", "f2f0f7dadaebbcbddc9e9ac8807dba6a51a34a1486", "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a34a1486", "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a354278f3f007d").map(f11);
+var Af = a9(D7);
+var L8 = new Array(3).concat("fee0d2fc9272de2d26", "fee5d9fcae91fb6a4acb181d", "fee5d9fcae91fb6a4ade2d26a50f15", "fee5d9fcbba1fc9272fb6a4ade2d26a50f15", "fee5d9fcbba1fc9272fb6a4aef3b2ccb181d99000d", "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181d99000d", "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181da50f1567000d").map(f11);
+var Bf = a9(L8);
+var T11 = new Array(3).concat("fee6cefdae6be6550d", "feeddefdbe85fd8d3cd94701", "feeddefdbe85fd8d3ce6550da63603", "feeddefdd0a2fdae6bfd8d3ce6550da63603", "feeddefdd0a2fdae6bfd8d3cf16913d948018c2d04", "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d948018c2d04", "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d94801a636037f2704").map(f11);
+var Pf = a9(T11);
+var gf = qr(X2(300, 0.5, 0), X2(-240, 0.5, 1));
+var Yf = qr(X2(-100, 0.75, 0.35), X2(80, 1.5, 0.8));
+var Of = qr(X2(260, 0.75, 0.35), X2(80, 1.5, 0.8));
+var o17 = X2();
+var t2 = V3();
+var If = Math.PI / 3;
+var _f = Math.PI * 2 / 3;
+function m10(e30) {
+  var d11 = e30.length;
+  return function(b11) {
+    return e30[Math.max(0, Math.min(d11 - 1, Math.floor(b11 * d11)))];
+  };
+}
+var Tf = m10(f11("44015444025645045745055946075a46085c460a5d460b5e470d60470e6147106347116447136548146748166848176948186a481a6c481b6d481c6e481d6f481f70482071482173482374482475482576482677482878482979472a7a472c7a472d7b472e7c472f7d46307e46327e46337f463480453581453781453882443983443a83443b84433d84433e85423f854240864241864142874144874045884046883f47883f48893e49893e4a893e4c8a3d4d8a3d4e8a3c4f8a3c508b3b518b3b528b3a538b3a548c39558c39568c38588c38598c375a8c375b8d365c8d365d8d355e8d355f8d34608d34618d33628d33638d32648e32658e31668e31678e31688e30698e306a8e2f6b8e2f6c8e2e6d8e2e6e8e2e6f8e2d708e2d718e2c718e2c728e2c738e2b748e2b758e2a768e2a778e2a788e29798e297a8e297b8e287c8e287d8e277e8e277f8e27808e26818e26828e26828e25838e25848e25858e24868e24878e23888e23898e238a8d228b8d228c8d228d8d218e8d218f8d21908d21918c20928c20928c20938c1f948c1f958b1f968b1f978b1f988b1f998a1f9a8a1e9b8a1e9c891e9d891f9e891f9f881fa0881fa1881fa1871fa28720a38620a48621a58521a68522a78522a88423a98324aa8325ab8225ac8226ad8127ad8128ae8029af7f2ab07f2cb17e2db27d2eb37c2fb47c31b57b32b67a34b67935b77937b87838b9773aba763bbb753dbc743fbc7340bd7242be7144bf7046c06f48c16e4ac16d4cc26c4ec36b50c46a52c56954c56856c66758c7655ac8645cc8635ec96260ca6063cb5f65cb5e67cc5c69cd5b6ccd5a6ece5870cf5773d05675d05477d1537ad1517cd2507fd34e81d34d84d44b86d54989d5488bd6468ed64590d74393d74195d84098d83e9bd93c9dd93ba0da39a2da37a5db36a8db34aadc32addc30b0dd2fb2dd2db5de2bb8de29bade28bddf26c0df25c2df23c5e021c8e020cae11fcde11dd0e11cd2e21bd5e21ad8e219dae319dde318dfe318e2e418e5e419e7e419eae51aece51befe51cf1e51df4e61ef6e620f8e621fbe723fde725"));
+var kf = m10(f11("00000401000501010601010802010902020b02020d03030f03031204041405041606051806051a07061c08071e0907200a08220b09240c09260d0a290e0b2b100b2d110c2f120d31130d34140e36150e38160f3b180f3d19103f1a10421c10441d11471e114920114b21114e22115024125325125527125829115a2a115c2c115f2d11612f116331116533106734106936106b38106c390f6e3b0f703d0f713f0f72400f74420f75440f764510774710784910784a10794c117a4e117b4f127b51127c52137c54137d56147d57157e59157e5a167e5c167f5d177f5f187f601880621980641a80651a80671b80681c816a1c816b1d816d1d816e1e81701f81721f817320817521817621817822817922827b23827c23827e24828025828125818326818426818627818827818928818b29818c29818e2a81902a81912b81932b80942c80962c80982d80992d809b2e7f9c2e7f9e2f7fa02f7fa1307ea3307ea5317ea6317da8327daa337dab337cad347cae347bb0357bb2357bb3367ab5367ab73779b83779ba3878bc3978bd3977bf3a77c03a76c23b75c43c75c53c74c73d73c83e73ca3e72cc3f71cd4071cf4070d0416fd2426fd3436ed5446dd6456cd8456cd9466bdb476adc4869de4968df4a68e04c67e24d66e34e65e44f64e55064e75263e85362e95462ea5661eb5760ec5860ed5a5fee5b5eef5d5ef05f5ef1605df2625df2645cf3655cf4675cf4695cf56b5cf66c5cf66e5cf7705cf7725cf8745cf8765cf9785df9795df97b5dfa7d5efa7f5efa815ffb835ffb8560fb8761fc8961fc8a62fc8c63fc8e64fc9065fd9266fd9467fd9668fd9869fd9a6afd9b6bfe9d6cfe9f6dfea16efea36ffea571fea772fea973feaa74feac76feae77feb078feb27afeb47bfeb67cfeb77efeb97ffebb81febd82febf84fec185fec287fec488fec68afec88cfeca8dfecc8ffecd90fecf92fed194fed395fed597fed799fed89afdda9cfddc9efddea0fde0a1fde2a3fde3a5fde5a7fde7a9fde9aafdebacfcecaefceeb0fcf0b2fcf2b4fcf4b6fcf6b8fcf7b9fcf9bbfcfbbdfcfdbf"));
+var Vf = m10(f11("00000401000501010601010802010a02020c02020e03021004031204031405041706041907051b08051d09061f0a07220b07240c08260d08290e092b10092d110a30120a32140b34150b37160b39180c3c190c3e1b0c411c0c431e0c451f0c48210c4a230c4c240c4f260c51280b53290b552b0b572d0b592f0a5b310a5c320a5e340a5f3609613809623909633b09643d09653e0966400a67420a68440a68450a69470b6a490b6a4a0c6b4c0c6b4d0d6c4f0d6c510e6c520e6d540f6d550f6d57106e59106e5a116e5c126e5d126e5f136e61136e62146e64156e65156e67166e69166e6a176e6c186e6d186e6f196e71196e721a6e741a6e751b6e771c6d781c6d7a1d6d7c1d6d7d1e6d7f1e6c801f6c82206c84206b85216b87216b88226a8a226a8c23698d23698f24699025689225689326679526679727669827669a28659b29649d29649f2a63a02a63a22b62a32c61a52c60a62d60a82e5fa92e5eab2f5ead305dae305cb0315bb1325ab3325ab43359b63458b73557b93556ba3655bc3754bd3853bf3952c03a51c13a50c33b4fc43c4ec63d4dc73e4cc83f4bca404acb4149cc4248ce4347cf4446d04545d24644d34743d44842d54a41d74b3fd84c3ed94d3dda4e3cdb503bdd513ade5238df5337e05536e15635e25734e35933e45a31e55c30e65d2fe75e2ee8602de9612bea632aeb6429eb6628ec6726ed6925ee6a24ef6c23ef6e21f06f20f1711ff1731df2741cf3761bf37819f47918f57b17f57d15f67e14f68013f78212f78410f8850ff8870ef8890cf98b0bf98c0af98e09fa9008fa9207fa9407fb9606fb9706fb9906fb9b06fb9d07fc9f07fca108fca309fca50afca60cfca80dfcaa0ffcac11fcae12fcb014fcb216fcb418fbb61afbb81dfbba1ffbbc21fbbe23fac026fac228fac42afac62df9c72ff9c932f9cb35f8cd37f8cf3af7d13df7d340f6d543f6d746f5d949f5db4cf4dd4ff4df53f4e156f3e35af3e55df2e661f2e865f2ea69f1ec6df1ed71f1ef75f1f179f2f27df2f482f3f586f3f68af4f88ef5f992f6fa96f8fb9af9fc9dfafda1fcffa4"));
+var Wf = m10(f11("0d088710078813078916078a19068c1b068d1d068e20068f2206902406912605912805922a05932c05942e05952f059631059733059735049837049938049a3a049a3c049b3e049c3f049c41049d43039e44039e46039f48039f4903a04b03a14c02a14e02a25002a25102a35302a35502a45601a45801a45901a55b01a55c01a65e01a66001a66100a76300a76400a76600a76700a86900a86a00a86c00a86e00a86f00a87100a87201a87401a87501a87701a87801a87a02a87b02a87d03a87e03a88004a88104a78305a78405a78606a68707a68808a68a09a58b0aa58d0ba58e0ca48f0da4910ea3920fa39410a29511a19613a19814a099159f9a169f9c179e9d189d9e199da01a9ca11b9ba21d9aa31e9aa51f99a62098a72197a82296aa2395ab2494ac2694ad2793ae2892b02991b12a90b22b8fb32c8eb42e8db52f8cb6308bb7318ab83289ba3388bb3488bc3587bd3786be3885bf3984c03a83c13b82c23c81c33d80c43e7fc5407ec6417dc7427cc8437bc9447aca457acb4679cc4778cc4977cd4a76ce4b75cf4c74d04d73d14e72d24f71d35171d45270d5536fd5546ed6556dd7566cd8576bd9586ada5a6ada5b69db5c68dc5d67dd5e66de5f65de6164df6263e06363e16462e26561e26660e3685fe4695ee56a5de56b5de66c5ce76e5be76f5ae87059e97158e97257ea7457eb7556eb7655ec7754ed7953ed7a52ee7b51ef7c51ef7e50f07f4ff0804ef1814df1834cf2844bf3854bf3874af48849f48948f58b47f58c46f68d45f68f44f79044f79143f79342f89441f89540f9973ff9983ef99a3efa9b3dfa9c3cfa9e3bfb9f3afba139fba238fca338fca537fca636fca835fca934fdab33fdac33fdae32fdaf31fdb130fdb22ffdb42ffdb52efeb72dfeb82cfeba2cfebb2bfebd2afebe2afec029fdc229fdc328fdc527fdc627fdc827fdca26fdcb26fccd25fcce25fcd025fcd225fbd324fbd524fbd724fad824fada24f9dc24f9dd25f8df25f8e125f7e225f7e425f6e626f6e826f5e926f5eb27f4ed27f3ee27f3f027f2f227f1f426f1f525f0f724f0f921"));
 
-// node_modules/.deno/d3-scale@4.0.2/node_modules/d3-scale/src/ordinal.js
-var implicit = Symbol("implicit");
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/interval.js
-var t02 = /* @__PURE__ */ new Date();
-var t12 = /* @__PURE__ */ new Date();
-function timeInterval(floori, offseti, count3, field) {
-  function interval2(date) {
-    return floori(date = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date)), date;
+// deno:https://esm.sh/d3-time@3.1.0/denonext/d3-time.mjs
+var q13 = /* @__PURE__ */ new Date();
+var A11 = /* @__PURE__ */ new Date();
+function o18(t10, e30, u9, C11) {
+  function i9(r11) {
+    return t10(r11 = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+r11)), r11;
   }
-  interval2.floor = (date) => {
-    return floori(date = /* @__PURE__ */ new Date(+date)), date;
-  };
-  interval2.ceil = (date) => {
-    return floori(date = new Date(date - 1)), offseti(date, 1), floori(date), date;
-  };
-  interval2.round = (date) => {
-    const d0 = interval2(date), d1 = interval2.ceil(date);
-    return date - d0 < d1 - date ? d0 : d1;
-  };
-  interval2.offset = (date, step) => {
-    return offseti(date = /* @__PURE__ */ new Date(+date), step == null ? 1 : Math.floor(step)), date;
-  };
-  interval2.range = (start2, stop, step) => {
-    const range2 = [];
-    start2 = interval2.ceil(start2);
-    step = step == null ? 1 : Math.floor(step);
-    if (!(start2 < stop) || !(step > 0)) return range2;
-    let previous;
+  return i9.floor = (r11) => (t10(r11 = /* @__PURE__ */ new Date(+r11)), r11), i9.ceil = (r11) => (t10(r11 = new Date(r11 - 1)), e30(r11, 1), t10(r11), r11), i9.round = (r11) => {
+    let n13 = i9(r11), c11 = i9.ceil(r11);
+    return r11 - n13 < c11 - r11 ? n13 : c11;
+  }, i9.offset = (r11, n13) => (e30(r11 = /* @__PURE__ */ new Date(+r11), n13 == null ? 1 : Math.floor(n13)), r11), i9.range = (r11, n13, c11) => {
+    let h9 = [];
+    if (r11 = i9.ceil(r11), c11 = c11 == null ? 1 : Math.floor(c11), !(r11 < n13) || !(c11 > 0)) return h9;
+    let a11;
     do
-      range2.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
-    while (previous < start2 && start2 < stop);
-    return range2;
-  };
-  interval2.filter = (test) => {
-    return timeInterval((date) => {
-      if (date >= date) while (floori(date), !test(date)) date.setTime(date - 1);
-    }, (date, step) => {
-      if (date >= date) {
-        if (step < 0) while (++step <= 0) {
-          while (offseti(date, -1), !test(date)) {
-          }
-        }
-        else while (--step >= 0) {
-          while (offseti(date, 1), !test(date)) {
-          }
-        }
-      }
-    });
-  };
-  if (count3) {
-    interval2.count = (start2, end) => {
-      t02.setTime(+start2), t12.setTime(+end);
-      floori(t02), floori(t12);
-      return Math.floor(count3(t02, t12));
-    };
-    interval2.every = (step) => {
-      step = Math.floor(step);
-      return !isFinite(step) || !(step > 0) ? null : !(step > 1) ? interval2 : interval2.filter(field ? (d) => field(d) % step === 0 : (d) => interval2.count(0, d) % step === 0);
-    };
-  }
-  return interval2;
+      h9.push(a11 = /* @__PURE__ */ new Date(+r11)), e30(r11, c11), t10(r11);
+    while (a11 < r11 && r11 < n13);
+    return h9;
+  }, i9.filter = (r11) => o18((n13) => {
+    if (n13 >= n13) for (; t10(n13), !r11(n13); ) n13.setTime(n13 - 1);
+  }, (n13, c11) => {
+    if (n13 >= n13) if (c11 < 0) for (; ++c11 <= 0; ) for (; e30(n13, -1), !r11(n13); ) ;
+    else for (; --c11 >= 0; ) for (; e30(n13, 1), !r11(n13); ) ;
+  }), u9 && (i9.count = (r11, n13) => (q13.setTime(+r11), A11.setTime(+n13), t10(q13), t10(A11), Math.floor(u9(q13, A11))), i9.every = (r11) => (r11 = Math.floor(r11), !isFinite(r11) || !(r11 > 0) ? null : r11 > 1 ? i9.filter(C11 ? (n13) => C11(n13) % r11 === 0 : (n13) => i9.count(0, n13) % r11 === 0) : i9)), i9;
 }
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/millisecond.js
-var millisecond = timeInterval(() => {
-}, (date, step) => {
-  date.setTime(+date + step);
-}, (start2, end) => {
-  return end - start2;
-});
-millisecond.every = (k2) => {
-  k2 = Math.floor(k2);
-  if (!isFinite(k2) || !(k2 > 0)) return null;
-  if (!(k2 > 1)) return millisecond;
-  return timeInterval((date) => {
-    date.setTime(Math.floor(date / k2) * k2);
-  }, (date, step) => {
-    date.setTime(+date + step * k2);
-  }, (start2, end) => {
-    return (end - start2) / k2;
-  });
-};
-var milliseconds = millisecond.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/duration.js
-var durationSecond = 1e3;
-var durationMinute = durationSecond * 60;
-var durationHour = durationMinute * 60;
-var durationDay = durationHour * 24;
-var durationWeek = durationDay * 7;
-var durationMonth = durationDay * 30;
-var durationYear = durationDay * 365;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/second.js
-var second = timeInterval((date) => {
-  date.setTime(date - date.getMilliseconds());
-}, (date, step) => {
-  date.setTime(+date + step * durationSecond);
-}, (start2, end) => {
-  return (end - start2) / durationSecond;
-}, (date) => {
-  return date.getUTCSeconds();
-});
-var seconds = second.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/minute.js
-var timeMinute = timeInterval((date) => {
-  date.setTime(date - date.getMilliseconds() - date.getSeconds() * durationSecond);
-}, (date, step) => {
-  date.setTime(+date + step * durationMinute);
-}, (start2, end) => {
-  return (end - start2) / durationMinute;
-}, (date) => {
-  return date.getMinutes();
-});
-var timeMinutes = timeMinute.range;
-var utcMinute = timeInterval((date) => {
-  date.setUTCSeconds(0, 0);
-}, (date, step) => {
-  date.setTime(+date + step * durationMinute);
-}, (start2, end) => {
-  return (end - start2) / durationMinute;
-}, (date) => {
-  return date.getUTCMinutes();
-});
-var utcMinutes = utcMinute.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/hour.js
-var timeHour = timeInterval((date) => {
-  date.setTime(date - date.getMilliseconds() - date.getSeconds() * durationSecond - date.getMinutes() * durationMinute);
-}, (date, step) => {
-  date.setTime(+date + step * durationHour);
-}, (start2, end) => {
-  return (end - start2) / durationHour;
-}, (date) => {
-  return date.getHours();
-});
-var timeHours = timeHour.range;
-var utcHour = timeInterval((date) => {
-  date.setUTCMinutes(0, 0, 0);
-}, (date, step) => {
-  date.setTime(+date + step * durationHour);
-}, (start2, end) => {
-  return (end - start2) / durationHour;
-}, (date) => {
-  return date.getUTCHours();
-});
-var utcHours = utcHour.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/day.js
-var timeDay = timeInterval((date) => date.setHours(0, 0, 0, 0), (date, step) => date.setDate(date.getDate() + step), (start2, end) => (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute) / durationDay, (date) => date.getDate() - 1);
-var timeDays = timeDay.range;
-var utcDay = timeInterval((date) => {
-  date.setUTCHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setUTCDate(date.getUTCDate() + step);
-}, (start2, end) => {
-  return (end - start2) / durationDay;
-}, (date) => {
-  return date.getUTCDate() - 1;
-});
-var utcDays = utcDay.range;
-var unixDay = timeInterval((date) => {
-  date.setUTCHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setUTCDate(date.getUTCDate() + step);
-}, (start2, end) => {
-  return (end - start2) / durationDay;
-}, (date) => {
-  return Math.floor(date / durationDay);
-});
-var unixDays = unixDay.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/week.js
-function timeWeekday(i) {
-  return timeInterval((date) => {
-    date.setDate(date.getDate() - (date.getDay() + 7 - i) % 7);
-    date.setHours(0, 0, 0, 0);
-  }, (date, step) => {
-    date.setDate(date.getDate() + step * 7);
-  }, (start2, end) => {
-    return (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute) / durationWeek;
-  });
+var x13 = o18(() => {
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30);
+}, (t10, e30) => e30 - t10);
+x13.every = (t10) => (t10 = Math.floor(t10), !isFinite(t10) || !(t10 > 0) ? null : t10 > 1 ? o18((e30) => {
+  e30.setTime(Math.floor(e30 / t10) * t10);
+}, (e30, u9) => {
+  e30.setTime(+e30 + u9 * t10);
+}, (e30, u9) => (u9 - e30) / t10) : x13);
+var E16 = x13.range;
+var p9 = o18((t10) => {
+  t10.setTime(t10 - t10.getMilliseconds());
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30 * 1e3);
+}, (t10, e30) => (e30 - t10) / 1e3, (t10) => t10.getUTCSeconds());
+var G10 = p9.range;
+var H10 = o18((t10) => {
+  t10.setTime(t10 - t10.getMilliseconds() - t10.getSeconds() * 1e3);
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30 * 6e4);
+}, (t10, e30) => (e30 - t10) / 6e4, (t10) => t10.getMinutes());
+var ct3 = H10.range;
+var W10 = o18((t10) => {
+  t10.setUTCSeconds(0, 0);
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30 * 6e4);
+}, (t10, e30) => (e30 - t10) / 6e4, (t10) => t10.getUTCMinutes());
+var at3 = W10.range;
+var I7 = o18((t10) => {
+  t10.setTime(t10 - t10.getMilliseconds() - t10.getSeconds() * 1e3 - t10.getMinutes() * 6e4);
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30 * 36e5);
+}, (t10, e30) => (e30 - t10) / 36e5, (t10) => t10.getHours());
+var mt3 = I7.range;
+var w14 = o18((t10) => {
+  t10.setUTCMinutes(0, 0, 0);
+}, (t10, e30) => {
+  t10.setTime(+t10 + e30 * 36e5);
+}, (t10, e30) => (e30 - t10) / 36e5, (t10) => t10.getUTCHours());
+var lt3 = w14.range;
+var k9 = o18((t10) => t10.setHours(0, 0, 0, 0), (t10, e30) => t10.setDate(t10.getDate() + e30), (t10, e30) => (e30 - t10 - (e30.getTimezoneOffset() - t10.getTimezoneOffset()) * 6e4) / 864e5, (t10) => t10.getDate() - 1);
+var yt4 = k9.range;
+var J8 = o18((t10) => {
+  t10.setUTCHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setUTCDate(t10.getUTCDate() + e30);
+}, (t10, e30) => (e30 - t10) / 864e5, (t10) => t10.getUTCDate() - 1);
+var gt5 = J8.range;
+var z7 = o18((t10) => {
+  t10.setUTCHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setUTCDate(t10.getUTCDate() + e30);
+}, (t10, e30) => (e30 - t10) / 864e5, (t10) => Math.floor(t10 / 864e5));
+var Tt3 = z7.range;
+function d9(t10) {
+  return o18((e30) => {
+    e30.setDate(e30.getDate() - (e30.getDay() + 7 - t10) % 7), e30.setHours(0, 0, 0, 0);
+  }, (e30, u9) => {
+    e30.setDate(e30.getDate() + u9 * 7);
+  }, (e30, u9) => (u9 - e30 - (u9.getTimezoneOffset() - e30.getTimezoneOffset()) * 6e4) / 6048e5);
 }
-var timeSunday = timeWeekday(0);
-var timeMonday = timeWeekday(1);
-var timeTuesday = timeWeekday(2);
-var timeWednesday = timeWeekday(3);
-var timeThursday = timeWeekday(4);
-var timeFriday = timeWeekday(5);
-var timeSaturday = timeWeekday(6);
-var timeSundays = timeSunday.range;
-var timeMondays = timeMonday.range;
-var timeTuesdays = timeTuesday.range;
-var timeWednesdays = timeWednesday.range;
-var timeThursdays = timeThursday.range;
-var timeFridays = timeFriday.range;
-var timeSaturdays = timeSaturday.range;
-function utcWeekday(i) {
-  return timeInterval((date) => {
-    date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 7 - i) % 7);
-    date.setUTCHours(0, 0, 0, 0);
-  }, (date, step) => {
-    date.setUTCDate(date.getUTCDate() + step * 7);
-  }, (start2, end) => {
-    return (end - start2) / durationWeek;
-  });
+var U8 = d9(0);
+var K7 = d9(1);
+var L9 = d9(2);
+var N9 = d9(3);
+var P8 = d9(4);
+var Q9 = d9(5);
+var R6 = d9(6);
+var V6 = U8.range;
+var pt3 = K7.range;
+var xt5 = L9.range;
+var Mt4 = N9.range;
+var dt3 = P8.range;
+var ft3 = Q9.range;
+var ht4 = R6.range;
+function f12(t10) {
+  return o18((e30) => {
+    e30.setUTCDate(e30.getUTCDate() - (e30.getUTCDay() + 7 - t10) % 7), e30.setUTCHours(0, 0, 0, 0);
+  }, (e30, u9) => {
+    e30.setUTCDate(e30.getUTCDate() + u9 * 7);
+  }, (e30, u9) => (u9 - e30) / 6048e5);
 }
-var utcSunday = utcWeekday(0);
-var utcMonday = utcWeekday(1);
-var utcTuesday = utcWeekday(2);
-var utcWednesday = utcWeekday(3);
-var utcThursday = utcWeekday(4);
-var utcFriday = utcWeekday(5);
-var utcSaturday = utcWeekday(6);
-var utcSundays = utcSunday.range;
-var utcMondays = utcMonday.range;
-var utcTuesdays = utcTuesday.range;
-var utcWednesdays = utcWednesday.range;
-var utcThursdays = utcThursday.range;
-var utcFridays = utcFriday.range;
-var utcSaturdays = utcSaturday.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/month.js
-var timeMonth = timeInterval((date) => {
-  date.setDate(1);
-  date.setHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setMonth(date.getMonth() + step);
-}, (start2, end) => {
-  return end.getMonth() - start2.getMonth() + (end.getFullYear() - start2.getFullYear()) * 12;
-}, (date) => {
-  return date.getMonth();
+var S8 = f12(0);
+var X9 = f12(1);
+var Z9 = f12(2);
+var _6 = f12(3);
+var $7 = f12(4);
+var tt5 = f12(5);
+var et4 = f12(6);
+var rt3 = S8.range;
+var Dt4 = X9.range;
+var Ct3 = Z9.range;
+var Ut3 = _6.range;
+var St4 = $7.range;
+var Ft4 = tt5.range;
+var Yt4 = et4.range;
+var b9 = o18((t10) => {
+  t10.setDate(1), t10.setHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setMonth(t10.getMonth() + e30);
+}, (t10, e30) => e30.getMonth() - t10.getMonth() + (e30.getFullYear() - t10.getFullYear()) * 12, (t10) => t10.getMonth());
+var vt4 = b9.range;
+var j7 = o18((t10) => {
+  t10.setUTCDate(1), t10.setUTCHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setUTCMonth(t10.getUTCMonth() + e30);
+}, (t10, e30) => e30.getUTCMonth() - t10.getUTCMonth() + (e30.getUTCFullYear() - t10.getUTCFullYear()) * 12, (t10) => t10.getUTCMonth());
+var Ht3 = j7.range;
+var F12 = o18((t10) => {
+  t10.setMonth(0, 1), t10.setHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setFullYear(t10.getFullYear() + e30);
+}, (t10, e30) => e30.getFullYear() - t10.getFullYear(), (t10) => t10.getFullYear());
+F12.every = (t10) => !isFinite(t10 = Math.floor(t10)) || !(t10 > 0) ? null : o18((e30) => {
+  e30.setFullYear(Math.floor(e30.getFullYear() / t10) * t10), e30.setMonth(0, 1), e30.setHours(0, 0, 0, 0);
+}, (e30, u9) => {
+  e30.setFullYear(e30.getFullYear() + u9 * t10);
 });
-var timeMonths = timeMonth.range;
-var utcMonth = timeInterval((date) => {
-  date.setUTCDate(1);
-  date.setUTCHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setUTCMonth(date.getUTCMonth() + step);
-}, (start2, end) => {
-  return end.getUTCMonth() - start2.getUTCMonth() + (end.getUTCFullYear() - start2.getUTCFullYear()) * 12;
-}, (date) => {
-  return date.getUTCMonth();
+var Wt4 = F12.range;
+var Y10 = o18((t10) => {
+  t10.setUTCMonth(0, 1), t10.setUTCHours(0, 0, 0, 0);
+}, (t10, e30) => {
+  t10.setUTCFullYear(t10.getUTCFullYear() + e30);
+}, (t10, e30) => e30.getUTCFullYear() - t10.getUTCFullYear(), (t10) => t10.getUTCFullYear());
+Y10.every = (t10) => !isFinite(t10 = Math.floor(t10)) || !(t10 > 0) ? null : o18((e30) => {
+  e30.setUTCFullYear(Math.floor(e30.getUTCFullYear() / t10) * t10), e30.setUTCMonth(0, 1), e30.setUTCHours(0, 0, 0, 0);
+}, (e30, u9) => {
+  e30.setUTCFullYear(e30.getUTCFullYear() + u9 * t10);
 });
-var utcMonths = utcMonth.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/year.js
-var timeYear = timeInterval((date) => {
-  date.setMonth(0, 1);
-  date.setHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setFullYear(date.getFullYear() + step);
-}, (start2, end) => {
-  return end.getFullYear() - start2.getFullYear();
-}, (date) => {
-  return date.getFullYear();
-});
-timeYear.every = (k2) => {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : timeInterval((date) => {
-    date.setFullYear(Math.floor(date.getFullYear() / k2) * k2);
-    date.setMonth(0, 1);
-    date.setHours(0, 0, 0, 0);
-  }, (date, step) => {
-    date.setFullYear(date.getFullYear() + step * k2);
-  });
-};
-var timeYears = timeYear.range;
-var utcYear = timeInterval((date) => {
-  date.setUTCMonth(0, 1);
-  date.setUTCHours(0, 0, 0, 0);
-}, (date, step) => {
-  date.setUTCFullYear(date.getUTCFullYear() + step);
-}, (start2, end) => {
-  return end.getUTCFullYear() - start2.getUTCFullYear();
-}, (date) => {
-  return date.getUTCFullYear();
-});
-utcYear.every = (k2) => {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : timeInterval((date) => {
-    date.setUTCFullYear(Math.floor(date.getUTCFullYear() / k2) * k2);
-    date.setUTCMonth(0, 1);
-    date.setUTCHours(0, 0, 0, 0);
-  }, (date, step) => {
-    date.setUTCFullYear(date.getUTCFullYear() + step * k2);
-  });
-};
-var utcYears = utcYear.range;
-
-// node_modules/.deno/d3-time@3.1.0/node_modules/d3-time/src/ticks.js
-function ticker(year, month, week, day, hour, minute) {
-  const tickIntervals = [
+var It3 = Y10.range;
+function ut4(t10, e30, u9, C11, i9, r11) {
+  let n13 = [
     [
-      second,
+      p9,
       1,
-      durationSecond
+      1e3
     ],
     [
-      second,
+      p9,
       5,
-      5 * durationSecond
+      5 * 1e3
     ],
     [
-      second,
+      p9,
       15,
-      15 * durationSecond
+      15 * 1e3
     ],
     [
-      second,
+      p9,
       30,
-      30 * durationSecond
+      30 * 1e3
     ],
     [
-      minute,
+      r11,
       1,
-      durationMinute
+      6e4
     ],
     [
-      minute,
+      r11,
       5,
-      5 * durationMinute
+      5 * 6e4
     ],
     [
-      minute,
+      r11,
       15,
-      15 * durationMinute
+      15 * 6e4
     ],
     [
-      minute,
+      r11,
       30,
-      30 * durationMinute
+      30 * 6e4
     ],
     [
-      hour,
+      i9,
       1,
-      durationHour
+      36e5
     ],
     [
-      hour,
+      i9,
       3,
-      3 * durationHour
+      3 * 36e5
     ],
     [
-      hour,
+      i9,
       6,
-      6 * durationHour
+      6 * 36e5
     ],
     [
-      hour,
+      i9,
       12,
-      12 * durationHour
+      12 * 36e5
     ],
     [
-      day,
+      C11,
       1,
-      durationDay
+      864e5
     ],
     [
-      day,
+      C11,
       2,
-      2 * durationDay
+      2 * 864e5
     ],
     [
-      week,
+      u9,
       1,
-      durationWeek
+      6048e5
     ],
     [
-      month,
+      e30,
       1,
-      durationMonth
+      2592e6
     ],
     [
-      month,
+      e30,
       3,
-      3 * durationMonth
+      3 * 2592e6
     ],
     [
-      year,
+      t10,
       1,
-      durationYear
+      31536e6
     ]
   ];
-  function ticks2(start2, stop, count3) {
-    const reverse2 = stop < start2;
-    if (reverse2) [start2, stop] = [
-      stop,
-      start2
-    ];
-    const interval2 = count3 && typeof count3.range === "function" ? count3 : tickInterval(start2, stop, count3);
-    const ticks3 = interval2 ? interval2.range(start2, +stop + 1) : [];
-    return reverse2 ? ticks3.reverse() : ticks3;
+  function c11(a11, l9, T12) {
+    let D9 = l9 < a11;
+    D9 && ([a11, l9] = [
+      l9,
+      a11
+    ]);
+    let y11 = T12 && typeof T12.range == "function" ? T12 : h9(a11, l9, T12), v15 = y11 ? y11.range(a11, +l9 + 1) : [];
+    return D9 ? v15.reverse() : v15;
   }
-  function tickInterval(start2, stop, count3) {
-    const target = Math.abs(stop - start2) / count3;
-    const i = bisector(([, , step2]) => step2).right(tickIntervals, target);
-    if (i === tickIntervals.length) return year.every(tickStep(start2 / durationYear, stop / durationYear, count3));
-    if (i === 0) return millisecond.every(Math.max(tickStep(start2, stop, count3), 1));
-    const [t, step] = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
-    return t.every(step);
+  function h9(a11, l9, T12) {
+    let D9 = Math.abs(l9 - a11) / T12, y11 = F(([, , st2]) => st2).right(n13, D9);
+    if (y11 === n13.length) return t10.every(gt(a11 / 31536e6, l9 / 31536e6, T12));
+    if (y11 === 0) return x13.every(Math.max(gt(a11, l9, T12), 1));
+    let [v15, it3] = n13[D9 / n13[y11 - 1][2] < n13[y11][2] / D9 ? y11 - 1 : y11];
+    return v15.every(it3);
   }
   return [
-    ticks2,
-    tickInterval
+    c11,
+    h9
   ];
 }
-var [utcTicks, utcTickInterval] = ticker(utcYear, utcMonth, utcSunday, unixDay, utcHour, utcMinute);
-var [timeTicks, timeTickInterval] = ticker(timeYear, timeMonth, timeSunday, timeDay, timeHour, timeMinute);
+var [kt3, zt3] = ut4(Y10, j7, S8, z7, w14, W10);
+var [Ot2, bt2] = ut4(F12, b9, U8, k9, I7, H10);
 
-// node_modules/.deno/d3-time-format@4.1.0/node_modules/d3-time-format/src/locale.js
-function localDate(d) {
-  if (0 <= d.y && d.y < 100) {
-    var date = new Date(-1, d.m, d.d, d.H, d.M, d.S, d.L);
-    date.setFullYear(d.y);
-    return date;
+// deno:https://esm.sh/d3-time-format@4.1.0/denonext/src/locale.mjs
+function H11(e30) {
+  if (0 <= e30.y && e30.y < 100) {
+    var n13 = new Date(-1, e30.m, e30.d, e30.H, e30.M, e30.S, e30.L);
+    return n13.setFullYear(e30.y), n13;
   }
-  return new Date(d.y, d.m, d.d, d.H, d.M, d.S, d.L);
+  return new Date(e30.y, e30.m, e30.d, e30.H, e30.M, e30.S, e30.L);
 }
-function utcDate(d) {
-  if (0 <= d.y && d.y < 100) {
-    var date = new Date(Date.UTC(-1, d.m, d.d, d.H, d.M, d.S, d.L));
-    date.setUTCFullYear(d.y);
-    return date;
+function b10(e30) {
+  if (0 <= e30.y && e30.y < 100) {
+    var n13 = new Date(Date.UTC(-1, e30.m, e30.d, e30.H, e30.M, e30.S, e30.L));
+    return n13.setUTCFullYear(e30.y), n13;
   }
-  return new Date(Date.UTC(d.y, d.m, d.d, d.H, d.M, d.S, d.L));
+  return new Date(Date.UTC(e30.y, e30.m, e30.d, e30.H, e30.M, e30.S, e30.L));
 }
-function newDate(y3, m, d) {
+function p10(e30, n13, t10) {
   return {
-    y: y3,
-    m,
-    d,
+    y: e30,
+    m: n13,
+    d: t10,
     H: 0,
     M: 0,
     S: 0,
     L: 0
   };
 }
-function formatLocale(locale3) {
-  var locale_dateTime = locale3.dateTime, locale_date = locale3.date, locale_time = locale3.time, locale_periods = locale3.periods, locale_weekdays = locale3.days, locale_shortWeekdays = locale3.shortDays, locale_months = locale3.months, locale_shortMonths = locale3.shortMonths;
-  var periodRe = formatRe(locale_periods), periodLookup = formatLookup(locale_periods), weekdayRe = formatRe(locale_weekdays), weekdayLookup = formatLookup(locale_weekdays), shortWeekdayRe = formatRe(locale_shortWeekdays), shortWeekdayLookup = formatLookup(locale_shortWeekdays), monthRe = formatRe(locale_months), monthLookup = formatLookup(locale_months), shortMonthRe = formatRe(locale_shortMonths), shortMonthLookup = formatLookup(locale_shortMonths);
-  var formats = {
-    "a": formatShortWeekday,
-    "A": formatWeekday,
-    "b": formatShortMonth,
-    "B": formatMonth,
-    "c": null,
-    "d": formatDayOfMonth,
-    "e": formatDayOfMonth,
-    "f": formatMicroseconds,
-    "g": formatYearISO,
-    "G": formatFullYearISO,
-    "H": formatHour24,
-    "I": formatHour12,
-    "j": formatDayOfYear,
-    "L": formatMilliseconds,
-    "m": formatMonthNumber,
-    "M": formatMinutes,
-    "p": formatPeriod,
-    "q": formatQuarter,
-    "Q": formatUnixTimestamp,
-    "s": formatUnixTimestampSeconds,
-    "S": formatSeconds,
-    "u": formatWeekdayNumberMonday,
-    "U": formatWeekNumberSunday,
-    "V": formatWeekNumberISO,
-    "w": formatWeekdayNumberSunday,
-    "W": formatWeekNumberMonday,
-    "x": null,
-    "X": null,
-    "y": formatYear2,
-    "Y": formatFullYear,
-    "Z": formatZone,
-    "%": formatLiteralPercent
+function be5(e30) {
+  var n13 = e30.dateTime, t10 = e30.date, u9 = e30.time, y11 = e30.periods, T12 = e30.days, k10 = e30.shortDays, W12 = e30.months, L10 = e30.shortMonths, K9 = v13(y11), ee4 = D8(y11), ne4 = v13(T12), te3 = D8(T12), re5 = v13(k10), ue4 = D8(k10), oe5 = v13(W12), ae5 = D8(W12), ce4 = v13(L10), fe4 = D8(L10), U9 = {
+    a: Ce3,
+    A: Me2,
+    b: pe4,
+    B: ve4,
+    c: null,
+    d: _7,
+    e: _7,
+    f: nn3,
+    g: mn,
+    G: yn2,
+    H: Je,
+    I: Ke,
+    j: en2,
+    L: z8,
+    m: tn2,
+    M: rn,
+    p: De2,
+    q: Se2,
+    Q: X10,
+    s: j8,
+    S: un2,
+    u: on2,
+    U: an3,
+    V: cn2,
+    w: fn2,
+    W: ln2,
+    x: null,
+    X: null,
+    y: sn,
+    Y: gn2,
+    Z: hn2,
+    "%": P9
+  }, C11 = {
+    a: we3,
+    A: de5,
+    b: xe4,
+    B: ke3,
+    c: null,
+    d: q14,
+    e: q14,
+    f: Mn3,
+    g: Ln2,
+    G: Hn2,
+    H: Tn2,
+    I: Un2,
+    j: Cn2,
+    L: E17,
+    m: pn2,
+    M: vn3,
+    p: We,
+    q: Le,
+    Q: X10,
+    s: j8,
+    S: Dn2,
+    u: Sn2,
+    U: wn2,
+    V: dn2,
+    w: xn3,
+    W: kn,
+    x: null,
+    X: null,
+    y: Wn3,
+    Y: Yn2,
+    Z: bn2,
+    "%": P9
+  }, ie4 = {
+    a: se4,
+    A: me4,
+    b: ge3,
+    B: ye4,
+    c: he4,
+    d: Q10,
+    e: Q10,
+    f: Ge,
+    g: R7,
+    G: A12,
+    H: V7,
+    I: V7,
+    j: Pe,
+    L: Be,
+    m: qe,
+    M: Xe2,
+    p: le4,
+    q: _e2,
+    Q: $e2,
+    s: Ee3,
+    S: je,
+    u: Ie,
+    U: Ae2,
+    V: Re,
+    w: Ze2,
+    W: Qe,
+    x: Te2,
+    X: Ue,
+    y: R7,
+    Y: A12,
+    Z: Ve2,
+    "%": ze
   };
-  var utcFormats = {
-    "a": formatUTCShortWeekday,
-    "A": formatUTCWeekday,
-    "b": formatUTCShortMonth,
-    "B": formatUTCMonth,
-    "c": null,
-    "d": formatUTCDayOfMonth,
-    "e": formatUTCDayOfMonth,
-    "f": formatUTCMicroseconds,
-    "g": formatUTCYearISO,
-    "G": formatUTCFullYearISO,
-    "H": formatUTCHour24,
-    "I": formatUTCHour12,
-    "j": formatUTCDayOfYear,
-    "L": formatUTCMilliseconds,
-    "m": formatUTCMonthNumber,
-    "M": formatUTCMinutes,
-    "p": formatUTCPeriod,
-    "q": formatUTCQuarter,
-    "Q": formatUnixTimestamp,
-    "s": formatUnixTimestampSeconds,
-    "S": formatUTCSeconds,
-    "u": formatUTCWeekdayNumberMonday,
-    "U": formatUTCWeekNumberSunday,
-    "V": formatUTCWeekNumberISO,
-    "w": formatUTCWeekdayNumberSunday,
-    "W": formatUTCWeekNumberMonday,
-    "x": null,
-    "X": null,
-    "y": formatUTCYear,
-    "Y": formatUTCFullYear,
-    "Z": formatUTCZone,
-    "%": formatLiteralPercent
-  };
-  var parses = {
-    "a": parseShortWeekday,
-    "A": parseWeekday,
-    "b": parseShortMonth,
-    "B": parseMonth,
-    "c": parseLocaleDateTime,
-    "d": parseDayOfMonth,
-    "e": parseDayOfMonth,
-    "f": parseMicroseconds,
-    "g": parseYear,
-    "G": parseFullYear,
-    "H": parseHour24,
-    "I": parseHour24,
-    "j": parseDayOfYear,
-    "L": parseMilliseconds,
-    "m": parseMonthNumber,
-    "M": parseMinutes,
-    "p": parsePeriod,
-    "q": parseQuarter,
-    "Q": parseUnixTimestamp,
-    "s": parseUnixTimestampSeconds,
-    "S": parseSeconds,
-    "u": parseWeekdayNumberMonday,
-    "U": parseWeekNumberSunday,
-    "V": parseWeekNumberISO,
-    "w": parseWeekdayNumberSunday,
-    "W": parseWeekNumberMonday,
-    "x": parseLocaleDate,
-    "X": parseLocaleTime,
-    "y": parseYear,
-    "Y": parseFullYear,
-    "Z": parseZone,
-    "%": parseLiteralPercent
-  };
-  formats.x = newFormat(locale_date, formats);
-  formats.X = newFormat(locale_time, formats);
-  formats.c = newFormat(locale_dateTime, formats);
-  utcFormats.x = newFormat(locale_date, utcFormats);
-  utcFormats.X = newFormat(locale_time, utcFormats);
-  utcFormats.c = newFormat(locale_dateTime, utcFormats);
-  function newFormat(specifier, formats2) {
-    return function(date) {
-      var string = [], i = -1, j = 0, n = specifier.length, c3, pad3, format2;
-      if (!(date instanceof Date)) date = /* @__PURE__ */ new Date(+date);
-      while (++i < n) {
-        if (specifier.charCodeAt(i) === 37) {
-          string.push(specifier.slice(j, i));
-          if ((pad3 = pads[c3 = specifier.charAt(++i)]) != null) c3 = specifier.charAt(++i);
-          else pad3 = c3 === "e" ? " " : "0";
-          if (format2 = formats2[c3]) c3 = format2(date, pad3);
-          string.push(c3);
-          j = i + 1;
-        }
-      }
-      string.push(specifier.slice(j, i));
-      return string.join("");
+  U9.x = h9(t10, U9), U9.X = h9(u9, U9), U9.c = h9(n13, U9), C11.x = h9(t10, C11), C11.X = h9(u9, C11), C11.c = h9(n13, C11);
+  function h9(o21, a11) {
+    return function(c11) {
+      var r11 = [], s14 = -1, i9 = 0, m12 = o21.length, g7, M10, Z10;
+      for (c11 instanceof Date || (c11 = /* @__PURE__ */ new Date(+c11)); ++s14 < m12; ) o21.charCodeAt(s14) === 37 && (r11.push(o21.slice(i9, s14)), (M10 = I8[g7 = o21.charAt(++s14)]) != null ? g7 = o21.charAt(++s14) : M10 = g7 === "e" ? " " : "0", (Z10 = a11[g7]) && (g7 = Z10(c11, M10)), r11.push(g7), i9 = s14 + 1);
+      return r11.push(o21.slice(i9, s14)), r11.join("");
     };
   }
-  function newParse(specifier, Z) {
-    return function(string) {
-      var d = newDate(1900, void 0, 1), i = parseSpecifier(d, specifier, string += "", 0), week, day;
-      if (i != string.length) return null;
-      if ("Q" in d) return new Date(d.Q);
-      if ("s" in d) return new Date(d.s * 1e3 + ("L" in d ? d.L : 0));
-      if (Z && !("Z" in d)) d.Z = 0;
-      if ("p" in d) d.H = d.H % 12 + d.p * 12;
-      if (d.m === void 0) d.m = "q" in d ? d.q : 0;
-      if ("V" in d) {
-        if (d.V < 1 || d.V > 53) return null;
-        if (!("w" in d)) d.w = 1;
-        if ("Z" in d) {
-          week = utcDate(newDate(d.y, 0, 1)), day = week.getUTCDay();
-          week = day > 4 || day === 0 ? utcMonday.ceil(week) : utcMonday(week);
-          week = utcDay.offset(week, (d.V - 1) * 7);
-          d.y = week.getUTCFullYear();
-          d.m = week.getUTCMonth();
-          d.d = week.getUTCDate() + (d.w + 6) % 7;
-        } else {
-          week = localDate(newDate(d.y, 0, 1)), day = week.getDay();
-          week = day > 4 || day === 0 ? timeMonday.ceil(week) : timeMonday(week);
-          week = timeDay.offset(week, (d.V - 1) * 7);
-          d.y = week.getFullYear();
-          d.m = week.getMonth();
-          d.d = week.getDate() + (d.w + 6) % 7;
-        }
-      } else if ("W" in d || "U" in d) {
-        if (!("w" in d)) d.w = "u" in d ? d.u % 7 : "W" in d ? 1 : 0;
-        day = "Z" in d ? utcDate(newDate(d.y, 0, 1)).getUTCDay() : localDate(newDate(d.y, 0, 1)).getDay();
-        d.m = 0;
-        d.d = "W" in d ? (d.w + 6) % 7 + d.W * 7 - (day + 5) % 7 : d.w + d.U * 7 - (day + 6) % 7;
-      }
-      if ("Z" in d) {
-        d.H += d.Z / 100 | 0;
-        d.M += d.Z % 100;
-        return utcDate(d);
-      }
-      return localDate(d);
+  function O5(o21, a11) {
+    return function(c11) {
+      var r11 = p10(1900, void 0, 1), s14 = Y12(r11, o21, c11 += "", 0), i9, m12;
+      if (s14 != c11.length) return null;
+      if ("Q" in r11) return new Date(r11.Q);
+      if ("s" in r11) return new Date(r11.s * 1e3 + ("L" in r11 ? r11.L : 0));
+      if (a11 && !("Z" in r11) && (r11.Z = 0), "p" in r11 && (r11.H = r11.H % 12 + r11.p * 12), r11.m === void 0 && (r11.m = "q" in r11 ? r11.q : 0), "V" in r11) {
+        if (r11.V < 1 || r11.V > 53) return null;
+        "w" in r11 || (r11.w = 1), "Z" in r11 ? (i9 = b10(p10(r11.y, 0, 1)), m12 = i9.getUTCDay(), i9 = m12 > 4 || m12 === 0 ? X9.ceil(i9) : X9(i9), i9 = J8.offset(i9, (r11.V - 1) * 7), r11.y = i9.getUTCFullYear(), r11.m = i9.getUTCMonth(), r11.d = i9.getUTCDate() + (r11.w + 6) % 7) : (i9 = H11(p10(r11.y, 0, 1)), m12 = i9.getDay(), i9 = m12 > 4 || m12 === 0 ? K7.ceil(i9) : K7(i9), i9 = k9.offset(i9, (r11.V - 1) * 7), r11.y = i9.getFullYear(), r11.m = i9.getMonth(), r11.d = i9.getDate() + (r11.w + 6) % 7);
+      } else ("W" in r11 || "U" in r11) && ("w" in r11 || (r11.w = "u" in r11 ? r11.u % 7 : "W" in r11 ? 1 : 0), m12 = "Z" in r11 ? b10(p10(r11.y, 0, 1)).getUTCDay() : H11(p10(r11.y, 0, 1)).getDay(), r11.m = 0, r11.d = "W" in r11 ? (r11.w + 6) % 7 + r11.W * 7 - (m12 + 5) % 7 : r11.w + r11.U * 7 - (m12 + 6) % 7);
+      return "Z" in r11 ? (r11.H += r11.Z / 100 | 0, r11.M += r11.Z % 100, b10(r11)) : H11(r11);
     };
   }
-  function parseSpecifier(d, specifier, string, j) {
-    var i = 0, n = specifier.length, m = string.length, c3, parse;
-    while (i < n) {
-      if (j >= m) return -1;
-      c3 = specifier.charCodeAt(i++);
-      if (c3 === 37) {
-        c3 = specifier.charAt(i++);
-        parse = parses[c3 in pads ? specifier.charAt(i++) : c3];
-        if (!parse || (j = parse(d, string, j)) < 0) return -1;
-      } else if (c3 != string.charCodeAt(j++)) {
-        return -1;
-      }
+  function Y12(o21, a11, c11, r11) {
+    for (var s14 = 0, i9 = a11.length, m12 = c11.length, g7, M10; s14 < i9; ) {
+      if (r11 >= m12) return -1;
+      if (g7 = a11.charCodeAt(s14++), g7 === 37) {
+        if (g7 = a11.charAt(s14++), M10 = ie4[g7 in I8 ? a11.charAt(s14++) : g7], !M10 || (r11 = M10(o21, c11, r11)) < 0) return -1;
+      } else if (g7 != c11.charCodeAt(r11++)) return -1;
     }
-    return j;
+    return r11;
   }
-  function parsePeriod(d, string, i) {
-    var n = periodRe.exec(string.slice(i));
-    return n ? (d.p = periodLookup.get(n[0].toLowerCase()), i + n[0].length) : -1;
+  function le4(o21, a11, c11) {
+    var r11 = K9.exec(a11.slice(c11));
+    return r11 ? (o21.p = ee4.get(r11[0].toLowerCase()), c11 + r11[0].length) : -1;
   }
-  function parseShortWeekday(d, string, i) {
-    var n = shortWeekdayRe.exec(string.slice(i));
-    return n ? (d.w = shortWeekdayLookup.get(n[0].toLowerCase()), i + n[0].length) : -1;
+  function se4(o21, a11, c11) {
+    var r11 = re5.exec(a11.slice(c11));
+    return r11 ? (o21.w = ue4.get(r11[0].toLowerCase()), c11 + r11[0].length) : -1;
   }
-  function parseWeekday(d, string, i) {
-    var n = weekdayRe.exec(string.slice(i));
-    return n ? (d.w = weekdayLookup.get(n[0].toLowerCase()), i + n[0].length) : -1;
+  function me4(o21, a11, c11) {
+    var r11 = ne4.exec(a11.slice(c11));
+    return r11 ? (o21.w = te3.get(r11[0].toLowerCase()), c11 + r11[0].length) : -1;
   }
-  function parseShortMonth(d, string, i) {
-    var n = shortMonthRe.exec(string.slice(i));
-    return n ? (d.m = shortMonthLookup.get(n[0].toLowerCase()), i + n[0].length) : -1;
+  function ge3(o21, a11, c11) {
+    var r11 = ce4.exec(a11.slice(c11));
+    return r11 ? (o21.m = fe4.get(r11[0].toLowerCase()), c11 + r11[0].length) : -1;
   }
-  function parseMonth(d, string, i) {
-    var n = monthRe.exec(string.slice(i));
-    return n ? (d.m = monthLookup.get(n[0].toLowerCase()), i + n[0].length) : -1;
+  function ye4(o21, a11, c11) {
+    var r11 = oe5.exec(a11.slice(c11));
+    return r11 ? (o21.m = ae5.get(r11[0].toLowerCase()), c11 + r11[0].length) : -1;
   }
-  function parseLocaleDateTime(d, string, i) {
-    return parseSpecifier(d, locale_dateTime, string, i);
+  function he4(o21, a11, c11) {
+    return Y12(o21, n13, a11, c11);
   }
-  function parseLocaleDate(d, string, i) {
-    return parseSpecifier(d, locale_date, string, i);
+  function Te2(o21, a11, c11) {
+    return Y12(o21, t10, a11, c11);
   }
-  function parseLocaleTime(d, string, i) {
-    return parseSpecifier(d, locale_time, string, i);
+  function Ue(o21, a11, c11) {
+    return Y12(o21, u9, a11, c11);
   }
-  function formatShortWeekday(d) {
-    return locale_shortWeekdays[d.getDay()];
+  function Ce3(o21) {
+    return k10[o21.getDay()];
   }
-  function formatWeekday(d) {
-    return locale_weekdays[d.getDay()];
+  function Me2(o21) {
+    return T12[o21.getDay()];
   }
-  function formatShortMonth(d) {
-    return locale_shortMonths[d.getMonth()];
+  function pe4(o21) {
+    return L10[o21.getMonth()];
   }
-  function formatMonth(d) {
-    return locale_months[d.getMonth()];
+  function ve4(o21) {
+    return W12[o21.getMonth()];
   }
-  function formatPeriod(d) {
-    return locale_periods[+(d.getHours() >= 12)];
+  function De2(o21) {
+    return y11[+(o21.getHours() >= 12)];
   }
-  function formatQuarter(d) {
-    return 1 + ~~(d.getMonth() / 3);
+  function Se2(o21) {
+    return 1 + ~~(o21.getMonth() / 3);
   }
-  function formatUTCShortWeekday(d) {
-    return locale_shortWeekdays[d.getUTCDay()];
+  function we3(o21) {
+    return k10[o21.getUTCDay()];
   }
-  function formatUTCWeekday(d) {
-    return locale_weekdays[d.getUTCDay()];
+  function de5(o21) {
+    return T12[o21.getUTCDay()];
   }
-  function formatUTCShortMonth(d) {
-    return locale_shortMonths[d.getUTCMonth()];
+  function xe4(o21) {
+    return L10[o21.getUTCMonth()];
   }
-  function formatUTCMonth(d) {
-    return locale_months[d.getUTCMonth()];
+  function ke3(o21) {
+    return W12[o21.getUTCMonth()];
   }
-  function formatUTCPeriod(d) {
-    return locale_periods[+(d.getUTCHours() >= 12)];
+  function We(o21) {
+    return y11[+(o21.getUTCHours() >= 12)];
   }
-  function formatUTCQuarter(d) {
-    return 1 + ~~(d.getUTCMonth() / 3);
+  function Le(o21) {
+    return 1 + ~~(o21.getUTCMonth() / 3);
   }
   return {
-    format: function(specifier) {
-      var f = newFormat(specifier += "", formats);
-      f.toString = function() {
-        return specifier;
-      };
-      return f;
+    format: function(o21) {
+      var a11 = h9(o21 += "", U9);
+      return a11.toString = function() {
+        return o21;
+      }, a11;
     },
-    parse: function(specifier) {
-      var p = newParse(specifier += "", false);
-      p.toString = function() {
-        return specifier;
-      };
-      return p;
+    parse: function(o21) {
+      var a11 = O5(o21 += "", false);
+      return a11.toString = function() {
+        return o21;
+      }, a11;
     },
-    utcFormat: function(specifier) {
-      var f = newFormat(specifier += "", utcFormats);
-      f.toString = function() {
-        return specifier;
-      };
-      return f;
+    utcFormat: function(o21) {
+      var a11 = h9(o21 += "", C11);
+      return a11.toString = function() {
+        return o21;
+      }, a11;
     },
-    utcParse: function(specifier) {
-      var p = newParse(specifier += "", true);
-      p.toString = function() {
-        return specifier;
-      };
-      return p;
+    utcParse: function(o21) {
+      var a11 = O5(o21 += "", true);
+      return a11.toString = function() {
+        return o21;
+      }, a11;
     }
   };
 }
-var pads = {
+var I8 = {
   "-": "",
-  "_": " ",
-  "0": "0"
+  _: " ",
+  0: "0"
 };
-var numberRe = /^\s*\d+/;
-var percentRe = /^%/;
-var requoteRe = /[\\^$*+?|[\]().{}]/g;
-function pad2(value, fill, width) {
-  var sign3 = value < 0 ? "-" : "", string = (sign3 ? -value : value) + "", length = string.length;
-  return sign3 + (length < width ? new Array(width - length + 1).join(fill) + string : string);
+var l8 = /^\s*\d+/;
+var Fe2 = /^%/;
+var Ne3 = /[\\^$*+?|[\]().{}]/g;
+function f13(e30, n13, t10) {
+  var u9 = e30 < 0 ? "-" : "", y11 = (u9 ? -e30 : e30) + "", T12 = y11.length;
+  return u9 + (T12 < t10 ? new Array(t10 - T12 + 1).join(n13) + y11 : y11);
 }
-function requote(s2) {
-  return s2.replace(requoteRe, "\\$&");
+function Oe2(e30) {
+  return e30.replace(Ne3, "\\$&");
 }
-function formatRe(names) {
-  return new RegExp("^(?:" + names.map(requote).join("|") + ")", "i");
+function v13(e30) {
+  return new RegExp("^(?:" + e30.map(Oe2).join("|") + ")", "i");
 }
-function formatLookup(names) {
-  return new Map(names.map((name, i) => [
-    name.toLowerCase(),
-    i
+function D8(e30) {
+  return new Map(e30.map((n13, t10) => [
+    n13.toLowerCase(),
+    t10
   ]));
 }
-function parseWeekdayNumberSunday(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 1));
-  return n ? (d.w = +n[0], i + n[0].length) : -1;
+function Ze2(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 1));
+  return u9 ? (e30.w = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseWeekdayNumberMonday(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 1));
-  return n ? (d.u = +n[0], i + n[0].length) : -1;
+function Ie(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 1));
+  return u9 ? (e30.u = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseWeekNumberSunday(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.U = +n[0], i + n[0].length) : -1;
+function Ae2(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.U = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseWeekNumberISO(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.V = +n[0], i + n[0].length) : -1;
+function Re(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.V = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseWeekNumberMonday(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.W = +n[0], i + n[0].length) : -1;
+function Qe(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.W = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseFullYear(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 4));
-  return n ? (d.y = +n[0], i + n[0].length) : -1;
+function A12(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 4));
+  return u9 ? (e30.y = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseYear(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.y = +n[0] + (+n[0] > 68 ? 1900 : 2e3), i + n[0].length) : -1;
+function R7(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.y = +u9[0] + (+u9[0] > 68 ? 1900 : 2e3), t10 + u9[0].length) : -1;
 }
-function parseZone(d, string, i) {
-  var n = /^(Z)|([+-]\d\d)(?::?(\d\d))?/.exec(string.slice(i, i + 6));
-  return n ? (d.Z = n[1] ? 0 : -(n[2] + (n[3] || "00")), i + n[0].length) : -1;
+function Ve2(e30, n13, t10) {
+  var u9 = /^(Z)|([+-]\d\d)(?::?(\d\d))?/.exec(n13.slice(t10, t10 + 6));
+  return u9 ? (e30.Z = u9[1] ? 0 : -(u9[2] + (u9[3] || "00")), t10 + u9[0].length) : -1;
 }
-function parseQuarter(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 1));
-  return n ? (d.q = n[0] * 3 - 3, i + n[0].length) : -1;
+function _e2(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 1));
+  return u9 ? (e30.q = u9[0] * 3 - 3, t10 + u9[0].length) : -1;
 }
-function parseMonthNumber(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.m = n[0] - 1, i + n[0].length) : -1;
+function qe(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.m = u9[0] - 1, t10 + u9[0].length) : -1;
 }
-function parseDayOfMonth(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.d = +n[0], i + n[0].length) : -1;
+function Q10(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.d = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseDayOfYear(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 3));
-  return n ? (d.m = 0, d.d = +n[0], i + n[0].length) : -1;
+function Pe(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 3));
+  return u9 ? (e30.m = 0, e30.d = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseHour24(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.H = +n[0], i + n[0].length) : -1;
+function V7(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.H = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseMinutes(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.M = +n[0], i + n[0].length) : -1;
+function Xe2(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.M = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseSeconds(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 2));
-  return n ? (d.S = +n[0], i + n[0].length) : -1;
+function je(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 2));
+  return u9 ? (e30.S = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseMilliseconds(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 3));
-  return n ? (d.L = +n[0], i + n[0].length) : -1;
+function Be(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 3));
+  return u9 ? (e30.L = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseMicroseconds(d, string, i) {
-  var n = numberRe.exec(string.slice(i, i + 6));
-  return n ? (d.L = Math.floor(n[0] / 1e3), i + n[0].length) : -1;
+function Ge(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10, t10 + 6));
+  return u9 ? (e30.L = Math.floor(u9[0] / 1e3), t10 + u9[0].length) : -1;
 }
-function parseLiteralPercent(d, string, i) {
-  var n = percentRe.exec(string.slice(i, i + 1));
-  return n ? i + n[0].length : -1;
+function ze(e30, n13, t10) {
+  var u9 = Fe2.exec(n13.slice(t10, t10 + 1));
+  return u9 ? t10 + u9[0].length : -1;
 }
-function parseUnixTimestamp(d, string, i) {
-  var n = numberRe.exec(string.slice(i));
-  return n ? (d.Q = +n[0], i + n[0].length) : -1;
+function $e2(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10));
+  return u9 ? (e30.Q = +u9[0], t10 + u9[0].length) : -1;
 }
-function parseUnixTimestampSeconds(d, string, i) {
-  var n = numberRe.exec(string.slice(i));
-  return n ? (d.s = +n[0], i + n[0].length) : -1;
+function Ee3(e30, n13, t10) {
+  var u9 = l8.exec(n13.slice(t10));
+  return u9 ? (e30.s = +u9[0], t10 + u9[0].length) : -1;
 }
-function formatDayOfMonth(d, p) {
-  return pad2(d.getDate(), p, 2);
+function _7(e30, n13) {
+  return f13(e30.getDate(), n13, 2);
 }
-function formatHour24(d, p) {
-  return pad2(d.getHours(), p, 2);
+function Je(e30, n13) {
+  return f13(e30.getHours(), n13, 2);
 }
-function formatHour12(d, p) {
-  return pad2(d.getHours() % 12 || 12, p, 2);
+function Ke(e30, n13) {
+  return f13(e30.getHours() % 12 || 12, n13, 2);
 }
-function formatDayOfYear(d, p) {
-  return pad2(1 + timeDay.count(timeYear(d), d), p, 3);
+function en2(e30, n13) {
+  return f13(1 + k9.count(F12(e30), e30), n13, 3);
 }
-function formatMilliseconds(d, p) {
-  return pad2(d.getMilliseconds(), p, 3);
+function z8(e30, n13) {
+  return f13(e30.getMilliseconds(), n13, 3);
 }
-function formatMicroseconds(d, p) {
-  return formatMilliseconds(d, p) + "000";
+function nn3(e30, n13) {
+  return z8(e30, n13) + "000";
 }
-function formatMonthNumber(d, p) {
-  return pad2(d.getMonth() + 1, p, 2);
+function tn2(e30, n13) {
+  return f13(e30.getMonth() + 1, n13, 2);
 }
-function formatMinutes(d, p) {
-  return pad2(d.getMinutes(), p, 2);
+function rn(e30, n13) {
+  return f13(e30.getMinutes(), n13, 2);
 }
-function formatSeconds(d, p) {
-  return pad2(d.getSeconds(), p, 2);
+function un2(e30, n13) {
+  return f13(e30.getSeconds(), n13, 2);
 }
-function formatWeekdayNumberMonday(d) {
-  var day = d.getDay();
-  return day === 0 ? 7 : day;
+function on2(e30) {
+  var n13 = e30.getDay();
+  return n13 === 0 ? 7 : n13;
 }
-function formatWeekNumberSunday(d, p) {
-  return pad2(timeSunday.count(timeYear(d) - 1, d), p, 2);
+function an3(e30, n13) {
+  return f13(U8.count(F12(e30) - 1, e30), n13, 2);
 }
-function dISO(d) {
-  var day = d.getDay();
-  return day >= 4 || day === 0 ? timeThursday(d) : timeThursday.ceil(d);
+function $8(e30) {
+  var n13 = e30.getDay();
+  return n13 >= 4 || n13 === 0 ? P8(e30) : P8.ceil(e30);
 }
-function formatWeekNumberISO(d, p) {
-  d = dISO(d);
-  return pad2(timeThursday.count(timeYear(d), d) + (timeYear(d).getDay() === 4), p, 2);
+function cn2(e30, n13) {
+  return e30 = $8(e30), f13(P8.count(F12(e30), e30) + (F12(e30).getDay() === 4), n13, 2);
 }
-function formatWeekdayNumberSunday(d) {
-  return d.getDay();
+function fn2(e30) {
+  return e30.getDay();
 }
-function formatWeekNumberMonday(d, p) {
-  return pad2(timeMonday.count(timeYear(d) - 1, d), p, 2);
+function ln2(e30, n13) {
+  return f13(K7.count(F12(e30) - 1, e30), n13, 2);
 }
-function formatYear2(d, p) {
-  return pad2(d.getFullYear() % 100, p, 2);
+function sn(e30, n13) {
+  return f13(e30.getFullYear() % 100, n13, 2);
 }
-function formatYearISO(d, p) {
-  d = dISO(d);
-  return pad2(d.getFullYear() % 100, p, 2);
+function mn(e30, n13) {
+  return e30 = $8(e30), f13(e30.getFullYear() % 100, n13, 2);
 }
-function formatFullYear(d, p) {
-  return pad2(d.getFullYear() % 1e4, p, 4);
+function gn2(e30, n13) {
+  return f13(e30.getFullYear() % 1e4, n13, 4);
 }
-function formatFullYearISO(d, p) {
-  var day = d.getDay();
-  d = day >= 4 || day === 0 ? timeThursday(d) : timeThursday.ceil(d);
-  return pad2(d.getFullYear() % 1e4, p, 4);
+function yn2(e30, n13) {
+  var t10 = e30.getDay();
+  return e30 = t10 >= 4 || t10 === 0 ? P8(e30) : P8.ceil(e30), f13(e30.getFullYear() % 1e4, n13, 4);
 }
-function formatZone(d) {
-  var z = d.getTimezoneOffset();
-  return (z > 0 ? "-" : (z *= -1, "+")) + pad2(z / 60 | 0, "0", 2) + pad2(z % 60, "0", 2);
+function hn2(e30) {
+  var n13 = e30.getTimezoneOffset();
+  return (n13 > 0 ? "-" : (n13 *= -1, "+")) + f13(n13 / 60 | 0, "0", 2) + f13(n13 % 60, "0", 2);
 }
-function formatUTCDayOfMonth(d, p) {
-  return pad2(d.getUTCDate(), p, 2);
+function q14(e30, n13) {
+  return f13(e30.getUTCDate(), n13, 2);
 }
-function formatUTCHour24(d, p) {
-  return pad2(d.getUTCHours(), p, 2);
+function Tn2(e30, n13) {
+  return f13(e30.getUTCHours(), n13, 2);
 }
-function formatUTCHour12(d, p) {
-  return pad2(d.getUTCHours() % 12 || 12, p, 2);
+function Un2(e30, n13) {
+  return f13(e30.getUTCHours() % 12 || 12, n13, 2);
 }
-function formatUTCDayOfYear(d, p) {
-  return pad2(1 + utcDay.count(utcYear(d), d), p, 3);
+function Cn2(e30, n13) {
+  return f13(1 + J8.count(Y10(e30), e30), n13, 3);
 }
-function formatUTCMilliseconds(d, p) {
-  return pad2(d.getUTCMilliseconds(), p, 3);
+function E17(e30, n13) {
+  return f13(e30.getUTCMilliseconds(), n13, 3);
 }
-function formatUTCMicroseconds(d, p) {
-  return formatUTCMilliseconds(d, p) + "000";
+function Mn3(e30, n13) {
+  return E17(e30, n13) + "000";
 }
-function formatUTCMonthNumber(d, p) {
-  return pad2(d.getUTCMonth() + 1, p, 2);
+function pn2(e30, n13) {
+  return f13(e30.getUTCMonth() + 1, n13, 2);
 }
-function formatUTCMinutes(d, p) {
-  return pad2(d.getUTCMinutes(), p, 2);
+function vn3(e30, n13) {
+  return f13(e30.getUTCMinutes(), n13, 2);
 }
-function formatUTCSeconds(d, p) {
-  return pad2(d.getUTCSeconds(), p, 2);
+function Dn2(e30, n13) {
+  return f13(e30.getUTCSeconds(), n13, 2);
 }
-function formatUTCWeekdayNumberMonday(d) {
-  var dow = d.getUTCDay();
-  return dow === 0 ? 7 : dow;
+function Sn2(e30) {
+  var n13 = e30.getUTCDay();
+  return n13 === 0 ? 7 : n13;
 }
-function formatUTCWeekNumberSunday(d, p) {
-  return pad2(utcSunday.count(utcYear(d) - 1, d), p, 2);
+function wn2(e30, n13) {
+  return f13(S8.count(Y10(e30) - 1, e30), n13, 2);
 }
-function UTCdISO(d) {
-  var day = d.getUTCDay();
-  return day >= 4 || day === 0 ? utcThursday(d) : utcThursday.ceil(d);
+function J9(e30) {
+  var n13 = e30.getUTCDay();
+  return n13 >= 4 || n13 === 0 ? $7(e30) : $7.ceil(e30);
 }
-function formatUTCWeekNumberISO(d, p) {
-  d = UTCdISO(d);
-  return pad2(utcThursday.count(utcYear(d), d) + (utcYear(d).getUTCDay() === 4), p, 2);
+function dn2(e30, n13) {
+  return e30 = J9(e30), f13($7.count(Y10(e30), e30) + (Y10(e30).getUTCDay() === 4), n13, 2);
 }
-function formatUTCWeekdayNumberSunday(d) {
-  return d.getUTCDay();
+function xn3(e30) {
+  return e30.getUTCDay();
 }
-function formatUTCWeekNumberMonday(d, p) {
-  return pad2(utcMonday.count(utcYear(d) - 1, d), p, 2);
+function kn(e30, n13) {
+  return f13(X9.count(Y10(e30) - 1, e30), n13, 2);
 }
-function formatUTCYear(d, p) {
-  return pad2(d.getUTCFullYear() % 100, p, 2);
+function Wn3(e30, n13) {
+  return f13(e30.getUTCFullYear() % 100, n13, 2);
 }
-function formatUTCYearISO(d, p) {
-  d = UTCdISO(d);
-  return pad2(d.getUTCFullYear() % 100, p, 2);
+function Ln2(e30, n13) {
+  return e30 = J9(e30), f13(e30.getUTCFullYear() % 100, n13, 2);
 }
-function formatUTCFullYear(d, p) {
-  return pad2(d.getUTCFullYear() % 1e4, p, 4);
+function Yn2(e30, n13) {
+  return f13(e30.getUTCFullYear() % 1e4, n13, 4);
 }
-function formatUTCFullYearISO(d, p) {
-  var day = d.getUTCDay();
-  d = day >= 4 || day === 0 ? utcThursday(d) : utcThursday.ceil(d);
-  return pad2(d.getUTCFullYear() % 1e4, p, 4);
+function Hn2(e30, n13) {
+  var t10 = e30.getUTCDay();
+  return e30 = t10 >= 4 || t10 === 0 ? $7(e30) : $7.ceil(e30), f13(e30.getUTCFullYear() % 1e4, n13, 4);
 }
-function formatUTCZone() {
+function bn2() {
   return "+0000";
 }
-function formatLiteralPercent() {
+function P9() {
   return "%";
 }
-function formatUnixTimestamp(d) {
-  return +d;
+function X10(e30) {
+  return +e30;
 }
-function formatUnixTimestampSeconds(d) {
-  return Math.floor(+d / 1e3);
+function j8(e30) {
+  return Math.floor(+e30 / 1e3);
 }
 
-// node_modules/.deno/d3-time-format@4.1.0/node_modules/d3-time-format/src/defaultLocale.js
-var locale2;
-var timeFormat;
-var timeParse;
-var utcFormat;
-var utcParse;
-defaultLocale2({
+// deno:https://esm.sh/d3-time-format@4.1.0/denonext/src/defaultLocale.mjs
+var e28;
+var o19;
+var u8;
+var d10;
+var m11;
+r9({
   dateTime: "%x, %X",
   date: "%-m/%-d/%Y",
   time: "%-I:%M:%S %p",
@@ -6360,222 +4865,40 @@ defaultLocale2({
     "Dec"
   ]
 });
-function defaultLocale2(definition) {
-  locale2 = formatLocale(definition);
-  timeFormat = locale2.format;
-  timeParse = locale2.parse;
-  utcFormat = locale2.utcFormat;
-  utcParse = locale2.utcParse;
-  return locale2;
+function r9(a11) {
+  return e28 = be5(a11), o19 = e28.format, u8 = e28.parse, d10 = e28.utcFormat, m11 = e28.utcParse, e28;
 }
 
-// node_modules/.deno/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoFormat.js
-var isoSpecifier = "%Y-%m-%dT%H:%M:%S.%LZ";
-function formatIsoNative(date) {
-  return date.toISOString();
+// deno:https://esm.sh/d3-time-format@4.1.0/denonext/src/isoFormat.mjs
+var r10 = "%Y-%m-%dT%H:%M:%S.%LZ";
+function e29(t10) {
+  return t10.toISOString();
 }
-var formatIso = Date.prototype.toISOString ? formatIsoNative : utcFormat(isoSpecifier);
+var a10 = Date.prototype.toISOString ? e29 : d10(r10);
 
-// node_modules/.deno/d3-time-format@4.1.0/node_modules/d3-time-format/src/isoParse.js
-function parseIsoNative(string) {
-  var date = new Date(string);
-  return isNaN(date) ? null : date;
+// deno:https://esm.sh/d3-time-format@4.1.0/denonext/src/isoParse.mjs
+function o20(r11) {
+  var e30 = new Date(r11);
+  return isNaN(e30) ? null : e30;
 }
-var parseIso = +/* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z") ? parseIsoNative : utcParse(isoSpecifier);
+var i8 = +/* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z") ? o20 : m11(r10);
 
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/colors.js
-function colors_default(specifier) {
-  var n = specifier.length / 6 | 0, colors = new Array(n), i = 0;
-  while (i < n) colors[i] = "#" + specifier.slice(i * 6, ++i * 6);
-  return colors;
+// deno:https://esm.sh/d3-scale@4.0.2/denonext/d3-scale.mjs
+var W11 = Symbol("implicit");
+
+// deno:https://esm.sh/d3-shape@3.2.0/denonext/d3-shape.mjs
+var Y11 = Math.cos;
+var E18 = Math.sin;
+var x14 = Math.sqrt;
+var S9 = 1e-12;
+var B7 = Math.PI;
+var rt4 = B7 / 2;
+var M9 = 2 * B7;
+var rn2 = Array.prototype.slice;
+function sn2(t10) {
+  this._context = t10;
 }
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/category10.js
-var category10_default = colors_default("1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Accent.js
-var Accent_default = colors_default("7fc97fbeaed4fdc086ffff99386cb0f0027fbf5b17666666");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Dark2.js
-var Dark2_default = colors_default("1b9e77d95f027570b3e7298a66a61ee6ab02a6761d666666");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/observable10.js
-var observable10_default = colors_default("4269d0efb118ff725c6cc5b03ca951ff8ab7a463f297bbf59c6b4e9498a0");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Paired.js
-var Paired_default = colors_default("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel1.js
-var Pastel1_default = colors_default("fbb4aeb3cde3ccebc5decbe4fed9a6ffffcce5d8bdfddaecf2f2f2");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Pastel2.js
-var Pastel2_default = colors_default("b3e2cdfdcdaccbd5e8f4cae4e6f5c9fff2aef1e2cccccccc");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set1.js
-var Set1_default = colors_default("e41a1c377eb84daf4a984ea3ff7f00ffff33a65628f781bf999999");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set2.js
-var Set2_default = colors_default("66c2a5fc8d628da0cbe78ac3a6d854ffd92fe5c494b3b3b3");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Set3.js
-var Set3_default = colors_default("8dd3c7ffffb3bebadafb807280b1d3fdb462b3de69fccde5d9d9d9bc80bdccebc5ffed6f");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/categorical/Tableau10.js
-var Tableau10_default = colors_default("4e79a7f28e2ce1575976b7b259a14fedc949af7aa1ff9da79c755fbab0ab");
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/ramp.js
-var ramp_default = (scheme28) => rgbBasis(scheme28[scheme28.length - 1]);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/BrBG.js
-var scheme = new Array(3).concat("d8b365f5f5f55ab4ac", "a6611adfc27d80cdc1018571", "a6611adfc27df5f5f580cdc1018571", "8c510ad8b365f6e8c3c7eae55ab4ac01665e", "8c510ad8b365f6e8c3f5f5f5c7eae55ab4ac01665e", "8c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e", "8c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e", "5430058c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e003c30", "5430058c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e003c30").map(colors_default);
-var BrBG_default = ramp_default(scheme);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PRGn.js
-var scheme2 = new Array(3).concat("af8dc3f7f7f77fbf7b", "7b3294c2a5cfa6dba0008837", "7b3294c2a5cff7f7f7a6dba0008837", "762a83af8dc3e7d4e8d9f0d37fbf7b1b7837", "762a83af8dc3e7d4e8f7f7f7d9f0d37fbf7b1b7837", "762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b7837", "762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b7837", "40004b762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b783700441b", "40004b762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b783700441b").map(colors_default);
-var PRGn_default = ramp_default(scheme2);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PiYG.js
-var scheme3 = new Array(3).concat("e9a3c9f7f7f7a1d76a", "d01c8bf1b6dab8e1864dac26", "d01c8bf1b6daf7f7f7b8e1864dac26", "c51b7de9a3c9fde0efe6f5d0a1d76a4d9221", "c51b7de9a3c9fde0eff7f7f7e6f5d0a1d76a4d9221", "c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221", "c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221", "8e0152c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221276419", "8e0152c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221276419").map(colors_default);
-var PiYG_default = ramp_default(scheme3);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/PuOr.js
-var scheme4 = new Array(3).concat("998ec3f7f7f7f1a340", "5e3c99b2abd2fdb863e66101", "5e3c99b2abd2f7f7f7fdb863e66101", "542788998ec3d8daebfee0b6f1a340b35806", "542788998ec3d8daebf7f7f7fee0b6f1a340b35806", "5427888073acb2abd2d8daebfee0b6fdb863e08214b35806", "5427888073acb2abd2d8daebf7f7f7fee0b6fdb863e08214b35806", "2d004b5427888073acb2abd2d8daebfee0b6fdb863e08214b358067f3b08", "2d004b5427888073acb2abd2d8daebf7f7f7fee0b6fdb863e08214b358067f3b08").map(colors_default);
-var PuOr_default = ramp_default(scheme4);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdBu.js
-var scheme5 = new Array(3).concat("ef8a62f7f7f767a9cf", "ca0020f4a58292c5de0571b0", "ca0020f4a582f7f7f792c5de0571b0", "b2182bef8a62fddbc7d1e5f067a9cf2166ac", "b2182bef8a62fddbc7f7f7f7d1e5f067a9cf2166ac", "b2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac", "b2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac", "67001fb2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac053061", "67001fb2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac053061").map(colors_default);
-var RdBu_default = ramp_default(scheme5);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdGy.js
-var scheme6 = new Array(3).concat("ef8a62ffffff999999", "ca0020f4a582bababa404040", "ca0020f4a582ffffffbababa404040", "b2182bef8a62fddbc7e0e0e09999994d4d4d", "b2182bef8a62fddbc7ffffffe0e0e09999994d4d4d", "b2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d", "b2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d", "67001fb2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d1a1a1a", "67001fb2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d1a1a1a").map(colors_default);
-var RdGy_default = ramp_default(scheme6);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlBu.js
-var scheme7 = new Array(3).concat("fc8d59ffffbf91bfdb", "d7191cfdae61abd9e92c7bb6", "d7191cfdae61ffffbfabd9e92c7bb6", "d73027fc8d59fee090e0f3f891bfdb4575b4", "d73027fc8d59fee090ffffbfe0f3f891bfdb4575b4", "d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4", "d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4", "a50026d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4313695", "a50026d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4313695").map(colors_default);
-var RdYlBu_default = ramp_default(scheme7);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/RdYlGn.js
-var scheme8 = new Array(3).concat("fc8d59ffffbf91cf60", "d7191cfdae61a6d96a1a9641", "d7191cfdae61ffffbfa6d96a1a9641", "d73027fc8d59fee08bd9ef8b91cf601a9850", "d73027fc8d59fee08bffffbfd9ef8b91cf601a9850", "d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850", "d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850", "a50026d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850006837", "a50026d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850006837").map(colors_default);
-var RdYlGn_default = ramp_default(scheme8);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/diverging/Spectral.js
-var scheme9 = new Array(3).concat("fc8d59ffffbf99d594", "d7191cfdae61abdda42b83ba", "d7191cfdae61ffffbfabdda42b83ba", "d53e4ffc8d59fee08be6f59899d5943288bd", "d53e4ffc8d59fee08bffffbfe6f59899d5943288bd", "d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd", "d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd", "9e0142d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd5e4fa2", "9e0142d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd5e4fa2").map(colors_default);
-var Spectral_default = ramp_default(scheme9);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuGn.js
-var scheme10 = new Array(3).concat("e5f5f999d8c92ca25f", "edf8fbb2e2e266c2a4238b45", "edf8fbb2e2e266c2a42ca25f006d2c", "edf8fbccece699d8c966c2a42ca25f006d2c", "edf8fbccece699d8c966c2a441ae76238b45005824", "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45005824", "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45006d2c00441b").map(colors_default);
-var BuGn_default = ramp_default(scheme10);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/BuPu.js
-var scheme11 = new Array(3).concat("e0ecf49ebcda8856a7", "edf8fbb3cde38c96c688419d", "edf8fbb3cde38c96c68856a7810f7c", "edf8fbbfd3e69ebcda8c96c68856a7810f7c", "edf8fbbfd3e69ebcda8c96c68c6bb188419d6e016b", "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d6e016b", "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d810f7c4d004b").map(colors_default);
-var BuPu_default = ramp_default(scheme11);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/GnBu.js
-var scheme12 = new Array(3).concat("e0f3dba8ddb543a2ca", "f0f9e8bae4bc7bccc42b8cbe", "f0f9e8bae4bc7bccc443a2ca0868ac", "f0f9e8ccebc5a8ddb57bccc443a2ca0868ac", "f0f9e8ccebc5a8ddb57bccc44eb3d32b8cbe08589e", "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe08589e", "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe0868ac084081").map(colors_default);
-var GnBu_default = ramp_default(scheme12);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/OrRd.js
-var scheme13 = new Array(3).concat("fee8c8fdbb84e34a33", "fef0d9fdcc8afc8d59d7301f", "fef0d9fdcc8afc8d59e34a33b30000", "fef0d9fdd49efdbb84fc8d59e34a33b30000", "fef0d9fdd49efdbb84fc8d59ef6548d7301f990000", "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301f990000", "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301fb300007f0000").map(colors_default);
-var OrRd_default = ramp_default(scheme13);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBuGn.js
-var scheme14 = new Array(3).concat("ece2f0a6bddb1c9099", "f6eff7bdc9e167a9cf02818a", "f6eff7bdc9e167a9cf1c9099016c59", "f6eff7d0d1e6a6bddb67a9cf1c9099016c59", "f6eff7d0d1e6a6bddb67a9cf3690c002818a016450", "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016450", "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016c59014636").map(colors_default);
-var PuBuGn_default = ramp_default(scheme14);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuBu.js
-var scheme15 = new Array(3).concat("ece7f2a6bddb2b8cbe", "f1eef6bdc9e174a9cf0570b0", "f1eef6bdc9e174a9cf2b8cbe045a8d", "f1eef6d0d1e6a6bddb74a9cf2b8cbe045a8d", "f1eef6d0d1e6a6bddb74a9cf3690c00570b0034e7b", "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0034e7b", "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0045a8d023858").map(colors_default);
-var PuBu_default = ramp_default(scheme15);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/PuRd.js
-var scheme16 = new Array(3).concat("e7e1efc994c7dd1c77", "f1eef6d7b5d8df65b0ce1256", "f1eef6d7b5d8df65b0dd1c77980043", "f1eef6d4b9dac994c7df65b0dd1c77980043", "f1eef6d4b9dac994c7df65b0e7298ace125691003f", "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125691003f", "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125698004367001f").map(colors_default);
-var PuRd_default = ramp_default(scheme16);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/RdPu.js
-var scheme17 = new Array(3).concat("fde0ddfa9fb5c51b8a", "feebe2fbb4b9f768a1ae017e", "feebe2fbb4b9f768a1c51b8a7a0177", "feebe2fcc5c0fa9fb5f768a1c51b8a7a0177", "feebe2fcc5c0fa9fb5f768a1dd3497ae017e7a0177", "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a0177", "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a017749006a").map(colors_default);
-var RdPu_default = ramp_default(scheme17);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGnBu.js
-var scheme18 = new Array(3).concat("edf8b17fcdbb2c7fb8", "ffffcca1dab441b6c4225ea8", "ffffcca1dab441b6c42c7fb8253494", "ffffccc7e9b47fcdbb41b6c42c7fb8253494", "ffffccc7e9b47fcdbb41b6c41d91c0225ea80c2c84", "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea80c2c84", "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea8253494081d58").map(colors_default);
-var YlGnBu_default = ramp_default(scheme18);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlGn.js
-var scheme19 = new Array(3).concat("f7fcb9addd8e31a354", "ffffccc2e69978c679238443", "ffffccc2e69978c67931a354006837", "ffffccd9f0a3addd8e78c67931a354006837", "ffffccd9f0a3addd8e78c67941ab5d238443005a32", "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443005a32", "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443006837004529").map(colors_default);
-var YlGn_default = ramp_default(scheme19);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrBr.js
-var scheme20 = new Array(3).concat("fff7bcfec44fd95f0e", "ffffd4fed98efe9929cc4c02", "ffffd4fed98efe9929d95f0e993404", "ffffd4fee391fec44ffe9929d95f0e993404", "ffffd4fee391fec44ffe9929ec7014cc4c028c2d04", "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c028c2d04", "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c02993404662506").map(colors_default);
-var YlOrBr_default = ramp_default(scheme20);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/YlOrRd.js
-var scheme21 = new Array(3).concat("ffeda0feb24cf03b20", "ffffb2fecc5cfd8d3ce31a1c", "ffffb2fecc5cfd8d3cf03b20bd0026", "ffffb2fed976feb24cfd8d3cf03b20bd0026", "ffffb2fed976feb24cfd8d3cfc4e2ae31a1cb10026", "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cb10026", "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cbd0026800026").map(colors_default);
-var YlOrRd_default = ramp_default(scheme21);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Blues.js
-var scheme22 = new Array(3).concat("deebf79ecae13182bd", "eff3ffbdd7e76baed62171b5", "eff3ffbdd7e76baed63182bd08519c", "eff3ffc6dbef9ecae16baed63182bd08519c", "eff3ffc6dbef9ecae16baed64292c62171b5084594", "f7fbffdeebf7c6dbef9ecae16baed64292c62171b5084594", "f7fbffdeebf7c6dbef9ecae16baed64292c62171b508519c08306b").map(colors_default);
-var Blues_default = ramp_default(scheme22);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greens.js
-var scheme23 = new Array(3).concat("e5f5e0a1d99b31a354", "edf8e9bae4b374c476238b45", "edf8e9bae4b374c47631a354006d2c", "edf8e9c7e9c0a1d99b74c47631a354006d2c", "edf8e9c7e9c0a1d99b74c47641ab5d238b45005a32", "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45005a32", "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45006d2c00441b").map(colors_default);
-var Greens_default = ramp_default(scheme23);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Greys.js
-var scheme24 = new Array(3).concat("f0f0f0bdbdbd636363", "f7f7f7cccccc969696525252", "f7f7f7cccccc969696636363252525", "f7f7f7d9d9d9bdbdbd969696636363252525", "f7f7f7d9d9d9bdbdbd969696737373525252252525", "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525", "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525000000").map(colors_default);
-var Greys_default = ramp_default(scheme24);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Purples.js
-var scheme25 = new Array(3).concat("efedf5bcbddc756bb1", "f2f0f7cbc9e29e9ac86a51a3", "f2f0f7cbc9e29e9ac8756bb154278f", "f2f0f7dadaebbcbddc9e9ac8756bb154278f", "f2f0f7dadaebbcbddc9e9ac8807dba6a51a34a1486", "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a34a1486", "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a354278f3f007d").map(colors_default);
-var Purples_default = ramp_default(scheme25);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Reds.js
-var scheme26 = new Array(3).concat("fee0d2fc9272de2d26", "fee5d9fcae91fb6a4acb181d", "fee5d9fcae91fb6a4ade2d26a50f15", "fee5d9fcbba1fc9272fb6a4ade2d26a50f15", "fee5d9fcbba1fc9272fb6a4aef3b2ccb181d99000d", "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181d99000d", "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181da50f1567000d").map(colors_default);
-var Reds_default = ramp_default(scheme26);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-single/Oranges.js
-var scheme27 = new Array(3).concat("fee6cefdae6be6550d", "feeddefdbe85fd8d3cd94701", "feeddefdbe85fd8d3ce6550da63603", "feeddefdd0a2fdae6bfd8d3ce6550da63603", "feeddefdd0a2fdae6bfd8d3cf16913d948018c2d04", "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d948018c2d04", "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d94801a636037f2704").map(colors_default);
-var Oranges_default = ramp_default(scheme27);
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/cubehelix.js
-var cubehelix_default2 = cubehelixLong(cubehelix(300, 0.5, 0), cubehelix(-240, 0.5, 1));
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/rainbow.js
-var warm = cubehelixLong(cubehelix(-100, 0.75, 0.35), cubehelix(80, 1.5, 0.8));
-var cool = cubehelixLong(cubehelix(260, 0.75, 0.35), cubehelix(80, 1.5, 0.8));
-var c = cubehelix();
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/sinebow.js
-var c2 = rgb();
-var pi_1_3 = Math.PI / 3;
-var pi_2_3 = Math.PI * 2 / 3;
-
-// node_modules/.deno/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic/src/sequential-multi/viridis.js
-function ramp(range2) {
-  var n = range2.length;
-  return function(t) {
-    return range2[Math.max(0, Math.min(n - 1, Math.floor(t * n)))];
-  };
-}
-var viridis_default = ramp(colors_default("44015444025645045745055946075a46085c460a5d460b5e470d60470e6147106347116447136548146748166848176948186a481a6c481b6d481c6e481d6f481f70482071482173482374482475482576482677482878482979472a7a472c7a472d7b472e7c472f7d46307e46327e46337f463480453581453781453882443983443a83443b84433d84433e85423f854240864241864142874144874045884046883f47883f48893e49893e4a893e4c8a3d4d8a3d4e8a3c4f8a3c508b3b518b3b528b3a538b3a548c39558c39568c38588c38598c375a8c375b8d365c8d365d8d355e8d355f8d34608d34618d33628d33638d32648e32658e31668e31678e31688e30698e306a8e2f6b8e2f6c8e2e6d8e2e6e8e2e6f8e2d708e2d718e2c718e2c728e2c738e2b748e2b758e2a768e2a778e2a788e29798e297a8e297b8e287c8e287d8e277e8e277f8e27808e26818e26828e26828e25838e25848e25858e24868e24878e23888e23898e238a8d228b8d228c8d228d8d218e8d218f8d21908d21918c20928c20928c20938c1f948c1f958b1f968b1f978b1f988b1f998a1f9a8a1e9b8a1e9c891e9d891f9e891f9f881fa0881fa1881fa1871fa28720a38620a48621a58521a68522a78522a88423a98324aa8325ab8225ac8226ad8127ad8128ae8029af7f2ab07f2cb17e2db27d2eb37c2fb47c31b57b32b67a34b67935b77937b87838b9773aba763bbb753dbc743fbc7340bd7242be7144bf7046c06f48c16e4ac16d4cc26c4ec36b50c46a52c56954c56856c66758c7655ac8645cc8635ec96260ca6063cb5f65cb5e67cc5c69cd5b6ccd5a6ece5870cf5773d05675d05477d1537ad1517cd2507fd34e81d34d84d44b86d54989d5488bd6468ed64590d74393d74195d84098d83e9bd93c9dd93ba0da39a2da37a5db36a8db34aadc32addc30b0dd2fb2dd2db5de2bb8de29bade28bddf26c0df25c2df23c5e021c8e020cae11fcde11dd0e11cd2e21bd5e21ad8e219dae319dde318dfe318e2e418e5e419e7e419eae51aece51befe51cf1e51df4e61ef6e620f8e621fbe723fde725"));
-var magma = ramp(colors_default("00000401000501010601010802010902020b02020d03030f03031204041405041606051806051a07061c08071e0907200a08220b09240c09260d0a290e0b2b100b2d110c2f120d31130d34140e36150e38160f3b180f3d19103f1a10421c10441d11471e114920114b21114e22115024125325125527125829115a2a115c2c115f2d11612f116331116533106734106936106b38106c390f6e3b0f703d0f713f0f72400f74420f75440f764510774710784910784a10794c117a4e117b4f127b51127c52137c54137d56147d57157e59157e5a167e5c167f5d177f5f187f601880621980641a80651a80671b80681c816a1c816b1d816d1d816e1e81701f81721f817320817521817621817822817922827b23827c23827e24828025828125818326818426818627818827818928818b29818c29818e2a81902a81912b81932b80942c80962c80982d80992d809b2e7f9c2e7f9e2f7fa02f7fa1307ea3307ea5317ea6317da8327daa337dab337cad347cae347bb0357bb2357bb3367ab5367ab73779b83779ba3878bc3978bd3977bf3a77c03a76c23b75c43c75c53c74c73d73c83e73ca3e72cc3f71cd4071cf4070d0416fd2426fd3436ed5446dd6456cd8456cd9466bdb476adc4869de4968df4a68e04c67e24d66e34e65e44f64e55064e75263e85362e95462ea5661eb5760ec5860ed5a5fee5b5eef5d5ef05f5ef1605df2625df2645cf3655cf4675cf4695cf56b5cf66c5cf66e5cf7705cf7725cf8745cf8765cf9785df9795df97b5dfa7d5efa7f5efa815ffb835ffb8560fb8761fc8961fc8a62fc8c63fc8e64fc9065fd9266fd9467fd9668fd9869fd9a6afd9b6bfe9d6cfe9f6dfea16efea36ffea571fea772fea973feaa74feac76feae77feb078feb27afeb47bfeb67cfeb77efeb97ffebb81febd82febf84fec185fec287fec488fec68afec88cfeca8dfecc8ffecd90fecf92fed194fed395fed597fed799fed89afdda9cfddc9efddea0fde0a1fde2a3fde3a5fde5a7fde7a9fde9aafdebacfcecaefceeb0fcf0b2fcf2b4fcf4b6fcf6b8fcf7b9fcf9bbfcfbbdfcfdbf"));
-var inferno = ramp(colors_default("00000401000501010601010802010a02020c02020e03021004031204031405041706041907051b08051d09061f0a07220b07240c08260d08290e092b10092d110a30120a32140b34150b37160b39180c3c190c3e1b0c411c0c431e0c451f0c48210c4a230c4c240c4f260c51280b53290b552b0b572d0b592f0a5b310a5c320a5e340a5f3609613809623909633b09643d09653e0966400a67420a68440a68450a69470b6a490b6a4a0c6b4c0c6b4d0d6c4f0d6c510e6c520e6d540f6d550f6d57106e59106e5a116e5c126e5d126e5f136e61136e62146e64156e65156e67166e69166e6a176e6c186e6d186e6f196e71196e721a6e741a6e751b6e771c6d781c6d7a1d6d7c1d6d7d1e6d7f1e6c801f6c82206c84206b85216b87216b88226a8a226a8c23698d23698f24699025689225689326679526679727669827669a28659b29649d29649f2a63a02a63a22b62a32c61a52c60a62d60a82e5fa92e5eab2f5ead305dae305cb0315bb1325ab3325ab43359b63458b73557b93556ba3655bc3754bd3853bf3952c03a51c13a50c33b4fc43c4ec63d4dc73e4cc83f4bca404acb4149cc4248ce4347cf4446d04545d24644d34743d44842d54a41d74b3fd84c3ed94d3dda4e3cdb503bdd513ade5238df5337e05536e15635e25734e35933e45a31e55c30e65d2fe75e2ee8602de9612bea632aeb6429eb6628ec6726ed6925ee6a24ef6c23ef6e21f06f20f1711ff1731df2741cf3761bf37819f47918f57b17f57d15f67e14f68013f78212f78410f8850ff8870ef8890cf98b0bf98c0af98e09fa9008fa9207fa9407fb9606fb9706fb9906fb9b06fb9d07fc9f07fca108fca309fca50afca60cfca80dfcaa0ffcac11fcae12fcb014fcb216fcb418fbb61afbb81dfbba1ffbbc21fbbe23fac026fac228fac42afac62df9c72ff9c932f9cb35f8cd37f8cf3af7d13df7d340f6d543f6d746f5d949f5db4cf4dd4ff4df53f4e156f3e35af3e55df2e661f2e865f2ea69f1ec6df1ed71f1ef75f1f179f2f27df2f482f3f586f3f68af4f88ef5f992f6fa96f8fb9af9fc9dfafda1fcffa4"));
-var plasma = ramp(colors_default("0d088710078813078916078a19068c1b068d1d068e20068f2206902406912605912805922a05932c05942e05952f059631059733059735049837049938049a3a049a3c049b3e049c3f049c41049d43039e44039e46039f48039f4903a04b03a14c02a14e02a25002a25102a35302a35502a45601a45801a45901a55b01a55c01a65e01a66001a66100a76300a76400a76600a76700a86900a86a00a86c00a86e00a86f00a87100a87201a87401a87501a87701a87801a87a02a87b02a87d03a87e03a88004a88104a78305a78405a78606a68707a68808a68a09a58b0aa58d0ba58e0ca48f0da4910ea3920fa39410a29511a19613a19814a099159f9a169f9c179e9d189d9e199da01a9ca11b9ba21d9aa31e9aa51f99a62098a72197a82296aa2395ab2494ac2694ad2793ae2892b02991b12a90b22b8fb32c8eb42e8db52f8cb6308bb7318ab83289ba3388bb3488bc3587bd3786be3885bf3984c03a83c13b82c23c81c33d80c43e7fc5407ec6417dc7427cc8437bc9447aca457acb4679cc4778cc4977cd4a76ce4b75cf4c74d04d73d14e72d24f71d35171d45270d5536fd5546ed6556dd7566cd8576bd9586ada5a6ada5b69db5c68dc5d67dd5e66de5f65de6164df6263e06363e16462e26561e26660e3685fe4695ee56a5de56b5de66c5ce76e5be76f5ae87059e97158e97257ea7457eb7556eb7655ec7754ed7953ed7a52ee7b51ef7c51ef7e50f07f4ff0804ef1814df1834cf2844bf3854bf3874af48849f48948f58b47f58c46f68d45f68f44f79044f79143f79342f89441f89540f9973ff9983ef99a3efa9b3dfa9c3cfa9e3bfb9f3afba139fba238fca338fca537fca636fca835fca934fdab33fdac33fdae32fdaf31fdb130fdb22ffdb42ffdb52efeb72dfeb82cfeba2cfebb2bfebd2afebe2afec029fdc229fdc328fdc527fdc627fdc827fdca26fdcb26fccd25fcce25fcd025fcd225fbd324fbd524fbd724fad824fada24f9dc24f9dd25f8df25f8e125f7e225f7e425f6e626f6e826f5e926f5eb27f4ed27f3ee27f3f027f2f227f1f426f1f525f0f724f0f921"));
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/math.js
-var cos3 = Math.cos;
-var sin3 = Math.sin;
-var sqrt3 = Math.sqrt;
-var epsilon6 = 1e-12;
-var pi5 = Math.PI;
-var halfPi4 = pi5 / 2;
-var tau6 = 2 * pi5;
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/array.js
-var slice4 = Array.prototype.slice;
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linear.js
-function Linear(context) {
-  this._context = context;
-}
-Linear.prototype = {
+sn2.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -6586,35 +4909,29 @@ Linear.prototype = {
     this._point = 0;
   },
   lineEnd: function() {
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
         break;
       case 1:
         this._point = 2;
-      // falls through
       default:
-        this._context.lineTo(x3, y3);
+        this._context.lineTo(t10, n13);
         break;
     }
   }
 };
-function linear_default(context) {
-  return new Linear(context);
+function K8(t10) {
+  return new sn2(t10);
 }
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/radial.js
-var curveRadialLinear = curveRadial(linear_default);
-function Radial(curve) {
-  this._curve = curve;
+var xt6 = tt6(K8);
+function un3(t10) {
+  this._curve = t10;
 }
-Radial.prototype = {
+un3.prototype = {
   areaStart: function() {
     this._curve.areaStart();
   },
@@ -6627,53 +4944,36 @@ Radial.prototype = {
   lineEnd: function() {
     this._curve.lineEnd();
   },
-  point: function(a2, r) {
-    this._curve.point(r * Math.sin(a2), r * -Math.cos(a2));
+  point: function(t10, n13) {
+    this._curve.point(n13 * Math.sin(t10), n13 * -Math.cos(t10));
   }
 };
-function curveRadial(curve) {
-  function radial2(context) {
-    return new Radial(curve(context));
+function tt6(t10) {
+  function n13(i9) {
+    return new un3(t10(i9));
   }
-  radial2._curve = curve;
-  return radial2;
+  return n13._curve = t10, n13;
 }
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/asterisk.js
-var sqrt32 = sqrt3(3);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/diamond.js
-var tan30 = sqrt3(1 / 3);
-var tan30_2 = tan30 * 2;
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/star.js
-var kr = sin3(pi5 / 10) / sin3(7 * pi5 / 10);
-var kx = sin3(tau6 / 10) * kr;
-var ky = -cos3(tau6 / 10) * kr;
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle.js
-var sqrt33 = sqrt3(3);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/triangle2.js
-var sqrt34 = sqrt3(3);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/symbol/wye.js
-var s = sqrt3(3) / 2;
-var k = 1 / sqrt3(12);
-var a = (k / 2 + 1) * 3;
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/noop.js
-function noop_default2() {
+var Wn4 = x14(3);
+var cn3 = x14(1 / 3);
+var $n = cn3 * 2;
+var pn3 = E18(B7 / 10) / E18(7 * B7 / 10);
+var Jn2 = E18(M9 / 10) * pn3;
+var Kn2 = -Y11(M9 / 10) * pn3;
+var Wt5 = x14(3);
+var Qn3 = x14(3);
+var O4 = x14(3) / 2;
+var Jt3 = 1 / x14(12);
+var Un3 = (Jt3 / 2 + 1) * 3;
+function X11() {
 }
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basis.js
-function point2(that, x3, y3) {
-  that._context.bezierCurveTo((2 * that._x0 + that._x1) / 3, (2 * that._y0 + that._y1) / 3, (that._x0 + 2 * that._x1) / 3, (that._y0 + 2 * that._y1) / 3, (that._x0 + 4 * that._x1 + x3) / 6, (that._y0 + 4 * that._y1 + y3) / 6);
+function et5(t10, n13, i9) {
+  t10._context.bezierCurveTo((2 * t10._x0 + t10._x1) / 3, (2 * t10._y0 + t10._y1) / 3, (t10._x0 + 2 * t10._x1) / 3, (t10._y0 + 2 * t10._y1) / 3, (t10._x0 + 4 * t10._x1 + n13) / 6, (t10._y0 + 4 * t10._y1 + i9) / 6);
 }
-function Basis(context) {
-  this._context = context;
+function lt4(t10) {
+  this._context = t10;
 }
-Basis.prototype = {
+lt4.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -6681,106 +4981,82 @@ Basis.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._y0 = this._y1 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._y0 = this._y1 = NaN, this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
       case 3:
-        point2(this, this._x1, this._y1);
-      // falls through
+        et5(this, this._x1, this._y1);
       case 2:
         this._context.lineTo(this._x1, this._y1);
         break;
     }
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
         break;
       case 1:
         this._point = 2;
         break;
       case 2:
-        this._point = 3;
-        this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
-      // falls through
+        this._point = 3, this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
       default:
-        point2(this, x3, y3);
+        et5(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = x3;
-    this._y0 = this._y1, this._y1 = y3;
+    this._x0 = this._x1, this._x1 = t10, this._y0 = this._y1, this._y1 = n13;
   }
 };
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisClosed.js
-function BasisClosed(context) {
-  this._context = context;
+function dn3(t10) {
+  this._context = t10;
 }
-BasisClosed.prototype = {
-  areaStart: noop_default2,
-  areaEnd: noop_default2,
+dn3.prototype = {
+  areaStart: X11,
+  areaEnd: X11,
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = NaN, this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
       case 1: {
-        this._context.moveTo(this._x2, this._y2);
-        this._context.closePath();
+        this._context.moveTo(this._x2, this._y2), this._context.closePath();
         break;
       }
       case 2: {
-        this._context.moveTo((this._x2 + 2 * this._x3) / 3, (this._y2 + 2 * this._y3) / 3);
-        this._context.lineTo((this._x3 + 2 * this._x2) / 3, (this._y3 + 2 * this._y2) / 3);
-        this._context.closePath();
+        this._context.moveTo((this._x2 + 2 * this._x3) / 3, (this._y2 + 2 * this._y3) / 3), this._context.lineTo((this._x3 + 2 * this._x2) / 3, (this._y3 + 2 * this._y2) / 3), this._context.closePath();
         break;
       }
       case 3: {
-        this.point(this._x2, this._y2);
-        this.point(this._x3, this._y3);
-        this.point(this._x4, this._y4);
+        this.point(this._x2, this._y2), this.point(this._x3, this._y3), this.point(this._x4, this._y4);
         break;
       }
     }
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._x2 = x3, this._y2 = y3;
+        this._point = 1, this._x2 = t10, this._y2 = n13;
         break;
       case 1:
-        this._point = 2;
-        this._x3 = x3, this._y3 = y3;
+        this._point = 2, this._x3 = t10, this._y3 = n13;
         break;
       case 2:
-        this._point = 3;
-        this._x4 = x3, this._y4 = y3;
-        this._context.moveTo((this._x0 + 4 * this._x1 + x3) / 6, (this._y0 + 4 * this._y1 + y3) / 6);
+        this._point = 3, this._x4 = t10, this._y4 = n13, this._context.moveTo((this._x0 + 4 * this._x1 + t10) / 6, (this._y0 + 4 * this._y1 + n13) / 6);
         break;
       default:
-        point2(this, x3, y3);
+        et5(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = x3;
-    this._y0 = this._y1, this._y1 = y3;
+    this._x0 = this._x1, this._x1 = t10, this._y0 = this._y1, this._y1 = n13;
   }
 };
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/basisOpen.js
-function BasisOpen(context) {
-  this._context = context;
+function yn3(t10) {
+  this._context = t10;
 }
-BasisOpen.prototype = {
+yn3.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -6788,16 +5064,13 @@ BasisOpen.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._y0 = this._y1 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._y0 = this._y1 = NaN, this._point = 0;
   },
   lineEnd: function() {
-    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 3) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
         this._point = 1;
         break;
@@ -6806,68 +5079,49 @@ BasisOpen.prototype = {
         break;
       case 2:
         this._point = 3;
-        var x02 = (this._x0 + 4 * this._x1 + x3) / 6, y0 = (this._y0 + 4 * this._y1 + y3) / 6;
-        this._line ? this._context.lineTo(x02, y0) : this._context.moveTo(x02, y0);
+        var i9 = (this._x0 + 4 * this._x1 + t10) / 6, e30 = (this._y0 + 4 * this._y1 + n13) / 6;
+        this._line ? this._context.lineTo(i9, e30) : this._context.moveTo(i9, e30);
         break;
       case 3:
         this._point = 4;
-      // falls through
       default:
-        point2(this, x3, y3);
+        et5(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = x3;
-    this._y0 = this._y1, this._y1 = y3;
+    this._x0 = this._x1, this._x1 = t10, this._y0 = this._y1, this._y1 = n13;
   }
 };
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/bundle.js
-function Bundle(context, beta) {
-  this._basis = new Basis(context);
-  this._beta = beta;
+function gn3(t10, n13) {
+  this._basis = new lt4(t10), this._beta = n13;
 }
-Bundle.prototype = {
+gn3.prototype = {
   lineStart: function() {
-    this._x = [];
-    this._y = [];
-    this._basis.lineStart();
+    this._x = [], this._y = [], this._basis.lineStart();
   },
   lineEnd: function() {
-    var x3 = this._x, y3 = this._y, j = x3.length - 1;
-    if (j > 0) {
-      var x02 = x3[0], y0 = y3[0], dx = x3[j] - x02, dy = y3[j] - y0, i = -1, t;
-      while (++i <= j) {
-        t = i / j;
-        this._basis.point(this._beta * x3[i] + (1 - this._beta) * (x02 + t * dx), this._beta * y3[i] + (1 - this._beta) * (y0 + t * dy));
-      }
-    }
-    this._x = this._y = null;
-    this._basis.lineEnd();
+    var t10 = this._x, n13 = this._y, i9 = t10.length - 1;
+    if (i9 > 0) for (var e30 = t10[0], s14 = n13[0], o21 = t10[i9] - e30, a11 = n13[i9] - s14, r11 = -1, u9; ++r11 <= i9; ) u9 = r11 / i9, this._basis.point(this._beta * t10[r11] + (1 - this._beta) * (e30 + u9 * o21), this._beta * n13[r11] + (1 - this._beta) * (s14 + u9 * a11));
+    this._x = this._y = null, this._basis.lineEnd();
   },
-  point: function(x3, y3) {
-    this._x.push(+x3);
-    this._y.push(+y3);
+  point: function(t10, n13) {
+    this._x.push(+t10), this._y.push(+n13);
   }
 };
-var bundle_default = function custom12(beta) {
-  function bundle(context) {
-    return beta === 1 ? new Basis(context) : new Bundle(context, beta);
+var ii = function t3(n13) {
+  function i9(e30) {
+    return n13 === 1 ? new lt4(e30) : new gn3(e30, n13);
   }
-  bundle.beta = function(beta2) {
-    return custom12(+beta2);
-  };
-  return bundle;
+  return i9.beta = function(e30) {
+    return t3(+e30);
+  }, i9;
 }(0.85);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinal.js
-function point3(that, x3, y3) {
-  that._context.bezierCurveTo(that._x1 + that._k * (that._x2 - that._x0), that._y1 + that._k * (that._y2 - that._y0), that._x2 + that._k * (that._x1 - x3), that._y2 + that._k * (that._y1 - y3), that._x2, that._y2);
+function ot3(t10, n13, i9) {
+  t10._context.bezierCurveTo(t10._x1 + t10._k * (t10._x2 - t10._x0), t10._y1 + t10._k * (t10._y2 - t10._y0), t10._x2 + t10._k * (t10._x1 - n13), t10._y2 + t10._k * (t10._y1 - i9), t10._x2, t10._y2);
 }
-function Cardinal(context, tension) {
-  this._context = context;
-  this._k = (1 - tension) / 6;
+function vt5(t10, n13) {
+  this._context = t10, this._k = (1 - n13) / 6;
 }
-Cardinal.prototype = {
+vt5.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -6875,8 +5129,7 @@ Cardinal.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN, this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
@@ -6884,115 +5137,91 @@ Cardinal.prototype = {
         this._context.lineTo(this._x2, this._y2);
         break;
       case 3:
-        point3(this, this._x1, this._y1);
+        ot3(this, this._x1, this._y1);
         break;
     }
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
         break;
       case 1:
-        this._point = 2;
-        this._x1 = x3, this._y1 = y3;
+        this._point = 2, this._x1 = t10, this._y1 = n13;
         break;
       case 2:
         this._point = 3;
-      // falls through
       default:
-        point3(this, x3, y3);
+        ot3(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var cardinal_default = function custom13(tension) {
-  function cardinal(context) {
-    return new Cardinal(context, tension);
+var ei = function t4(n13) {
+  function i9(e30) {
+    return new vt5(e30, n13);
   }
-  cardinal.tension = function(tension2) {
-    return custom13(+tension2);
-  };
-  return cardinal;
+  return i9.tension = function(e30) {
+    return t4(+e30);
+  }, i9;
 }(0);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalClosed.js
-function CardinalClosed(context, tension) {
-  this._context = context;
-  this._k = (1 - tension) / 6;
+function Tt4(t10, n13) {
+  this._context = t10, this._k = (1 - n13) / 6;
 }
-CardinalClosed.prototype = {
-  areaStart: noop_default2,
-  areaEnd: noop_default2,
+Tt4.prototype = {
+  areaStart: X11,
+  areaEnd: X11,
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN, this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
       case 1: {
-        this._context.moveTo(this._x3, this._y3);
-        this._context.closePath();
+        this._context.moveTo(this._x3, this._y3), this._context.closePath();
         break;
       }
       case 2: {
-        this._context.lineTo(this._x3, this._y3);
-        this._context.closePath();
+        this._context.lineTo(this._x3, this._y3), this._context.closePath();
         break;
       }
       case 3: {
-        this.point(this._x3, this._y3);
-        this.point(this._x4, this._y4);
-        this.point(this._x5, this._y5);
+        this.point(this._x3, this._y3), this.point(this._x4, this._y4), this.point(this._x5, this._y5);
         break;
       }
     }
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._x3 = x3, this._y3 = y3;
+        this._point = 1, this._x3 = t10, this._y3 = n13;
         break;
       case 1:
-        this._point = 2;
-        this._context.moveTo(this._x4 = x3, this._y4 = y3);
+        this._point = 2, this._context.moveTo(this._x4 = t10, this._y4 = n13);
         break;
       case 2:
-        this._point = 3;
-        this._x5 = x3, this._y5 = y3;
+        this._point = 3, this._x5 = t10, this._y5 = n13;
         break;
       default:
-        point3(this, x3, y3);
+        ot3(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var cardinalClosed_default = function custom14(tension) {
-  function cardinal(context) {
-    return new CardinalClosed(context, tension);
+var oi = function t5(n13) {
+  function i9(e30) {
+    return new Tt4(e30, n13);
   }
-  cardinal.tension = function(tension2) {
-    return custom14(+tension2);
-  };
-  return cardinal;
+  return i9.tension = function(e30) {
+    return t5(+e30);
+  }, i9;
 }(0);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/cardinalOpen.js
-function CardinalOpen(context, tension) {
-  this._context = context;
-  this._k = (1 - tension) / 6;
+function bt3(t10, n13) {
+  this._context = t10, this._k = (1 - n13) / 6;
 }
-CardinalOpen.prototype = {
+bt3.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7000,16 +5229,13 @@ CardinalOpen.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN, this._point = 0;
   },
   lineEnd: function() {
-    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 3) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
         this._point = 1;
         break;
@@ -7017,50 +5243,41 @@ CardinalOpen.prototype = {
         this._point = 2;
         break;
       case 2:
-        this._point = 3;
-        this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
+        this._point = 3, this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
         break;
       case 3:
         this._point = 4;
-      // falls through
       default:
-        point3(this, x3, y3);
+        ot3(this, t10, n13);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var cardinalOpen_default = function custom15(tension) {
-  function cardinal(context) {
-    return new CardinalOpen(context, tension);
+var ri = function t6(n13) {
+  function i9(e30) {
+    return new bt3(e30, n13);
   }
-  cardinal.tension = function(tension2) {
-    return custom15(+tension2);
-  };
-  return cardinal;
+  return i9.tension = function(e30) {
+    return t6(+e30);
+  }, i9;
 }(0);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRom.js
-function point4(that, x3, y3) {
-  var x12 = that._x1, y1 = that._y1, x22 = that._x2, y22 = that._y2;
-  if (that._l01_a > epsilon6) {
-    var a2 = 2 * that._l01_2a + 3 * that._l01_a * that._l12_a + that._l12_2a, n = 3 * that._l01_a * (that._l01_a + that._l12_a);
-    x12 = (x12 * a2 - that._x0 * that._l12_2a + that._x2 * that._l01_2a) / n;
-    y1 = (y1 * a2 - that._y0 * that._l12_2a + that._y2 * that._l01_2a) / n;
+function ut5(t10, n13, i9) {
+  var e30 = t10._x1, s14 = t10._y1, o21 = t10._x2, a11 = t10._y2;
+  if (t10._l01_a > S9) {
+    var r11 = 2 * t10._l01_2a + 3 * t10._l01_a * t10._l12_a + t10._l12_2a, u9 = 3 * t10._l01_a * (t10._l01_a + t10._l12_a);
+    e30 = (e30 * r11 - t10._x0 * t10._l12_2a + t10._x2 * t10._l01_2a) / u9, s14 = (s14 * r11 - t10._y0 * t10._l12_2a + t10._y2 * t10._l01_2a) / u9;
   }
-  if (that._l23_a > epsilon6) {
-    var b = 2 * that._l23_2a + 3 * that._l23_a * that._l12_a + that._l12_2a, m = 3 * that._l23_a * (that._l23_a + that._l12_a);
-    x22 = (x22 * b + that._x1 * that._l23_2a - x3 * that._l12_2a) / m;
-    y22 = (y22 * b + that._y1 * that._l23_2a - y3 * that._l12_2a) / m;
+  if (t10._l23_a > S9) {
+    var l9 = 2 * t10._l23_2a + 3 * t10._l23_a * t10._l12_a + t10._l12_2a, h9 = 3 * t10._l23_a * (t10._l23_a + t10._l12_a);
+    o21 = (o21 * l9 + t10._x1 * t10._l23_2a - n13 * t10._l12_2a) / h9, a11 = (a11 * l9 + t10._y1 * t10._l23_2a - i9 * t10._l12_2a) / h9;
   }
-  that._context.bezierCurveTo(x12, y1, x22, y22, that._x2, that._y2);
+  t10._context.bezierCurveTo(e30, s14, o21, a11, t10._x2, t10._y2);
 }
-function CatmullRom(context, alpha) {
-  this._context = context;
-  this._alpha = alpha;
+function vn4(t10, n13) {
+  this._context = t10, this._alpha = n13;
 }
-CatmullRom.prototype = {
+vn4.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7068,8 +5285,7 @@ CatmullRom.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
-    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN, this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
@@ -7080,123 +5296,96 @@ CatmullRom.prototype = {
         this.point(this._x2, this._y2);
         break;
     }
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    if (this._point) {
-      var x23 = this._x2 - x3, y23 = this._y2 - y3;
-      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+  point: function(t10, n13) {
+    if (t10 = +t10, n13 = +n13, this._point) {
+      var i9 = this._x2 - t10, e30 = this._y2 - n13;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(i9 * i9 + e30 * e30, this._alpha));
     }
     switch (this._point) {
       case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
         break;
       case 1:
         this._point = 2;
         break;
       case 2:
         this._point = 3;
-      // falls through
       default:
-        point4(this, x3, y3);
+        ut5(this, t10, n13);
         break;
     }
-    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
-    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a, this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a, this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var catmullRom_default = function custom16(alpha) {
-  function catmullRom(context) {
-    return alpha ? new CatmullRom(context, alpha) : new Cardinal(context, 0);
+var si = function t7(n13) {
+  function i9(e30) {
+    return n13 ? new vn4(e30, n13) : new vt5(e30, 0);
   }
-  catmullRom.alpha = function(alpha2) {
-    return custom16(+alpha2);
-  };
-  return catmullRom;
+  return i9.alpha = function(e30) {
+    return t7(+e30);
+  }, i9;
 }(0.5);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomClosed.js
-function CatmullRomClosed(context, alpha) {
-  this._context = context;
-  this._alpha = alpha;
+function Tn3(t10, n13) {
+  this._context = t10, this._alpha = n13;
 }
-CatmullRomClosed.prototype = {
-  areaStart: noop_default2,
-  areaEnd: noop_default2,
+Tn3.prototype = {
+  areaStart: X11,
+  areaEnd: X11,
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN;
-    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN, this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
       case 1: {
-        this._context.moveTo(this._x3, this._y3);
-        this._context.closePath();
+        this._context.moveTo(this._x3, this._y3), this._context.closePath();
         break;
       }
       case 2: {
-        this._context.lineTo(this._x3, this._y3);
-        this._context.closePath();
+        this._context.lineTo(this._x3, this._y3), this._context.closePath();
         break;
       }
       case 3: {
-        this.point(this._x3, this._y3);
-        this.point(this._x4, this._y4);
-        this.point(this._x5, this._y5);
+        this.point(this._x3, this._y3), this.point(this._x4, this._y4), this.point(this._x5, this._y5);
         break;
       }
     }
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    if (this._point) {
-      var x23 = this._x2 - x3, y23 = this._y2 - y3;
-      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+  point: function(t10, n13) {
+    if (t10 = +t10, n13 = +n13, this._point) {
+      var i9 = this._x2 - t10, e30 = this._y2 - n13;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(i9 * i9 + e30 * e30, this._alpha));
     }
     switch (this._point) {
       case 0:
-        this._point = 1;
-        this._x3 = x3, this._y3 = y3;
+        this._point = 1, this._x3 = t10, this._y3 = n13;
         break;
       case 1:
-        this._point = 2;
-        this._context.moveTo(this._x4 = x3, this._y4 = y3);
+        this._point = 2, this._context.moveTo(this._x4 = t10, this._y4 = n13);
         break;
       case 2:
-        this._point = 3;
-        this._x5 = x3, this._y5 = y3;
+        this._point = 3, this._x5 = t10, this._y5 = n13;
         break;
       default:
-        point4(this, x3, y3);
+        ut5(this, t10, n13);
         break;
     }
-    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
-    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a, this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a, this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var catmullRomClosed_default = function custom17(alpha) {
-  function catmullRom(context) {
-    return alpha ? new CatmullRomClosed(context, alpha) : new CardinalClosed(context, 0);
+var ai = function t8(n13) {
+  function i9(e30) {
+    return n13 ? new Tn3(e30, n13) : new Tt4(e30, 0);
   }
-  catmullRom.alpha = function(alpha2) {
-    return custom17(+alpha2);
-  };
-  return catmullRom;
+  return i9.alpha = function(e30) {
+    return t8(+e30);
+  }, i9;
 }(0.5);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/catmullRomOpen.js
-function CatmullRomOpen(context, alpha) {
-  this._context = context;
-  this._alpha = alpha;
+function bn3(t10, n13) {
+  this._context = t10, this._alpha = n13;
 }
-CatmullRomOpen.prototype = {
+bn3.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7204,18 +5393,15 @@ CatmullRomOpen.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
-    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN, this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
   },
   lineEnd: function() {
-    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 3) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    if (this._point) {
-      var x23 = this._x2 - x3, y23 = this._y2 - y3;
-      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+  point: function(t10, n13) {
+    if (t10 = +t10, n13 = +n13, this._point) {
+      var i9 = this._x2 - t10, e30 = this._y2 - n13;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(i9 * i9 + e30 * e30, this._alpha));
     }
     switch (this._point) {
       case 0:
@@ -7225,72 +5411,60 @@ CatmullRomOpen.prototype = {
         this._point = 2;
         break;
       case 2:
-        this._point = 3;
-        this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
+        this._point = 3, this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
         break;
       case 3:
         this._point = 4;
-      // falls through
       default:
-        point4(this, x3, y3);
+        ut5(this, t10, n13);
         break;
     }
-    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
-    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a, this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a, this._x0 = this._x1, this._x1 = this._x2, this._x2 = t10, this._y0 = this._y1, this._y1 = this._y2, this._y2 = n13;
   }
 };
-var catmullRomOpen_default = function custom18(alpha) {
-  function catmullRom(context) {
-    return alpha ? new CatmullRomOpen(context, alpha) : new CardinalOpen(context, 0);
+var li = function t9(n13) {
+  function i9(e30) {
+    return n13 ? new bn3(e30, n13) : new bt3(e30, 0);
   }
-  catmullRom.alpha = function(alpha2) {
-    return custom18(+alpha2);
-  };
-  return catmullRom;
+  return i9.alpha = function(e30) {
+    return t9(+e30);
+  }, i9;
 }(0.5);
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/linearClosed.js
-function LinearClosed(context) {
-  this._context = context;
+function kn2(t10) {
+  this._context = t10;
 }
-LinearClosed.prototype = {
-  areaStart: noop_default2,
-  areaEnd: noop_default2,
+kn2.prototype = {
+  areaStart: X11,
+  areaEnd: X11,
   lineStart: function() {
     this._point = 0;
   },
   lineEnd: function() {
-    if (this._point) this._context.closePath();
+    this._point && this._context.closePath();
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    if (this._point) this._context.lineTo(x3, y3);
-    else this._point = 1, this._context.moveTo(x3, y3);
+  point: function(t10, n13) {
+    t10 = +t10, n13 = +n13, this._point ? this._context.lineTo(t10, n13) : (this._point = 1, this._context.moveTo(t10, n13));
   }
 };
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/monotone.js
-function sign2(x3) {
-  return x3 < 0 ? -1 : 1;
+function wn3(t10) {
+  return t10 < 0 ? -1 : 1;
 }
-function slope3(that, x22, y22) {
-  var h0 = that._x1 - that._x0, h1 = x22 - that._x1, s0 = (that._y1 - that._y0) / (h0 || h1 < 0 && -0), s1 = (y22 - that._y1) / (h1 || h0 < 0 && -0), p = (s0 * h1 + s1 * h0) / (h0 + h1);
-  return (sign2(s0) + sign2(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0;
+function Sn3(t10, n13, i9) {
+  var e30 = t10._x1 - t10._x0, s14 = n13 - t10._x1, o21 = (t10._y1 - t10._y0) / (e30 || s14 < 0 && -0), a11 = (i9 - t10._y1) / (s14 || e30 < 0 && -0), r11 = (o21 * s14 + a11 * e30) / (e30 + s14);
+  return (wn3(o21) + wn3(a11)) * Math.min(Math.abs(o21), Math.abs(a11), 0.5 * Math.abs(r11)) || 0;
 }
-function slope2(that, t) {
-  var h = that._x1 - that._x0;
-  return h ? (3 * (that._y1 - that._y0) / h - t) / 2 : t;
+function Nn3(t10, n13) {
+  var i9 = t10._x1 - t10._x0;
+  return i9 ? (3 * (t10._y1 - t10._y0) / i9 - n13) / 2 : n13;
 }
-function point5(that, t03, t13) {
-  var x02 = that._x0, y0 = that._y0, x12 = that._x1, y1 = that._y1, dx = (x12 - x02) / 3;
-  that._context.bezierCurveTo(x02 + dx, y0 + dx * t03, x12 - dx, y1 - dx * t13, x12, y1);
+function Qt4(t10, n13, i9) {
+  var e30 = t10._x0, s14 = t10._y0, o21 = t10._x1, a11 = t10._y1, r11 = (o21 - e30) / 3;
+  t10._context.bezierCurveTo(e30 + r11, s14 + r11 * n13, o21 - r11, a11 - r11 * i9, o21, a11);
 }
-function MonotoneX(context) {
-  this._context = context;
+function kt4(t10) {
+  this._context = t10;
 }
-MonotoneX.prototype = {
+kt4.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7298,8 +5472,7 @@ MonotoneX.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x0 = this._x1 = this._y0 = this._y1 = this._t0 = NaN;
-    this._point = 0;
+    this._x0 = this._x1 = this._y0 = this._y1 = this._t0 = NaN, this._point = 0;
   },
   lineEnd: function() {
     switch (this._point) {
@@ -7307,66 +5480,59 @@ MonotoneX.prototype = {
         this._context.lineTo(this._x1, this._y1);
         break;
       case 3:
-        point5(this, this._t0, slope2(this, this._t0));
+        Qt4(this, this._t0, Nn3(this, this._t0));
         break;
     }
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    this._line = 1 - this._line;
+    (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line = 1 - this._line;
   },
-  point: function(x3, y3) {
-    var t13 = NaN;
-    x3 = +x3, y3 = +y3;
-    if (x3 === this._x1 && y3 === this._y1) return;
-    switch (this._point) {
-      case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
-        break;
-      case 1:
-        this._point = 2;
-        break;
-      case 2:
-        this._point = 3;
-        point5(this, slope2(this, t13 = slope3(this, x3, y3)), t13);
-        break;
-      default:
-        point5(this, this._t0, t13 = slope3(this, x3, y3));
-        break;
+  point: function(t10, n13) {
+    var i9 = NaN;
+    if (t10 = +t10, n13 = +n13, !(t10 === this._x1 && n13 === this._y1)) {
+      switch (this._point) {
+        case 0:
+          this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
+          break;
+        case 1:
+          this._point = 2;
+          break;
+        case 2:
+          this._point = 3, Qt4(this, Nn3(this, i9 = Sn3(this, t10, n13)), i9);
+          break;
+        default:
+          Qt4(this, this._t0, i9 = Sn3(this, t10, n13));
+          break;
+      }
+      this._x0 = this._x1, this._x1 = t10, this._y0 = this._y1, this._y1 = n13, this._t0 = i9;
     }
-    this._x0 = this._x1, this._x1 = x3;
-    this._y0 = this._y1, this._y1 = y3;
-    this._t0 = t13;
   }
 };
-function MonotoneY(context) {
-  this._context = new ReflectContext(context);
+function En2(t10) {
+  this._context = new An3(t10);
 }
-(MonotoneY.prototype = Object.create(MonotoneX.prototype)).point = function(x3, y3) {
-  MonotoneX.prototype.point.call(this, y3, x3);
+(En2.prototype = Object.create(kt4.prototype)).point = function(t10, n13) {
+  kt4.prototype.point.call(this, n13, t10);
 };
-function ReflectContext(context) {
-  this._context = context;
+function An3(t10) {
+  this._context = t10;
 }
-ReflectContext.prototype = {
-  moveTo: function(x3, y3) {
-    this._context.moveTo(y3, x3);
+An3.prototype = {
+  moveTo: function(t10, n13) {
+    this._context.moveTo(n13, t10);
   },
   closePath: function() {
     this._context.closePath();
   },
-  lineTo: function(x3, y3) {
-    this._context.lineTo(y3, x3);
+  lineTo: function(t10, n13) {
+    this._context.lineTo(n13, t10);
   },
-  bezierCurveTo: function(x12, y1, x22, y22, x3, y3) {
-    this._context.bezierCurveTo(y1, x12, y22, x22, y3, x3);
+  bezierCurveTo: function(t10, n13, i9, e30, s14, o21) {
+    this._context.bezierCurveTo(n13, t10, e30, i9, o21, s14);
   }
 };
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/natural.js
-function Natural(context) {
-  this._context = context;
+function Pn2(t10) {
+  this._context = t10;
 }
-Natural.prototype = {
+Pn2.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7374,53 +5540,33 @@ Natural.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x = [];
-    this._y = [];
+    this._x = [], this._y = [];
   },
   lineEnd: function() {
-    var x3 = this._x, y3 = this._y, n = x3.length;
-    if (n) {
-      this._line ? this._context.lineTo(x3[0], y3[0]) : this._context.moveTo(x3[0], y3[0]);
-      if (n === 2) {
-        this._context.lineTo(x3[1], y3[1]);
-      } else {
-        var px = controlPoints(x3), py = controlPoints(y3);
-        for (var i0 = 0, i1 = 1; i1 < n; ++i0, ++i1) {
-          this._context.bezierCurveTo(px[0][i0], py[0][i0], px[1][i0], py[1][i0], x3[i1], y3[i1]);
-        }
-      }
-    }
-    if (this._line || this._line !== 0 && n === 1) this._context.closePath();
-    this._line = 1 - this._line;
-    this._x = this._y = null;
+    var t10 = this._x, n13 = this._y, i9 = t10.length;
+    if (i9) if (this._line ? this._context.lineTo(t10[0], n13[0]) : this._context.moveTo(t10[0], n13[0]), i9 === 2) this._context.lineTo(t10[1], n13[1]);
+    else for (var e30 = Rn2(t10), s14 = Rn2(n13), o21 = 0, a11 = 1; a11 < i9; ++o21, ++a11) this._context.bezierCurveTo(e30[0][o21], s14[0][o21], e30[1][o21], s14[1][o21], t10[a11], n13[a11]);
+    (this._line || this._line !== 0 && i9 === 1) && this._context.closePath(), this._line = 1 - this._line, this._x = this._y = null;
   },
-  point: function(x3, y3) {
-    this._x.push(+x3);
-    this._y.push(+y3);
+  point: function(t10, n13) {
+    this._x.push(+t10), this._y.push(+n13);
   }
 };
-function controlPoints(x3) {
-  var i, n = x3.length - 1, m, a2 = new Array(n), b = new Array(n), r = new Array(n);
-  a2[0] = 0, b[0] = 2, r[0] = x3[0] + 2 * x3[1];
-  for (i = 1; i < n - 1; ++i) a2[i] = 1, b[i] = 4, r[i] = 4 * x3[i] + 2 * x3[i + 1];
-  a2[n - 1] = 2, b[n - 1] = 7, r[n - 1] = 8 * x3[n - 1] + x3[n];
-  for (i = 1; i < n; ++i) m = a2[i] / b[i - 1], b[i] -= m, r[i] -= m * r[i - 1];
-  a2[n - 1] = r[n - 1] / b[n - 1];
-  for (i = n - 2; i >= 0; --i) a2[i] = (r[i] - a2[i + 1]) / b[i];
-  b[n - 1] = (x3[n] + a2[n - 1]) / 2;
-  for (i = 0; i < n - 1; ++i) b[i] = 2 * x3[i + 1] - a2[i + 1];
+function Rn2(t10) {
+  var n13, i9 = t10.length - 1, e30, s14 = new Array(i9), o21 = new Array(i9), a11 = new Array(i9);
+  for (s14[0] = 0, o21[0] = 2, a11[0] = t10[0] + 2 * t10[1], n13 = 1; n13 < i9 - 1; ++n13) s14[n13] = 1, o21[n13] = 4, a11[n13] = 4 * t10[n13] + 2 * t10[n13 + 1];
+  for (s14[i9 - 1] = 2, o21[i9 - 1] = 7, a11[i9 - 1] = 8 * t10[i9 - 1] + t10[i9], n13 = 1; n13 < i9; ++n13) e30 = s14[n13] / o21[n13 - 1], o21[n13] -= e30, a11[n13] -= e30 * a11[n13 - 1];
+  for (s14[i9 - 1] = a11[i9 - 1] / o21[i9 - 1], n13 = i9 - 2; n13 >= 0; --n13) s14[n13] = (a11[n13] - s14[n13 + 1]) / o21[n13];
+  for (o21[i9 - 1] = (t10[i9] + s14[i9 - 1]) / 2, n13 = 0; n13 < i9 - 1; ++n13) o21[n13] = 2 * t10[n13 + 1] - s14[n13 + 1];
   return [
-    a2,
-    b
+    s14,
+    o21
   ];
 }
-
-// node_modules/.deno/d3-shape@3.2.0/node_modules/d3-shape/src/curve/step.js
-function Step(context, t) {
-  this._context = context;
-  this._t = t;
+function wt5(t10, n13) {
+  this._context = t10, this._t = n13;
 }
-Step.prototype = {
+wt5.prototype = {
   areaStart: function() {
     this._line = 0;
   },
@@ -7428,99 +5574,88 @@ Step.prototype = {
     this._line = NaN;
   },
   lineStart: function() {
-    this._x = this._y = NaN;
-    this._point = 0;
+    this._x = this._y = NaN, this._point = 0;
   },
   lineEnd: function() {
-    if (0 < this._t && this._t < 1 && this._point === 2) this._context.lineTo(this._x, this._y);
-    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
-    if (this._line >= 0) this._t = 1 - this._t, this._line = 1 - this._line;
+    0 < this._t && this._t < 1 && this._point === 2 && this._context.lineTo(this._x, this._y), (this._line || this._line !== 0 && this._point === 1) && this._context.closePath(), this._line >= 0 && (this._t = 1 - this._t, this._line = 1 - this._line);
   },
-  point: function(x3, y3) {
-    x3 = +x3, y3 = +y3;
-    switch (this._point) {
+  point: function(t10, n13) {
+    switch (t10 = +t10, n13 = +n13, this._point) {
       case 0:
-        this._point = 1;
-        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        this._point = 1, this._line ? this._context.lineTo(t10, n13) : this._context.moveTo(t10, n13);
         break;
       case 1:
         this._point = 2;
-      // falls through
       default: {
-        if (this._t <= 0) {
-          this._context.lineTo(this._x, y3);
-          this._context.lineTo(x3, y3);
-        } else {
-          var x12 = this._x * (1 - this._t) + x3 * this._t;
-          this._context.lineTo(x12, this._y);
-          this._context.lineTo(x12, y3);
+        if (this._t <= 0) this._context.lineTo(this._x, n13), this._context.lineTo(t10, n13);
+        else {
+          var i9 = this._x * (1 - this._t) + t10 * this._t;
+          this._context.lineTo(i9, this._y), this._context.lineTo(i9, n13);
         }
         break;
       }
     }
-    this._x = x3, this._y = y3;
+    this._x = t10, this._y = n13;
   }
 };
 
-// node_modules/.deno/d3-zoom@3.0.0/node_modules/d3-zoom/src/transform.js
-function Transform(k2, x3, y3) {
-  this.k = k2;
-  this.x = x3;
-  this.y = y3;
+// deno:https://esm.sh/d3-zoom@3.0.0/denonext/d3-zoom.mjs
+function v14(n13, f15, m12) {
+  this.k = n13, this.x = f15, this.y = m12;
 }
-Transform.prototype = {
-  constructor: Transform,
-  scale: function(k2) {
-    return k2 === 1 ? this : new Transform(this.k * k2, this.x, this.y);
+v14.prototype = {
+  constructor: v14,
+  scale: function(n13) {
+    return n13 === 1 ? this : new v14(this.k * n13, this.x, this.y);
   },
-  translate: function(x3, y3) {
-    return x3 === 0 & y3 === 0 ? this : new Transform(this.k, this.x + this.k * x3, this.y + this.k * y3);
+  translate: function(n13, f15) {
+    return n13 === 0 & f15 === 0 ? this : new v14(this.k, this.x + this.k * n13, this.y + this.k * f15);
   },
-  apply: function(point6) {
+  apply: function(n13) {
     return [
-      point6[0] * this.k + this.x,
-      point6[1] * this.k + this.y
+      n13[0] * this.k + this.x,
+      n13[1] * this.k + this.y
     ];
   },
-  applyX: function(x3) {
-    return x3 * this.k + this.x;
+  applyX: function(n13) {
+    return n13 * this.k + this.x;
   },
-  applyY: function(y3) {
-    return y3 * this.k + this.y;
+  applyY: function(n13) {
+    return n13 * this.k + this.y;
   },
-  invert: function(location) {
+  invert: function(n13) {
     return [
-      (location[0] - this.x) / this.k,
-      (location[1] - this.y) / this.k
+      (n13[0] - this.x) / this.k,
+      (n13[1] - this.y) / this.k
     ];
   },
-  invertX: function(x3) {
-    return (x3 - this.x) / this.k;
+  invertX: function(n13) {
+    return (n13 - this.x) / this.k;
   },
-  invertY: function(y3) {
-    return (y3 - this.y) / this.k;
+  invertY: function(n13) {
+    return (n13 - this.y) / this.k;
   },
-  rescaleX: function(x3) {
-    return x3.copy().domain(x3.range().map(this.invertX, this).map(x3.invert, x3));
+  rescaleX: function(n13) {
+    return n13.copy().domain(n13.range().map(this.invertX, this).map(n13.invert, n13));
   },
-  rescaleY: function(y3) {
-    return y3.copy().domain(y3.range().map(this.invertY, this).map(y3.invert, y3));
+  rescaleY: function(n13) {
+    return n13.copy().domain(n13.range().map(this.invertY, this).map(n13.invert, n13));
   },
   toString: function() {
     return "translate(" + this.x + "," + this.y + ") scale(" + this.k + ")";
   }
 };
-var identity5 = new Transform(1, 0, 0);
-transform.prototype = Transform.prototype;
-function transform(node) {
-  while (!node.__zoom) if (!(node = node.parentNode)) return identity5;
-  return node.__zoom;
+var V8 = new v14(1, 0, 0);
+F13.prototype = v14.prototype;
+function F13(n13) {
+  for (; !n13.__zoom; ) if (!(n13 = n13.parentNode)) return V8;
+  return n13.__zoom;
 }
 
 // src/types.ts
 var CANONICAL_ZONES = (() => {
   const zones = [];
-  for (let g = 1; g <= 4; g++) {
+  for (let g7 = 1; g7 <= 4; g7++) {
     for (const letter of [
       "A",
       "B",
@@ -7530,7 +5665,7 @@ var CANONICAL_ZONES = (() => {
         "v",
         "d"
       ]) {
-        zones.push(`${g}${letter}${suffix}`);
+        zones.push(`${g7}${letter}${suffix}`);
       }
     }
   }
@@ -7538,8 +5673,8 @@ var CANONICAL_ZONES = (() => {
 })();
 
 // src/utils/data-schema.ts
-function normalizeZoneId(id2) {
-  return id2.trim().replace(/\s+/g, "").toUpperCase().replace(/V$/i, "v").replace(/D$/i, "d");
+function normalizeZoneId(id) {
+  return id.trim().replace(/\s+/g, "").toUpperCase().replace(/V$/i, "v").replace(/D$/i, "d");
 }
 function validateLesionData(raw) {
   const warnings = [];
@@ -7558,37 +5693,37 @@ function validateLesionData(raw) {
   }
   const lesionsRaw = obj["lesions"];
   const lesions = [];
-  for (const l of lesionsRaw) {
-    if (!l || typeof l !== "object") {
+  for (const l9 of lesionsRaw) {
+    if (!l9 || typeof l9 !== "object") {
       warnings.push("Invalid lesion entry (not an object)");
       continue;
     }
-    const rec = l;
-    const id2 = String(rec.id ?? "").trim();
-    if (!id2) {
+    const rec = l9;
+    const id = String(rec.id ?? "").trim();
+    if (!id) {
       warnings.push("Lesion missing id");
       continue;
     }
     const pirads = Number(rec.pirads ?? NaN);
     if (!Number.isInteger(pirads) || pirads < 1 || pirads > 5) {
-      warnings.push(`Lesion ${id2} has invalid pirads '${rec.pirads}'`);
+      warnings.push(`Lesion ${id} has invalid pirads '${rec.pirads}'`);
     }
     let zones = [];
     if (Array.isArray(rec.zones)) {
-      zones = rec.zones.map((z) => normalizeZoneId(String(z)));
+      zones = rec.zones.map((z9) => normalizeZoneId(String(z9)));
     } else if (typeof rec.zones === "string") {
       zones = [
         normalizeZoneId(rec.zones)
       ];
     }
     const validZones = [];
-    for (const z of zones) {
-      if (CANONICAL_ZONES.includes(z)) validZones.push(z);
-      else warnings.push(`Lesion ${id2} references invalid zone '${z}'`);
+    for (const z9 of zones) {
+      if (CANONICAL_ZONES.includes(z9)) validZones.push(z9);
+      else warnings.push(`Lesion ${id} references invalid zone '${z9}'`);
     }
     const deduped = Array.from(new Set(validZones));
     lesions.push({
-      id: id2,
+      id,
       pirads,
       zones: deduped,
       details: rec.details
@@ -7611,21 +5746,21 @@ var PI_RADS_COLORS = {
   2: "#FD8D3C",
   1: "#FFFFB2"
 };
-function getPiradsColor(p) {
-  return PI_RADS_COLORS[Math.min(5, Math.max(1, Math.round(p)))];
+function getPiradsColor(p12) {
+  return PI_RADS_COLORS[Math.min(5, Math.max(1, Math.round(p12)))];
 }
 function computeZoneState(lesions = {}) {
   const result = {};
-  for (const z of CANONICAL_ZONES) {
-    result[z] = {
+  for (const z9 of CANONICAL_ZONES) {
+    result[z9] = {
       highestPirads: null,
       lesionIds: [],
       count: 0
     };
   }
   for (const lesion of lesions) {
-    const id2 = lesion.id;
-    const p = Number(lesion.pirads) || 0;
+    const id = lesion.id;
+    const p12 = Number(lesion.pirads) || 0;
     for (const zone of lesion.zones || []) {
       if (!result[zone]) {
         result[zone] = {
@@ -7634,11 +5769,11 @@ function computeZoneState(lesions = {}) {
           count: 0
         };
       }
-      const st = result[zone];
-      st.lesionIds.push(id2);
-      st.count = st.lesionIds.length;
-      if (st.highestPirads === null || p > st.highestPirads) {
-        st.highestPirads = p;
+      const st2 = result[zone];
+      st2.lesionIds.push(id);
+      st2.count = st2.lesionIds.length;
+      if (st2.highestPirads === null || p12 > st2.highestPirads) {
+        st2.highestPirads = p12;
       }
     }
   }
@@ -7653,27 +5788,27 @@ function supportsD3Mutation(rootSelection) {
   const ownerDoc = node.ownerDocument;
   return !!(ownerDoc && typeof ownerDoc.createElementNS === "function");
 }
-function findZoneElement(root2, zoneId) {
+function findZoneElement(root, zoneId) {
   const attrSelector = `[id="${escapeAttrValue(zoneId)}"]`;
   try {
-    const attrMatch = root2.querySelector?.(attrSelector) ?? null;
+    const attrMatch = root.querySelector?.(attrSelector) ?? null;
     if (attrMatch) return attrMatch;
   } catch {
   }
   try {
-    const hashMatch = root2.querySelector?.(`#${zoneId}`) ?? null;
+    const hashMatch = root.querySelector?.(`#${zoneId}`) ?? null;
     if (hashMatch) return hashMatch;
   } catch {
   }
-  if (typeof root2.querySelectorAll === "function") {
-    const nodes = root2.querySelectorAll("[id]");
+  if (typeof root.querySelectorAll === "function") {
+    const nodes = root.querySelectorAll("[id]");
     for (const node of Array.from(nodes)) {
       if (node.getAttribute("id") === zoneId) {
         return node;
       }
     }
   }
-  const elementsMap = root2.elements;
+  const elementsMap = root.elements;
   if (elementsMap) {
     for (const candidate of Object.values(elementsMap)) {
       const attr = candidate?.getAttribute?.("id") ?? null;
@@ -7687,12 +5822,12 @@ function findZoneElement(root2, zoneId) {
 }
 function selectZoneElement(rootSelection, zoneId) {
   const selector = `[id="${escapeAttrValue(zoneId)}"]`;
-  const selection2 = rootSelection.select(selector);
-  if (!selection2.empty()) return selection2;
+  const selection = rootSelection.select(selector);
+  if (!selection.empty()) return selection;
   const rootNode = rootSelection.node();
-  if (!rootNode) return selection2;
+  if (!rootNode) return selection;
   const fallback = findZoneElement(rootNode, zoneId);
-  return fallback ? select_default2(fallback) : selection2;
+  return fallback ? M2(fallback) : selection;
 }
 function ensureOverlayLayer(rootSelection) {
   let layer = rootSelection.select("g.zone-overlays");
@@ -7719,9 +5854,9 @@ function getCreateElement(source) {
   }
   return null;
 }
-function applyZoneStylesFallback(root2, zoneState) {
+function applyZoneStylesFallback(root, zoneState) {
   for (const [zoneId, state] of Object.entries(zoneState)) {
-    const el = findZoneElement(root2, zoneId);
+    const el = findZoneElement(root, zoneId);
     if (!el) continue;
     if (state.highestPirads === null) {
       el.setAttribute?.("fill", "none");
@@ -7739,12 +5874,12 @@ function applyZoneStylesFallback(root2, zoneState) {
     }
   }
 }
-function renderZoneBadgesFallback(root2, zoneState) {
-  const create2 = getCreateElement(root2);
-  if (!create2) return;
+function renderZoneBadgesFallback(root, zoneState) {
+  const create = getCreateElement(root);
+  if (!create) return;
   for (const [zoneId, state] of Object.entries(zoneState)) {
     if (state.count <= 0) continue;
-    const zoneEl = findZoneElement(root2, zoneId);
+    const zoneEl = findZoneElement(root, zoneId);
     if (!zoneEl) continue;
     let cx = 6;
     let cy = 6;
@@ -7756,17 +5891,17 @@ function renderZoneBadgesFallback(root2, zoneState) {
       }
     } catch {
     }
-    const group2 = create2(SVG_NS, "g");
-    group2.setAttribute?.("class", "badge");
-    group2.setAttribute?.("data-badge-for", zoneId);
-    const circle = create2(SVG_NS, "circle");
+    const group = create(SVG_NS, "g");
+    group.setAttribute?.("class", "badge");
+    group.setAttribute?.("data-badge-for", zoneId);
+    const circle = create(SVG_NS, "circle");
     circle.setAttribute?.("r", "8");
     circle.setAttribute?.("cx", String(cx));
     circle.setAttribute?.("cy", String(cy));
     circle.setAttribute?.("fill", "#ffffff");
     circle.setAttribute?.("stroke", "#000000");
     circle.setAttribute?.("stroke-width", "1");
-    const text = create2(SVG_NS, "text");
+    const text = create(SVG_NS, "text");
     text.setAttribute?.("x", String(cx));
     text.setAttribute?.("y", String(cy + 4));
     text.setAttribute?.("text-anchor", "middle");
@@ -7774,14 +5909,14 @@ function renderZoneBadgesFallback(root2, zoneState) {
     text.setAttribute?.("fill", "#000000");
     text.setAttribute?.("data-count", String(state.count));
     text.textContent = String(state.count);
-    group2.appendChild?.(circle);
-    group2.appendChild?.(text);
-    root2.appendChild?.(group2);
+    group.appendChild?.(circle);
+    group.appendChild?.(text);
+    root.appendChild?.(group);
   }
 }
-function applyZoneStyles(root2, zoneState) {
-  if (!root2) return;
-  const rootSelection = select_default2(root2);
+function applyZoneStyles(root, zoneState) {
+  if (!root) return;
+  const rootSelection = M2(root);
   if (rootSelection.empty()) return;
   const rootNode = rootSelection.node();
   if (!rootNode) return;
@@ -7802,19 +5937,19 @@ function applyZoneStyles(root2, zoneState) {
     if (state.count > 1) {
       const patternIds = state.lesionIds.map(getPatternId);
       zoneSelection.attr("data-patterns", patternIds.join(" "));
-      ensurePatternDefs(root2, state.lesionIds);
-      const overlayData = state.lesionIds.map((lesionId, index2) => ({
+      ensurePatternDefs(root, state.lesionIds);
+      const overlayData = state.lesionIds.map((lesionId, index) => ({
         lesionId,
         patternId: getPatternId(lesionId),
-        opacity: Math.max(0.2, 0.7 - index2 * 0.2),
-        overlayIndex: index2,
+        opacity: Math.max(0.2, 0.7 - index * 0.2),
+        overlayIndex: index,
         zoneId
       }));
-      const zoneOverlaySelection = overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).data(overlayData, (d) => d.lesionId);
+      const zoneOverlaySelection = overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).data(overlayData, (d11) => d11.lesionId);
       zoneOverlaySelection.exit().remove();
       const zoneOverlayEnter = zoneOverlaySelection.enter().append("use").attr("class", "zone-overlay").attr("data-overlay-for", zoneId).attr("pointer-events", "none");
       const zoneOverlayMerge = zoneOverlayEnter.merge(zoneOverlaySelection);
-      zoneOverlayMerge.attr("href", `#${zoneId}`).attr("xlink:href", `#${zoneId}`).attr("fill", (d) => `url(#${d.patternId})`).attr("data-pattern-id", (d) => d.patternId).attr("data-overlay-index", (d) => String(d.overlayIndex)).attr("opacity", (d) => String(d.opacity));
+      zoneOverlayMerge.attr("href", `#${zoneId}`).attr("xlink:href", `#${zoneId}`).attr("fill", (d11) => `url(#${d11.patternId})`).attr("data-pattern-id", (d11) => d11.patternId).attr("data-overlay-index", (d11) => String(d11.overlayIndex)).attr("opacity", (d11) => String(d11.opacity));
       zoneOverlayMerge.order();
     } else {
       zoneSelection.attr("data-patterns", null);
@@ -7838,16 +5973,16 @@ var PATTERN_BUILDERS = [
 ];
 function patternIndexForLesion(lesionId) {
   const normalized = String(lesionId ?? "");
-  let sum4 = 0;
-  for (let i = 0; i < normalized.length; i++) sum4 += normalized.charCodeAt(i);
-  return PATTERN_BUILDERS.length ? sum4 % PATTERN_BUILDERS.length : 0;
+  let sum = 0;
+  for (let i9 = 0; i9 < normalized.length; i9++) sum += normalized.charCodeAt(i9);
+  return PATTERN_BUILDERS.length ? sum % PATTERN_BUILDERS.length : 0;
 }
 function getPatternId(lesionId) {
   return `pattern-${String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 }
-function renderZoneBadges(root2, zoneState) {
-  if (!root2) return;
-  const rootSelection = select_default2(root2);
+function renderZoneBadges(root, zoneState) {
+  if (!root) return;
+  const rootSelection = M2(root);
   if (rootSelection.empty()) return;
   const rootNode = rootSelection.node();
   if (!rootNode) return;
@@ -7860,16 +5995,16 @@ function renderZoneBadges(root2, zoneState) {
     zoneId,
     count: state.count
   }));
-  const badges = badgeLayer.selectAll("g.badge").data(data, (d) => d.zoneId);
+  const badges = badgeLayer.selectAll("g.badge").data(data, (d11) => d11.zoneId);
   badges.exit().remove();
-  const badgeEnter = badges.enter().append("g").attr("class", "badge").attr("data-badge-for", (d) => d.zoneId);
+  const badgeEnter = badges.enter().append("g").attr("class", "badge").attr("data-badge-for", (d11) => d11.zoneId);
   badgeEnter.append("circle");
   badgeEnter.append("text");
   const badgeMerge = badgeEnter.merge(badges);
-  badgeMerge.each(function(datum2) {
-    const zoneSelection = selectZoneElement(rootSelection, datum2.zoneId);
+  badgeMerge.each(function(datum) {
+    const zoneSelection = selectZoneElement(rootSelection, datum.zoneId);
     if (zoneSelection.empty()) {
-      select_default2(this).remove();
+      M2(this).remove();
       return;
     }
     let cx = 6;
@@ -7883,15 +6018,15 @@ function renderZoneBadges(root2, zoneState) {
       } catch {
       }
     }
-    const group2 = select_default2(this);
-    group2.attr("data-badge-for", datum2.zoneId);
-    group2.select("circle").attr("cx", cx).attr("cy", cy).attr("r", 8).attr("fill", "#ffffff").attr("stroke", "#000000").attr("stroke-width", 1);
-    group2.select("text").attr("x", cx).attr("y", cy + 4).attr("text-anchor", "middle").attr("font-size", 10).attr("fill", "#000000").attr("data-count", String(datum2.count)).text(String(datum2.count));
+    const group = M2(this);
+    group.attr("data-badge-for", datum.zoneId);
+    group.select("circle").attr("cx", cx).attr("cy", cy).attr("r", 8).attr("fill", "#ffffff").attr("stroke", "#000000").attr("stroke-width", 1);
+    group.select("text").attr("x", cx).attr("y", cy + 4).attr("text-anchor", "middle").attr("font-size", 10).attr("fill", "#000000").attr("data-count", String(datum.count)).text(String(datum.count));
   });
 }
-function ensurePatternDefs(root2, lesionIds) {
-  if (!root2 || !lesionIds.length) return;
-  const rootSelection = select_default2(root2);
+function ensurePatternDefs(root, lesionIds) {
+  if (!root || !lesionIds.length) return;
+  const rootSelection = M2(root);
   if (rootSelection.empty()) return;
   if (!supportsD3Mutation(rootSelection)) return;
   let defs = rootSelection.select("defs");
@@ -7904,12 +6039,12 @@ function ensurePatternDefs(root2, lesionIds) {
     patternId: getPatternId(lesionId),
     builderIndex: patternIndexForLesion(lesionId)
   }));
-  const patternSelection = defs.selectAll('pattern[data-pattern-source="lesion"]').data(data, (d) => d.patternId);
-  const patternEnter = patternSelection.enter().append("pattern").attr("id", (d) => d.patternId).attr("data-pattern-source", "lesion").attr("patternUnits", "userSpaceOnUse").attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE);
+  const patternSelection = defs.selectAll('pattern[data-pattern-source="lesion"]').data(data, (d11) => d11.patternId);
+  const patternEnter = patternSelection.enter().append("pattern").attr("id", (d11) => d11.patternId).attr("data-pattern-source", "lesion").attr("patternUnits", "userSpaceOnUse").attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE);
   patternEnter.append("rect").attr("x", 0).attr("y", 0).attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE).attr("fill", "none").attr("stroke", "none");
-  patternEnter.each(function(d) {
-    const patternSelectionForBuilder = select_default2(this);
-    const builder = PATTERN_BUILDERS[d.builderIndex] ?? PATTERN_BUILDERS[0];
+  patternEnter.each(function(d11) {
+    const patternSelectionForBuilder = M2(this);
+    const builder = PATTERN_BUILDERS[d11.builderIndex] ?? PATTERN_BUILDERS[0];
     builder(patternSelectionForBuilder);
   });
 }
@@ -8021,8 +6156,8 @@ var ProstateMriMap = class extends HTMLElement {
     const panel = this.shadow.querySelector("#detail-panel");
     const closeBtn = this.shadow.querySelector("#detail-close");
     closeBtn.addEventListener("click", this._onPanelClose);
-    panel.addEventListener("click", (e) => {
-      if (e.target === panel) this._onPanelClose();
+    panel.addEventListener("click", (e30) => {
+      if (e30.target === panel) this._onPanelClose();
     });
     this.shadow.addEventListener("keydown", this._onPanelKeydown);
     this._wireSlottedZones();
@@ -8052,7 +6187,7 @@ var ProstateMriMap = class extends HTMLElement {
     for (const node of assigned) {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (!svgRoot) continue;
-      const zones = select_default2(svgRoot).selectAll(".zone");
+      const zones = M2(svgRoot).selectAll(".zone");
       zones.on(".zone-interaction", null).attr("tabindex", "0").attr("role", "button").attr("focusable", "true").on("click.zone-interaction", (event) => {
         this._onZoneClick(event);
       }).on("keydown.zone-interaction", (event) => {
@@ -8107,26 +6242,26 @@ var ProstateMriMap = class extends HTMLElement {
     for (const node of assigned) {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (!svgRoot) continue;
-      select_default2(svgRoot).selectAll(".zone").on(".zone-interaction", null);
+      M2(svgRoot).selectAll(".zone").on(".zone-interaction", null);
     }
   }
-  _onZoneClick(e) {
-    const target = e.currentTarget;
+  _onZoneClick(e30) {
+    const target = e30.currentTarget;
     if (!target) return;
     const zoneId = target.id || null;
     if (!zoneId) return;
-    const lesions = this._data?.lesions.filter((l) => l.zones.includes(zoneId)) || [];
+    const lesions = this._data?.lesions.filter((l9) => l9.zones.includes(zoneId)) || [];
     this._showDetailPanel(zoneId, lesions);
     this._dispatchZoneClick(zoneId, lesions);
   }
-  _onZoneKeydown(e) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      const target = e.currentTarget;
+  _onZoneKeydown(e30) {
+    if (e30.key === "Enter" || e30.key === " ") {
+      e30.preventDefault();
+      const target = e30.currentTarget;
       if (!target) return;
       const zoneId = target.id || null;
       if (!zoneId) return;
-      const lesions = this._data?.lesions.filter((l) => l.zones.includes(zoneId)) || [];
+      const lesions = this._data?.lesions.filter((l9) => l9.zones.includes(zoneId)) || [];
       this._showDetailPanel(zoneId, lesions);
       this._dispatchZoneClick(zoneId, lesions);
     }
@@ -8148,19 +6283,19 @@ var ProstateMriMap = class extends HTMLElement {
     const title = this.shadow.querySelector("#detail-title");
     const list = this.shadow.querySelector("#detail-lesions");
     const lang = this._language === "sv" ? "sv" : "en";
-    const t = translations[lang];
-    title.textContent = `${t.zoneLabel} ${zoneId}`;
+    const t10 = translations[lang];
+    title.textContent = `${t10.zoneLabel} ${zoneId}`;
     list.innerHTML = "";
     for (const lesion of lesions) {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br>
-        <strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}<br>
-        ${lesion.details?.comment ? `<strong>${t.commentLabel}:</strong> ${lesion.details.comment}<br>` : ""}
-        ${lesion.details?.size_mm ? `<strong>${t.sizeLabel}:</strong> ${lesion.details.size_mm} mm<br>` : ""}
-        ${lesion.details ? `<strong>${t.detailsLabel}:</strong> ${JSON.stringify(lesion.details)}` : ""}
+      const li2 = document.createElement("li");
+      li2.innerHTML = `
+        <strong>${t10.lesionIdLabel}:</strong> ${lesion.id}<br>
+        <strong>${t10.piradsValueLabel}:</strong> ${lesion.pirads}<br>
+        ${lesion.details?.comment ? `<strong>${t10.commentLabel}:</strong> ${lesion.details.comment}<br>` : ""}
+        ${lesion.details?.size_mm ? `<strong>${t10.sizeLabel}:</strong> ${lesion.details.size_mm} mm<br>` : ""}
+        ${lesion.details ? `<strong>${t10.detailsLabel}:</strong> ${JSON.stringify(lesion.details)}` : ""}
       `;
-      list.appendChild(li);
+      list.appendChild(li2);
     }
     panel.classList.add("show");
     const closeBtn = this.shadow.querySelector("#detail-close");
@@ -8177,16 +6312,16 @@ var ProstateMriMap = class extends HTMLElement {
   _onPanelClose() {
     this._hideDetailPanel();
   }
-  _onPanelKeydown(e) {
-    const ke = e;
-    if (ke.key === "Escape") {
+  _onPanelKeydown(e30) {
+    const ke3 = e30;
+    if (ke3.key === "Escape") {
       this._hideDetailPanel();
     }
   }
-  _onFocusIn(e) {
+  _onFocusIn(e30) {
     if (!this._currentZone) return;
     const panel = this.shadow.querySelector("#detail-content");
-    const target = e.target;
+    const target = e30.target;
     if (!panel.contains(target)) {
       const closeBtn = this.shadow.querySelector("#detail-close");
       closeBtn.focus();
@@ -8211,9 +6346,9 @@ var ProstateMriMap = class extends HTMLElement {
   get data() {
     return this._data;
   }
-  set data(v2) {
-    if (v2) {
-      const res = validateLesionData(v2);
+  set data(v15) {
+    if (v15) {
+      const res = validateLesionData(v15);
       if (res.warnings.length) this._dispatchWarning(res.warnings);
       this._data = res.validData ?? null;
     } else this._data = null;
@@ -8223,8 +6358,8 @@ var ProstateMriMap = class extends HTMLElement {
   get language() {
     return this._language;
   }
-  set language(v2) {
-    this._language = v2;
+  set language(v15) {
+    this._language = v15;
     this._render();
   }
   _dispatchWarning(warnings) {
@@ -8248,47 +6383,47 @@ var ProstateMriMap = class extends HTMLElement {
   }
   _renderLegend() {
     const lang = this.language || "en";
-    const t = translations[lang] || translations.en;
+    const t10 = translations[lang] || translations.en;
     const legendEl = this.shadow.getElementById("legend");
     if (!legendEl) return;
     legendEl.innerHTML = "";
     const title = document.createElement("h3");
-    title.textContent = t.legendTitle;
+    title.textContent = t10.legendTitle;
     legendEl.appendChild(title);
     const piradsSection = document.createElement("div");
     const piradsTitle = document.createElement("h4");
-    piradsTitle.textContent = t.piradsLabel;
+    piradsTitle.textContent = t10.piradsLabel;
     piradsSection.appendChild(piradsTitle);
-    for (let i = 1; i <= 5; i++) {
-      const color2 = getPiradsColor(i);
+    for (let i9 = 1; i9 <= 5; i9++) {
+      const color = getPiradsColor(i9);
       const item = document.createElement("div");
       const swatch = document.createElement("span");
-      swatch.style.backgroundColor = color2;
+      swatch.style.backgroundColor = color;
       swatch.style.width = "20px";
       swatch.style.height = "20px";
       swatch.style.display = "inline-block";
       item.appendChild(swatch);
-      item.appendChild(document.createTextNode(` ${i}`));
+      item.appendChild(document.createTextNode(` ${i9}`));
       piradsSection.appendChild(item);
     }
     legendEl.appendChild(piradsSection);
     const patternsSection = document.createElement("div");
     const patternsTitle = document.createElement("h4");
-    patternsTitle.textContent = t.patternsLabel;
+    patternsTitle.textContent = t10.patternsLabel;
     patternsSection.appendChild(patternsTitle);
     const patternKeys = [
       "patternDiagonal",
       "patternCrosshatch",
       "patternDots"
     ];
-    patternKeys.forEach((key, index2) => {
+    patternKeys.forEach((key, index) => {
       const item = document.createElement("div");
-      const svg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg2.setAttribute("width", "40");
-      svg2.setAttribute("height", "20");
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "40");
+      svg.setAttribute("height", "20");
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
       const pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
-      pattern.setAttribute("id", `legend-pattern-${index2}`);
+      pattern.setAttribute("id", `legend-pattern-${index}`);
       pattern.setAttribute("patternUnits", "userSpaceOnUse");
       pattern.setAttribute("width", "20");
       pattern.setAttribute("height", "20");
@@ -8297,14 +6432,14 @@ var ProstateMriMap = class extends HTMLElement {
       rect.setAttribute("height", "20");
       rect.setAttribute("fill", "none");
       pattern.appendChild(rect);
-      if (index2 === 0) {
-        const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path2.setAttribute("d", "M0 20 L20 0");
-        path2.setAttribute("stroke", "#000");
-        path2.setAttribute("stroke-opacity", "0.85");
-        path2.setAttribute("stroke-width", "2");
-        pattern.appendChild(path2);
-      } else if (index2 === 1) {
+      if (index === 0) {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M0 20 L20 0");
+        path.setAttribute("stroke", "#000");
+        path.setAttribute("stroke-opacity", "0.85");
+        path.setAttribute("stroke-width", "2");
+        pattern.appendChild(path);
+      } else if (index === 1) {
         const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path1.setAttribute("d", "M0 20 L20 0");
         path1.setAttribute("stroke", "#000");
@@ -8327,14 +6462,14 @@ var ProstateMriMap = class extends HTMLElement {
         pattern.appendChild(circle);
       }
       defs.appendChild(pattern);
-      svg2.appendChild(defs);
+      svg.appendChild(defs);
       const rectFill = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       rectFill.setAttribute("width", "40");
       rectFill.setAttribute("height", "20");
-      rectFill.setAttribute("fill", `url(#legend-pattern-${index2})`);
-      svg2.appendChild(rectFill);
-      item.appendChild(svg2);
-      item.appendChild(document.createTextNode(` ${t[key]}`));
+      rectFill.setAttribute("fill", `url(#legend-pattern-${index})`);
+      svg.appendChild(rectFill);
+      item.appendChild(svg);
+      item.appendChild(document.createTextNode(` ${t10[key]}`));
       patternsSection.appendChild(item);
     });
     legendEl.appendChild(patternsSection);
