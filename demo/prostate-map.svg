@@ -25,7 +25,7 @@
       <text x="110" y="7" class="label">4Av</text>
     </g>
 
-    <g id="group-A-d" transform="translate(0,25)">
+    <g id="group-A-d" transform="translate(0,20)">
       <rect id="1Ad" class="zone" x="0" y="0" width="30" height="20" />
       <text x="5" y="7" class="label">1Ad</text>
       <rect id="2Ad" class="zone" x="35" y="0" width="30" height="20" />
@@ -48,7 +48,7 @@
       <text x="110" y="7" class="label">4Bv</text>
     </g>
 
-    <g id="group-B-d" transform="translate(0,75)">
+    <g id="group-B-d" transform="translate(0,70)">
       <rect id="1Bd" class="zone" x="0" y="0" width="30" height="20" />
       <text x="5" y="7" class="label">1Bd</text>
       <rect id="2Bd" class="zone" x="35" y="0" width="30" height="20" />
@@ -71,7 +71,7 @@
       <text x="110" y="7" class="label">4Cv</text>
     </g>
 
-    <g id="group-C-d" transform="translate(0,125)">
+    <g id="group-C-d" transform="translate(0,120)">
       <rect id="1Cd" class="zone" x="0" y="0" width="30" height="20" />
       <text x="5" y="7" class="label">1Cd</text>
       <rect id="2Cd" class="zone" x="35" y="0" width="30" height="20" />
