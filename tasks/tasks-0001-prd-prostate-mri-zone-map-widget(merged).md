@@ -98,7 +98,7 @@ Skeleton files created in this step (placeholders):
         validation/parse warnings. `zone-click` event and zone interaction
         handlers are implemented (delegation to slotted SVG shapes).
 
-- [ ] 3.0 Data schema, loading and validation
+- [x] 3.0 Data schema, loading and validation
   - [x] 3.1 Define TypeScript interfaces in `src/types.ts` describing the schema
         from the PRD: `Lesion`, `LesionDetails`, `ProstateMriData`, and `Meta`.
   - [x] 3.2 Implement `validateLesionData(data): { validData, warnings }` in
@@ -118,7 +118,7 @@ Skeleton files created in this step (placeholders):
         inline warning inside the component (an SVG `<text>`/HTML `<div>` placed
         in the visualization area) and dispatch a `data-warning` CustomEvent
         with `{ warnings, errors }` detail.
-  - [ ] 3.5 Strip or ignore invalid zone references for rendering while keeping
+  - [x] 3.5 Strip or ignore invalid zone references for rendering while keeping
         them visible in the emitted warnings so host apps can log/act.
 
 - [ ] 4.0 Visualization: colors, patterns, badges and legend
