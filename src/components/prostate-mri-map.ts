@@ -63,6 +63,7 @@ export class ProstateMriMap extends HTMLElement {
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
     this._onPanelClose = this._onPanelClose.bind(this);
     this._onPanelKeydown = this._onPanelKeydown.bind(this);
+    this._onFocusIn = this._onFocusIn.bind(this);
   }
 
   connectedCallback() {
@@ -241,12 +242,19 @@ export class ProstateMriMap extends HTMLElement {
       list.appendChild(li);
     }
     panel.classList.add('show');
+    // focus the close button
+    const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
+    closeBtn.focus();
+    // add focus trapping
+    this._onFocusIn = this._onFocusIn.bind(this);
+    this.shadow.addEventListener('focusin', this._onFocusIn);
   }
 
   private _hideDetailPanel() {
     this._currentZone = null;
     const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
     panel.classList.remove('show');
+    this.shadow.removeEventListener('focusin', this._onFocusIn);
   }
 
   private _onPanelClose() {
@@ -257,6 +265,16 @@ export class ProstateMriMap extends HTMLElement {
     const ke = e as KeyboardEvent;
     if (ke.key === 'Escape') {
       this._hideDetailPanel();
+    }
+  }
+
+  private _onFocusIn(e: Event) {
+    if (!this._currentZone) return;
+    const panel = this.shadow.querySelector('#detail-content') as HTMLElement;
+    const target = e.target as Element;
+    if (!panel.contains(target)) {
+      const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
+      closeBtn.focus();
     }
   }
 

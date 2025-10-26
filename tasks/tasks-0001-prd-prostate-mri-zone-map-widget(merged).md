@@ -162,7 +162,7 @@ Skeleton files created in this step (placeholders):
         that lists the zone ID and lesions that intersect that zone, with
         fields: lesion id, pirads, comment, size_mm, and any details. The panel
         must be dismissible with Esc and by clicking outside.
-  - [ ] 5.4 Ensure keyboard navigation order is logical (left→right, base→apex
+  - [x] 5.4 Ensure keyboard navigation order is logical (left→right, base→apex
         or another clear pattern) and that focus is trapped when the detail
         panel is open (for accessibility), or at minimum the panel is reachable
         and dismissible via keyboard.

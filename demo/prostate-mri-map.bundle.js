@@ -7990,6 +7990,7 @@ var ProstateMriMap = class extends HTMLElement {
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
     this._onPanelClose = this._onPanelClose.bind(this);
     this._onPanelKeydown = this._onPanelKeydown.bind(this);
+    this._onFocusIn = this._onFocusIn.bind(this);
   }
   connectedCallback() {
     this._render();
@@ -8138,11 +8139,16 @@ var ProstateMriMap = class extends HTMLElement {
       list.appendChild(li);
     }
     panel.classList.add("show");
+    const closeBtn = this.shadow.querySelector("#detail-close");
+    closeBtn.focus();
+    this._onFocusIn = this._onFocusIn.bind(this);
+    this.shadow.addEventListener("focusin", this._onFocusIn);
   }
   _hideDetailPanel() {
     this._currentZone = null;
     const panel = this.shadow.querySelector("#detail-panel");
     panel.classList.remove("show");
+    this.shadow.removeEventListener("focusin", this._onFocusIn);
   }
   _onPanelClose() {
     this._hideDetailPanel();
@@ -8151,6 +8157,15 @@ var ProstateMriMap = class extends HTMLElement {
     const ke = e;
     if (ke.key === "Escape") {
       this._hideDetailPanel();
+    }
+  }
+  _onFocusIn(e) {
+    if (!this._currentZone) return;
+    const panel = this.shadow.querySelector("#detail-content");
+    const target = e.target;
+    if (!panel.contains(target)) {
+      const closeBtn = this.shadow.querySelector("#detail-close");
+      closeBtn.focus();
     }
   }
   attributeChangedCallback(name, _oldValue, newValue) {
