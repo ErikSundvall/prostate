@@ -3,6 +3,9 @@
     "exclude": ["dist", "src/assets/prostate-map.svg"]
   },
   "lint": {},
+  "imports": {
+    "d3": "npm:d3@7"
+  },
   "tasks": {
     "fmt": "deno fmt",
     "lint": "deno lint",

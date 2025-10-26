@@ -1,7 +1,12 @@
 /// <reference lib="dom" />
+import * as d3 from "d3";
 import type { ProstateMriData } from "../types.ts";
 import { validateLesionData } from "../utils/data-schema.ts";
-import { computeZoneState, applyZoneStyles, renderZoneBadges } from "../utils/palette-and-patterns.ts";
+import {
+  applyZoneStyles,
+  computeZoneState,
+  renderZoneBadges,
+} from "../utils/palette-and-patterns.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -42,6 +47,7 @@ export class ProstateMriMap extends HTMLElement {
     if (slot) slot.addEventListener("slotchange", this._onSlotChange);
     // initial attempt to wire slotted content if already present
     this._wireSlottedZones();
+    this._applyStylesToSlottedSvg();
   }
   disconnectedCallback() {
     const slot = this.shadow.querySelector('slot[name="map-svg"]') as
@@ -54,33 +60,40 @@ export class ProstateMriMap extends HTMLElement {
   // --- zone interaction plumbing ---
   private _onSlotChange() {
     this._wireSlottedZones();
+    this._applyStylesToSlottedSvg();
   }
 
   private _wireSlottedZones() {
-    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
+    const slot = this.shadow.querySelector('slot[name="map-svg"]') as
+      | HTMLSlotElement
+      | null;
     if (!slot) return;
-      slot.addEventListener('slotchange', () => {
-        // forward clicks and keyboard events from slotted SVG shapes
-        const nodes = slot.assignedElements({ flatten: true });
-        nodes.forEach(node => {
-          node.querySelectorAll('.zone').forEach((z: Element) => {
-            z.setAttribute('tabindex', '0');
-            // wire click and keyboard handlers to existing methods
-            z.addEventListener('click', (ev) => this._onZoneClick(ev as unknown as Event));
-            z.addEventListener('keydown', (ev: KeyboardEvent) => {
-              if (ev.key === 'Enter' || ev.key === ' ') {
-                ev.preventDefault();
-                this._onZoneKeydown(ev);
-              }
-            });
-          });
-        });
 
-        // After slot content changes, re-apply computed styles to the slotted SVG
-        // so the visualization stays in sync with `this._data`.
-        this._applyStylesToSlottedSvg();
-      });
+    const assigned = slot.assignedElements({ flatten: true });
+    for (const node of assigned) {
+      const svgRoot = node.tagName?.toLowerCase() === "svg"
+        ? (node as Element)
+        : node.querySelector("svg");
+      if (!svgRoot) continue;
+
+      const zones = d3.select(svgRoot).selectAll<SVGElement, unknown>(".zone");
+      zones
+        .on(".zone-interaction", null)
+        .attr("tabindex", "0")
+        .attr("role", "button")
+        .attr("focusable", "true")
+        .on("click.zone-interaction", (event: Event) => {
+          this._onZoneClick(event);
+        })
+        .on("keydown.zone-interaction", (event: Event) => {
+          const keyboardEvent = event as KeyboardEvent;
+          if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+            keyboardEvent.preventDefault();
+            this._onZoneKeydown(keyboardEvent);
+          }
+        });
     }
+  }
 
   /**
    * Find any slotted SVG root(s) and apply computed zone styles to them.
@@ -88,21 +101,23 @@ export class ProstateMriMap extends HTMLElement {
    */
   private _applyStylesToSlottedSvg(): void {
     try {
-      const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
+      const slot = this.shadow.querySelector('slot[name="map-svg"]') as
+        | HTMLSlotElement
+        | null;
       if (!slot) return;
-      const nodes = slot.assignedNodes({ flatten: true });
-      const lesions = Array.isArray(this._data?.lesions) ? this._data.lesions : [];
+      const nodes = slot.assignedElements({ flatten: true });
+      const lesions = Array.isArray(this._data?.lesions)
+        ? this._data.lesions
+        : [];
       const zoneState = computeZoneState(lesions);
-      for (const node of nodes) {
-        if (node.nodeType !== Node.ELEMENT_NODE) continue;
-        const el = node as Element;
+      for (const el of nodes) {
         // If the slotted node is the svg root itself, use it, otherwise look
         // for an <svg> descendant.
         let svgRoot: Element | null = null;
-        if (el.tagName && el.tagName.toLowerCase() === 'svg') {
+        if (el.tagName && el.tagName.toLowerCase() === "svg") {
           svgRoot = el;
         } else {
-          svgRoot = el.querySelector('svg');
+          svgRoot = el.querySelector("svg");
         }
         if (svgRoot) {
           applyZoneStyles(svgRoot, zoneState);
@@ -116,32 +131,22 @@ export class ProstateMriMap extends HTMLElement {
       }
     } catch (err) {
       // non-fatal: styling failures shouldn't break the component
-        this._dispatchWarning([`applyStyles failed: ${String(err)}`]);
+      this._dispatchWarning([`applyStyles failed: ${String(err)}`]);
     }
   }
-    
 
   private _unwireSlottedZones() {
     const slot = this.shadow.querySelector('slot[name="map-svg"]') as
       | HTMLSlotElement
       | null;
     if (!slot) return;
-    const nodes = slot.assignedNodes({ flatten: true }) as Node[];
-    for (const n of nodes) {
-      if (n.nodeType === Node.ELEMENT_NODE) {
-        const el = n as Element;
-        const zoneShapes = Array.from(el.querySelectorAll("[id]")) as Element[];
-        for (const shape of zoneShapes) {
-          shape.removeEventListener(
-            "click",
-            this._onZoneClick as EventListener,
-          );
-          shape.removeEventListener(
-            "keydown",
-            this._onZoneKeydown as EventListener,
-          );
-        }
-      }
+    const assigned = slot.assignedElements({ flatten: true });
+    for (const node of assigned) {
+      const svgRoot = node.tagName?.toLowerCase() === "svg"
+        ? (node as Element)
+        : node.querySelector("svg");
+      if (!svgRoot) continue;
+      d3.select(svgRoot).selectAll(".zone").on(".zone-interaction", null);
     }
   }
 

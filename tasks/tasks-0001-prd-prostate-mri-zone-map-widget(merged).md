@@ -140,16 +140,17 @@ Skeleton files created in this step (placeholders):
                         - [x] 4.3.1 Wire `applyZoneStyles` into `src/components/prostate-mri-map.ts` so
                               the component applies computed styles to any slotted SVG when `data`
                               changes or when the `map-svg` slot content changes.
-  - [ ] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
+      - [x] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
         pattern assignment strategy: per lesion generate a pattern ID (e.g.,
         `pattern-L1`) and show one pattern per lesion (covering each zone of that lesion) on
         layers (semi-transparent) or  to preserve legibility of pirads colouring.
-  - [ ] 4.5 Render lesion-count badges for zones with one or more lesions (SVG
+      - [x] 4.5 Change SVG manipulation of entire project to use D3 instead. Make Deno import latest D3 version and you should use https://deepwiki.com/d3/d3 to understand D3 and for querying its documentation. Feel free to simplify code while refactoring to D3.
+  - [ ] 4.6 Render lesion-count badges for zones with one or more lesions (SVG
         `<circle>` + `<text>` or equivalent) positioned non-obtrusively.
-  - [ ] 4.6 Provide a legend UI (in the component) mapping PI-RADS to color and
+  - [ ] 4.7 Provide a legend UI (in the component) mapping PI-RADS to color and
         showing pattern examples; ensure legend text respects `language`
         property and is externalizable for translation.
-  - [ ] 4.7 Ensure the visual design is accessible: don't rely on color alone,
+  - [ ] 4.8 Ensure the visual design is accessible: don't rely on color alone,
         ensure contrast, and prefer patterns+badges for colorblind users.
 
 - [ ] 5.0 Interactions and accessibility
