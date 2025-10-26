@@ -140,11 +140,10 @@ Skeleton files created in this step (placeholders):
                         - [x] 4.3.1 Wire `applyZoneStyles` into `src/components/prostate-mri-map.ts` so
                               the component applies computed styles to any slotted SVG when `data`
                               changes or when the `map-svg` slot content changes.
-  - [x] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
+  - [ ] 4.4 Define a small set of SVG `<pattern>`s (hatch, dots, diagonal) and a
         pattern assignment strategy: per lesion generate a pattern ID (e.g.,
-        `pattern-L1`) and, when multiple lesions overlap a zone, render pattern
-        layers (semi-transparent) or overlay small glyph badges to preserve
-        legibility.
+        `pattern-L1`) and show one pattern per lesion (covering each zone of that lesion) on
+        layers (semi-transparent) or  to preserve legibility of pirads colouring.
   - [ ] 4.5 Render lesion-count badges for zones with one or more lesions (SVG
         `<circle>` + `<text>` or equivalent) positioned non-obtrusively.
   - [ ] 4.6 Provide a legend UI (in the component) mapping PI-RADS to color and

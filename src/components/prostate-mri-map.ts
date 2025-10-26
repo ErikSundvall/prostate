@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import type { ProstateMriData } from "../types.ts";
 import { validateLesionData } from "../utils/data-schema.ts";
-import { computeZoneState, applyZoneStyles } from "../utils/palette-and-patterns.ts";
+import { computeZoneState, applyZoneStyles, renderZoneBadges } from "../utils/palette-and-patterns.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -106,6 +106,12 @@ export class ProstateMriMap extends HTMLElement {
         }
         if (svgRoot) {
           applyZoneStyles(svgRoot, zoneState);
+          // Render badges (counts) after applying fills/patterns
+          try {
+            renderZoneBadges(svgRoot, zoneState);
+          } catch {
+            // non-fatal
+          }
         }
       }
     } catch (err) {
