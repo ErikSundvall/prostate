@@ -228,16 +228,18 @@ export class ProstateMriMap extends HTMLElement {
     const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
     const title = this.shadow.querySelector('#detail-title') as HTMLElement;
     const list = this.shadow.querySelector('#detail-lesions') as HTMLElement;
-    title.textContent = `Zone ${zoneId}`;
+    const lang = (this._language === 'sv' ? 'sv' : 'en') as 'en' | 'sv';
+    const t = translations[lang];
+    title.textContent = `${t.zoneLabel} ${zoneId}`;
     list.innerHTML = '';
     for (const lesion of lesions) {
       const li = document.createElement('li');
       li.innerHTML = `
-        <strong>ID:</strong> ${lesion.id}<br>
-        <strong>PI-RADS:</strong> ${lesion.pirads}<br>
-        ${lesion.details?.comment ? `<strong>Comment:</strong> ${lesion.details.comment}<br>` : ''}
-        ${lesion.details?.size_mm ? `<strong>Size:</strong> ${lesion.details.size_mm} mm<br>` : ''}
-        ${lesion.details ? `<strong>Details:</strong> ${JSON.stringify(lesion.details)}` : ''}
+        <strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br>
+        <strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}<br>
+        ${lesion.details?.comment ? `<strong>${t.commentLabel}:</strong> ${lesion.details.comment}<br>` : ''}
+        ${lesion.details?.size_mm ? `<strong>${t.sizeLabel}:</strong> ${lesion.details.size_mm} mm<br>` : ''}
+        ${lesion.details ? `<strong>${t.detailsLabel}:</strong> ${JSON.stringify(lesion.details)}` : ''}
       `;
       list.appendChild(li);
     }

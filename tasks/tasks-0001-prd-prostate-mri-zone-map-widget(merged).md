@@ -150,7 +150,7 @@ Skeleton files created in this step (placeholders):
         showing pattern examples; ensure legend text respects `language`
         property and is externalizable for translation.
 
-- [ ] 5.0 Interactions and accessibility
+- [x] 5.0 Interactions and accessibility
   - [x] 5.1 Make each SVG zone shape focusable (`tabindex="0"`), and add
         `role="button"` (or an appropriate role) and `aria-label` describing its
         state (e.g., "Zone 1Cv — 2 lesions — Highest PI-RADS 4").
@@ -169,7 +169,7 @@ Skeleton files created in this step (placeholders):
   - [x] 5.5 Emit `zone-click` CustomEvent with `{ zoneId, lesions }` when a zone
         is activated; keep the event read-only (no modifications to underlying
         data in v1).
-  - [ ] 5.6 Ensure all dynamic text is localized according to `language` and
+  - [x] 5.6 Ensure all dynamic text is localized according to `language` and
         that language labels are externalized into small translation
         dictionaries (JSON) for `sv` and `en`.
 

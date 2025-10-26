@@ -7922,7 +7922,13 @@ var translations = {
     patternsLabel: "Patterns",
     patternDiagonal: "Diagonal",
     patternCrosshatch: "Crosshatch",
-    patternDots: "Dots"
+    patternDots: "Dots",
+    zoneLabel: "Zone",
+    lesionIdLabel: "ID",
+    piradsValueLabel: "PI-RADS",
+    commentLabel: "Comment",
+    sizeLabel: "Size",
+    detailsLabel: "Details"
   },
   sv: {
     legendTitle: "F\xF6rklaring",
@@ -7930,7 +7936,13 @@ var translations = {
     patternsLabel: "M\xF6nster",
     patternDiagonal: "Diagonal",
     patternCrosshatch: "Korsat",
-    patternDots: "Punkter"
+    patternDots: "Punkter",
+    zoneLabel: "Zon",
+    lesionIdLabel: "ID",
+    piradsValueLabel: "PI-RADS",
+    commentLabel: "Kommentar",
+    sizeLabel: "Storlek",
+    detailsLabel: "Detaljer"
   }
 };
 
@@ -8125,16 +8137,18 @@ var ProstateMriMap = class extends HTMLElement {
     const panel = this.shadow.querySelector("#detail-panel");
     const title = this.shadow.querySelector("#detail-title");
     const list = this.shadow.querySelector("#detail-lesions");
-    title.textContent = `Zone ${zoneId}`;
+    const lang = this._language === "sv" ? "sv" : "en";
+    const t = translations[lang];
+    title.textContent = `${t.zoneLabel} ${zoneId}`;
     list.innerHTML = "";
     for (const lesion of lesions) {
       const li = document.createElement("li");
       li.innerHTML = `
-        <strong>ID:</strong> ${lesion.id}<br>
-        <strong>PI-RADS:</strong> ${lesion.pirads}<br>
-        ${lesion.details?.comment ? `<strong>Comment:</strong> ${lesion.details.comment}<br>` : ""}
-        ${lesion.details?.size_mm ? `<strong>Size:</strong> ${lesion.details.size_mm} mm<br>` : ""}
-        ${lesion.details ? `<strong>Details:</strong> ${JSON.stringify(lesion.details)}` : ""}
+        <strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br>
+        <strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}<br>
+        ${lesion.details?.comment ? `<strong>${t.commentLabel}:</strong> ${lesion.details.comment}<br>` : ""}
+        ${lesion.details?.size_mm ? `<strong>${t.sizeLabel}:</strong> ${lesion.details.size_mm} mm<br>` : ""}
+        ${lesion.details ? `<strong>${t.detailsLabel}:</strong> ${JSON.stringify(lesion.details)}` : ""}
       `;
       list.appendChild(li);
     }
