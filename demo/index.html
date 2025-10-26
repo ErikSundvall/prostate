@@ -128,7 +128,7 @@
 
       async function loadSvg() {
         try {
-          const svgResp = await fetch('./prostate-map.svg');
+          const svgResp = await fetch('./prostate-map.svg?' + Date.now());
           if (!svgResp.ok) {
             console.warn('SVG not found');
             return null;

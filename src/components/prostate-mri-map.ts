@@ -5,8 +5,10 @@ import { validateLesionData } from "../utils/data-schema.ts";
 import {
   applyZoneStyles,
   computeZoneState,
+  getPiradsColor,
   renderZoneBadges,
 } from "../utils/palette-and-patterns.ts";
+import { translations } from "../utils/translations.ts";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -14,10 +16,16 @@ template.innerHTML = `
     :host { display:block; }
     .map { width:100%; height:auto; }
     #warnings { color: var(--pirads-5, #A50F15); margin-top:0.5rem; font-size:0.9rem; }
+    #legend { margin-top: 1rem; font-size: 0.9rem; }
+    #legend h3 { margin: 0 0 0.5rem 0; font-size: 1rem; }
+    #legend h4 { margin: 0.5rem 0 0.25rem 0; font-size: 0.9rem; }
+    #legend div { margin-bottom: 0.25rem; }
+    #legend span { margin-right: 0.5rem; border: 1px solid #000; }
   </style>
   <div class="map" part="map">
     <slot name="map-svg"></slot>
     <div id="warnings" aria-live="polite"></div>
+    <div id="legend"></div>
   </div>
 `;
 
@@ -28,6 +36,7 @@ export class ProstateMriMap extends HTMLElement {
 
   private shadow: ShadowRoot;
   private _data: ProstateMriData | null = null;
+  private _language: string = "en";
 
   constructor() {
     super();
@@ -197,7 +206,7 @@ export class ProstateMriMap extends HTMLElement {
         this._dispatchWarning([`Failed to parse data attribute: ${msg}`]);
       }
     }
-    if (name === "language") this._render();
+    if (name === "language") this.language = newValue || "en";
   }
 
   get data() {
@@ -213,6 +222,14 @@ export class ProstateMriMap extends HTMLElement {
     // ensure styles are applied after data updates so slotted SVG reflects
     // the new computed zone state immediately
     this._applyStylesToSlottedSvg();
+  }
+
+  get language() {
+    return this._language;
+  }
+  set language(v: string) {
+    this._language = v;
+    this._render();
   }
 
   private _dispatchWarning(warnings: string[]) {
@@ -231,6 +248,132 @@ export class ProstateMriMap extends HTMLElement {
     if (!el) return;
     if (this._data) el.setAttribute("data-loaded", "true");
     else el.removeAttribute("data-loaded");
+    this._renderLegend();
+  }
+
+  private _renderLegend() {
+    const lang = this.language || "en";
+    const t = translations[lang as keyof typeof translations] ||
+      translations.en;
+    const legendEl = this.shadow.getElementById("legend");
+    if (!legendEl) return;
+    legendEl.innerHTML = "";
+
+    // Title
+    const title = document.createElement("h3");
+    title.textContent = t.legendTitle;
+    legendEl.appendChild(title);
+
+    // PI-RADS colors
+    const piradsSection = document.createElement("div");
+    const piradsTitle = document.createElement("h4");
+    piradsTitle.textContent = t.piradsLabel;
+    piradsSection.appendChild(piradsTitle);
+    for (let i = 1; i <= 5; i++) {
+      const color = getPiradsColor(i);
+      const item = document.createElement("div");
+      const swatch = document.createElement("span");
+      swatch.style.backgroundColor = color;
+      swatch.style.width = "20px";
+      swatch.style.height = "20px";
+      swatch.style.display = "inline-block";
+      item.appendChild(swatch);
+      item.appendChild(document.createTextNode(` ${i}`));
+      piradsSection.appendChild(item);
+    }
+    legendEl.appendChild(piradsSection);
+
+    // Patterns
+    const patternsSection = document.createElement("div");
+    const patternsTitle = document.createElement("h4");
+    patternsTitle.textContent = t.patternsLabel;
+    patternsSection.appendChild(patternsTitle);
+    const patternKeys = [
+      "patternDiagonal",
+      "patternCrosshatch",
+      "patternDots",
+    ] as const;
+    patternKeys.forEach((key, index) => {
+      const item = document.createElement("div");
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "40");
+      svg.setAttribute("height", "20");
+      const defs = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "defs",
+      );
+      const pattern = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "pattern",
+      );
+      pattern.setAttribute("id", `legend-pattern-${index}`);
+      pattern.setAttribute("patternUnits", "userSpaceOnUse");
+      pattern.setAttribute("width", "20");
+      pattern.setAttribute("height", "20");
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect",
+      );
+      rect.setAttribute("width", "20");
+      rect.setAttribute("height", "20");
+      rect.setAttribute("fill", "none");
+      pattern.appendChild(rect);
+      if (index === 0) {
+        const path = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        path.setAttribute("d", "M0 20 L20 0");
+        path.setAttribute("stroke", "#000");
+        path.setAttribute("stroke-opacity", "0.85");
+        path.setAttribute("stroke-width", "2");
+        pattern.appendChild(path);
+      } else if (index === 1) {
+        const path1 = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        path1.setAttribute("d", "M0 20 L20 0");
+        path1.setAttribute("stroke", "#000");
+        path1.setAttribute("stroke-opacity", "0.7");
+        path1.setAttribute("stroke-width", "1.8");
+        const path2 = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        path2.setAttribute("d", "M0 0 L20 20");
+        path2.setAttribute("stroke", "#000");
+        path2.setAttribute("stroke-opacity", "0.7");
+        path2.setAttribute("stroke-width", "1.8");
+        pattern.appendChild(path1);
+        pattern.appendChild(path2);
+      } else {
+        const circle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle",
+        );
+        circle.setAttribute("cx", "10");
+        circle.setAttribute("cy", "10");
+        circle.setAttribute("r", "5");
+        circle.setAttribute("fill", "#000");
+        circle.setAttribute("fill-opacity", "0.45");
+        pattern.appendChild(circle);
+      }
+      defs.appendChild(pattern);
+      svg.appendChild(defs);
+      const rectFill = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect",
+      );
+      rectFill.setAttribute("width", "40");
+      rectFill.setAttribute("height", "20");
+      rectFill.setAttribute("fill", `url(#legend-pattern-${index})`);
+      svg.appendChild(rectFill);
+      item.appendChild(svg);
+      item.appendChild(document.createTextNode(` ${t[key]}`));
+      patternsSection.appendChild(item);
+    });
+    legendEl.appendChild(patternsSection);
   }
 }
 
