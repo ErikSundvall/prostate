@@ -185,7 +185,10 @@ function applyZoneStylesFallback(
 ) {
   for (const [zoneId, state] of Object.entries(zoneState)) {
     const el = findZoneElement(root, zoneId);
-    if (!el) continue;
+    if (!el) {
+      console.warn(`Zone ID "${zoneId}" not found in SVG map`);
+      continue;
+    }
 
     if (state.highestPirads === null) {
       el.setAttribute?.("fill", "none");
@@ -290,7 +293,10 @@ export function applyZoneStyles(
 
   for (const [zoneId, state] of Object.entries(zoneState)) {
     const zoneSelection = selectZoneElement(rootSelection, zoneId);
-    if (zoneSelection.empty()) continue;
+    if (zoneSelection.empty()) {
+      console.warn(`Zone ID "${zoneId}" not found in SVG map`);
+      continue;
+    }
 
     if (state.highestPirads === null) {
       zoneSelection

@@ -14,6 +14,9 @@ completing a PRD
      sequence:
   - **First**: Run the full test suite (`pytest`, `npm test`, `bin/rails test`,
     etc.)
+  - **Then**: If task list or PRD mentions that manual verifications (e.g. 
+    browsing UI) should be done, then make sure dev server is running and instruct
+    user to inspect. Await user feedback before going on.  
   - **Only if all tests pass**: Stage changes (`git add .`)
   - **Clean up**: Remove any temporary files and temporary code before
     committing

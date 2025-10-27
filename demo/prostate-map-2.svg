@@ -21,15 +21,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.4047933"
-     inkscape:cx="584.07168"
-     inkscape:cy="446.329"
-     inkscape:window-width="1801"
-     inkscape:window-height="1370"
-     inkscape:window-x="-12"
-     inkscape:window-y="674"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg370" />
+     inkscape:zoom="4.3456801"
+     inkscape:cx="564.12344"
+     inkscape:cy="261.06386"
+     inkscape:window-width="1920"
+     inkscape:window-height="1111"
+     inkscape:window-x="-9"
+     inkscape:window-y="3191"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g370" />
   <defs
      id="defs1">
     <image
@@ -38,8 +38,7 @@
        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAJBAMAAAD5iKAgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAVUExURQAAAAAAAAAAAAAAAAAAAAAAAAAAABIBAKQAAAAHdFJOUwAkMMfnQFC0XRuVAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAFElEQVQY02NgwAKEwKQJmAzDpgAADxIAnbdkoX4AAAAASUVORK5CYII="
        preserveAspectRatio="none"
        id="img0" />
-    <style
-       id="style1">
+    <style>
       /* Zone styling for placeholder zones */
       .zone { stroke: #333; stroke-width:1; fill: none }
     </style>
@@ -1194,203 +1193,52 @@
        sodipodi:nodetypes="ccccc"
        inkscape:label="1Ad" />
   </g>
+
   <!-- Placeholder zones matrix - to be manually edited in Inkscape -->
-  <g
-     id="zones"
-     transform="translate(290.6577,416.00188)">
+  <g id="zones" transform="translate(900,500)">
     <!-- Group A -->
-    <g
-       id="group-A-v">
-      <rect
-         id="1Av"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="2Av"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="rect1"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Av"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+    <g id="group-A-v" transform="translate(0,0)">
+      <rect id="1Av" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Av" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Av" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Av" class="zone" x="105" y="0" width="30" height="20" />
     </g>
-    <g
-       id="group-A-d"
-       transform="translate(0,20)">
-      <rect
-         id="1Ad"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="rect2"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="3Ad"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Ad"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+
+    <g id="group-A-d" transform="translate(0,20)">
+      <rect id="1Ad" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Ad" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Ad" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Ad" class="zone" x="105" y="0" width="30" height="20" />
     </g>
+
     <!-- Group B -->
-    <g
-       id="group-B-v"
-       transform="translate(0,50)">
-      <rect
-         id="1Bv"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="2Bv"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="3Bv"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Bv"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+    <g id="group-B-v" transform="translate(0,50)">
+      <rect id="1Bv" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Bv" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Bv" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Bv" class="zone" x="105" y="0" width="30" height="20" />
     </g>
-    <g
-       id="group-B-d"
-       transform="translate(0,70)">
-      <rect
-         id="1Bd"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="2Bd"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="3Bd"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Bd"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+
+    <g id="group-B-d" transform="translate(0,70)">
+      <rect id="1Bd" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Bd" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Bd" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Bd" class="zone" x="105" y="0" width="30" height="20" />
     </g>
+
     <!-- Group C -->
-    <g
-       id="group-C-v"
-       transform="translate(0,100)">
-      <rect
-         id="1Cv"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="2Cv"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="3Cv"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Cv"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+    <g id="group-C-v" transform="translate(0,100)">
+      <rect id="1Cv" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Cv" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Cv" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Cv" class="zone" x="105" y="0" width="30" height="20" />
     </g>
-    <g
-       id="group-C-d"
-       transform="translate(0,120)">
-      <rect
-         id="1Cd"
-         class="zone"
-         x="0"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="2Cd"
-         class="zone"
-         x="35"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="3Cd"
-         class="zone"
-         x="70"
-         y="0"
-         width="30"
-         height="20" />
-      <rect
-         id="4Cd"
-         class="zone"
-         x="105"
-         y="0"
-         width="30"
-         height="20" />
+
+    <g id="group-C-d" transform="translate(0,120)">
+      <rect id="1Cd" class="zone" x="0" y="0" width="30" height="20" />
+      <rect id="2Cd" class="zone" x="35" y="0" width="30" height="20" />
+      <rect id="3Cd" class="zone" x="70" y="0" width="30" height="20" />
+      <rect id="4Cd" class="zone" x="105" y="0" width="30" height="20" />
     </g>
   </g>
 </svg>

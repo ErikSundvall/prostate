@@ -35,6 +35,12 @@
         <option value="example-4.json">example-4.json (several overlaps)</option>
       </select>
     </p>
+    <p>
+      Map used: <select id="map-selector">
+        <option value="prostate-map.svg">prostate-map.svg</option>
+        <option value="prostate-map-2.svg">prostate-map-2.svg</option>
+      </select>
+    </p>
     <prostate-mri-map id="map" language="en"></prostate-mri-map>
 
     <script type="module">
@@ -134,9 +140,9 @@
         }
       }
 
-      async function loadSvg() {
+      async function loadSvg(filename = 'prostate-map.svg') {
         try {
-          const svgResp = await fetch('./prostate-map.svg?' + Date.now());
+          const svgResp = await fetch('./' + filename + '?' + Date.now());
           if (!svgResp.ok) {
             console.warn('SVG not found');
             return null;
@@ -183,6 +189,47 @@
 
       document.getElementById('dataset').addEventListener('change', (e) => {
         loadDataset(e.target.value);
+      });
+
+      document.getElementById('map-selector').addEventListener('change', async (e) => {
+        const selectedMap = e.target.value;
+        try {
+          // Clear existing SVG and load new one
+          const svg = await loadSvg(selectedMap);
+          if (!svg) {
+            throw new Error(`Failed to load map: ${selectedMap}`);
+          }
+          // Re-render current dataset on the new map
+          if (currentData) {
+            if (customElements.get('prostate-mri-map')) {
+              const comp = container;
+              try {
+                comp.data = currentData;
+              } catch (err) {
+                console.warn('Failed to set component data, falling back to inline renderer', err);
+                const state = computeZoneState(currentData.lesions || []);
+                applyZoneStylesToSvg(svg, state);
+              }
+            } else {
+              const state = computeZoneState(currentData.lesions || []);
+              applyZoneStylesToSvg(svg, state);
+            }
+          }
+        } catch (error) {
+          alert(`Error loading map "${selectedMap}": ${error.message}`);
+          // Fall back to default map
+          e.target.value = 'prostate-map.svg';
+          // Try loading default map
+          try {
+            const svg = await loadSvg('prostate-map.svg');
+            if (currentData && svg) {
+              const state = computeZoneState(currentData.lesions || []);
+              applyZoneStylesToSvg(svg, state);
+            }
+          } catch (fallbackError) {
+            console.error('Failed to fall back to default map:', fallbackError);
+          }
+        }
       });
 
       // initial load

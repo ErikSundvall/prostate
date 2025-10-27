@@ -10,7 +10,8 @@
     "fmt": "deno fmt",
     "lint": "deno lint",
     "test": "deno test",
-    "bundle": "deno bundle --platform browser -o demo/prostate-mri-map.bundle.js src/components/prostate-mri-map.ts",
-    "dev": "deno run --allow-net --allow-read https://deno.land/std@0.204.0/http/file_server.ts demo"
+    "copy-assets": "deno run --allow-read --allow-write scripts/copy-assets.ts",
+    "bundle": "deno task copy-assets && deno bundle --platform browser -o demo/prostate-mri-map.bundle.js src/components/prostate-mri-map.ts",
+    "dev": "deno task copy-assets && deno run --allow-net --allow-read https://deno.land/std@0.204.0/http/file_server.ts demo"
   }
 }

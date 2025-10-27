@@ -1,2 +1,5 @@
 - Use Deno rather than Node.js and NPM.
-- Use the https://docs.devin.ai/work-with-devin/deepwiki-mcp for 
+- Use the deepwiki for browsing/querying documentation, see https://docs.devin.ai/work-with-devin/deepwiki-mcp for more information. We do have an MCP installed for this purpose at At least the following tools are available:
+  - `read_wiki_structure`
+  - `read_wiki_contents`
+  - `ask_question`
