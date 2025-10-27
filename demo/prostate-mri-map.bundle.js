@@ -5822,12 +5822,18 @@ function findZoneElement(root, zoneId) {
 }
 function selectZoneElement(rootSelection, zoneId) {
   const selector = `[id="${escapeAttrValue(zoneId)}"]`;
+  const rootNode = rootSelection.node();
+  if (rootNode) {
+    const element = rootNode.querySelector(selector);
+    if (element) return M2(element);
+  }
   const selection = rootSelection.select(selector);
   if (!selection.empty()) return selection;
-  const rootNode = rootSelection.node();
-  if (!rootNode) return selection;
-  const fallback = findZoneElement(rootNode, zoneId);
-  return fallback ? M2(fallback) : selection;
+  if (rootNode) {
+    const fallback = findZoneElement(rootNode, zoneId);
+    return fallback ? M2(fallback) : selection;
+  }
+  return selection;
 }
 function ensureOverlayLayer(rootSelection) {
   let layer = rootSelection.select("g.zone-overlays");
@@ -5878,44 +5884,32 @@ function applyZoneStyles(root, zoneState) {
     }
     if (state.highestPirads === null) {
       zoneSelection.attr("data-pirads", null).attr("fill", "none").attr("data-patterns", null);
-      overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).remove();
+      overlayLayer.selectAll(`rect.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).remove();
       continue;
     }
     zoneSelection.attr("data-pirads", String(state.highestPirads)).attr("fill", getPiradsColor(state.highestPirads));
-    if (state.count > 1) {
-      const patternIds = state.lesionIds.map(getPatternId);
+    if (state.count > 0 && state.highestPirads !== null) {
+      const patternIds = state.lesionIds.map((lesionId) => getCompositePatternId(zoneId, lesionId, state.highestPirads));
       zoneSelection.attr("data-patterns", patternIds.join(" "));
-      ensurePatternDefs(root, state.lesionIds);
-      const overlayData = state.lesionIds.map((lesionId, index) => ({
-        lesionId,
-        patternId: getPatternId(lesionId),
-        opacity: Math.max(0.2, 0.7 - index * 0.2),
-        overlayIndex: index,
-        zoneId
-      }));
-      const zoneOverlaySelection = overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).data(overlayData, (d11) => d11.lesionId);
-      zoneOverlaySelection.exit().remove();
-      const zoneOverlayEnter = zoneOverlaySelection.enter().append("use").attr("class", "zone-overlay").attr("data-overlay-for", zoneId).attr("pointer-events", "none");
-      const zoneOverlayMerge = zoneOverlayEnter.merge(zoneOverlaySelection);
-      zoneOverlayMerge.attr("href", `#${zoneId}`).attr("xlink:href", `#${zoneId}`).attr("fill", (d11) => `url(#${d11.patternId})`).attr("data-pattern-id", (d11) => d11.patternId).attr("data-overlay-index", (d11) => String(d11.overlayIndex)).attr("opacity", (d11) => String(d11.opacity));
-      zoneOverlayMerge.order();
+      zoneSelection.attr("data-lesion-ids", state.lesionIds.join(","));
+      ensurePatternDefs(root, state.lesionIds, zoneId, state.highestPirads);
     } else {
       zoneSelection.attr("data-patterns", null);
-      overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).remove();
+      zoneSelection.attr("data-lesion-ids", null);
     }
   }
 }
 var PATTERN_SIZE = 20;
 var PATTERN_BUILDERS = [
   (pattern) => {
-    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "0.85").attr("stroke-width", "2");
+    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "3");
   },
   (pattern) => {
-    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "0.7").attr("stroke-width", "1.8");
-    pattern.append("path").attr("d", `M0 0 L${PATTERN_SIZE} ${PATTERN_SIZE}`).attr("stroke", "#000").attr("stroke-opacity", "0.7").attr("stroke-width", "1.8");
+    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "2");
+    pattern.append("path").attr("d", `M0 0 L${PATTERN_SIZE} ${PATTERN_SIZE}`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "2");
   },
   (pattern) => {
-    pattern.append("circle").attr("cx", PATTERN_SIZE / 2).attr("cy", PATTERN_SIZE / 2).attr("r", PATTERN_SIZE / 4).attr("fill", "#000").attr("fill-opacity", "0.45");
+    pattern.append("circle").attr("cx", PATTERN_SIZE / 2).attr("cy", PATTERN_SIZE / 2).attr("r", "6").attr("fill", "#000").attr("fill-opacity", "1");
   }
 ];
 function patternIndexForLesion(lesionId) {
@@ -5927,7 +5921,7 @@ function patternIndexForLesion(lesionId) {
 function getPatternId(lesionId) {
   return `pattern-${String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 }
-function ensurePatternDefs(root, lesionIds) {
+function ensurePatternDefs(root, lesionIds, zoneId, pirads) {
   if (!root || !lesionIds.length) return;
   const rootSelection = M2(root);
   if (rootSelection.empty()) return;
@@ -5937,19 +5931,28 @@ function ensurePatternDefs(root, lesionIds) {
     defs = rootSelection.insert("defs", ":first-child");
   }
   const uniqueIds = Array.from(new Set(lesionIds));
+  const piradsColor = getPiradsColor(pirads);
   const data = uniqueIds.map((lesionId) => ({
     lesionId,
-    patternId: getPatternId(lesionId),
-    builderIndex: patternIndexForLesion(lesionId)
+    patternId: getCompositePatternId(zoneId, lesionId, pirads),
+    builderIndex: patternIndexForLesion(lesionId),
+    zoneId,
+    piradsColor
   }));
-  const patternSelection = defs.selectAll('pattern[data-pattern-source="lesion"]').data(data, (d11) => d11.patternId);
-  const patternEnter = patternSelection.enter().append("pattern").attr("id", (d11) => d11.patternId).attr("data-pattern-source", "lesion").attr("patternUnits", "userSpaceOnUse").attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE);
-  patternEnter.append("rect").attr("x", 0).attr("y", 0).attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE).attr("fill", "none").attr("stroke", "none");
+  const patternSelection = defs.selectAll('pattern[data-pattern-source="composite"]').data(data, (d11) => d11.patternId);
+  patternSelection.exit().remove();
+  const patternEnter = patternSelection.enter().append("pattern").attr("id", (d11) => d11.patternId).attr("data-pattern-source", "composite").attr("patternUnits", "userSpaceOnUse").attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE);
+  patternEnter.append("rect").attr("x", 0).attr("y", 0).attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE).attr("fill", (d11) => d11.piradsColor).attr("stroke", "none");
   patternEnter.each(function(d11) {
     const patternSelectionForBuilder = M2(this);
     const builder = PATTERN_BUILDERS[d11.builderIndex] ?? PATTERN_BUILDERS[0];
     builder(patternSelectionForBuilder);
   });
+}
+function getCompositePatternId(zoneId, lesionId, pirads) {
+  const sanitizedZone = String(zoneId).replace(/[^a-zA-Z0-9_-]/g, "-");
+  const sanitizedLesion = String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-");
+  return `pattern-${sanitizedZone}-${sanitizedLesion}-p${pirads}`;
 }
 
 // src/utils/translations.ts
@@ -6222,10 +6225,17 @@ var ProstateMriMap = class extends HTMLElement {
     for (const node of assigned) {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (!svgRoot) continue;
-      const overlayLayer = M2(svgRoot).select("g.zone-overlays");
-      if (!overlayLayer.empty()) {
-        for (const affectedZoneId of affectedZones) {
-          overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${affectedZoneId}"]`).style("opacity", "1");
+      for (const affectedZoneId of affectedZones) {
+        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`);
+        if (!zoneEl) continue;
+        const originalFill = zoneEl.getAttribute("fill");
+        if (originalFill) {
+          zoneEl.setAttribute("data-original-fill", originalFill);
+        }
+        const patternIds = zoneEl.getAttribute("data-patterns");
+        if (patternIds) {
+          const firstPatternId = patternIds.split(" ")[0];
+          zoneEl.setAttribute("fill", `url(#${firstPatternId})`);
           this._activePatterns.add(affectedZoneId);
         }
       }
@@ -6249,9 +6259,15 @@ var ProstateMriMap = class extends HTMLElement {
     for (const node of assigned) {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (svgRoot) {
-        const overlayLayer = M2(svgRoot).select("g.zone-overlays");
-        if (!overlayLayer.empty()) {
-          overlayLayer.selectAll("use.zone-overlay").style("opacity", "0");
+        for (const zoneId of this._activePatterns) {
+          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`);
+          if (zoneEl) {
+            const originalFill = zoneEl.getAttribute("data-original-fill");
+            if (originalFill) {
+              zoneEl.setAttribute("fill", originalFill);
+              zoneEl.removeAttribute("data-original-fill");
+            }
+          }
         }
       }
     }

@@ -295,7 +295,7 @@ export class ProstateMriMap extends HTMLElement {
     // Clear previous patterns
     this._clearActivePatterns();
 
-    // Apply patterns to all affected zones
+    // Apply patterns to all affected zones by changing their fill
     const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
     if (!slot) return;
     const assigned = slot.assignedElements({ flatten: true });
@@ -303,11 +303,22 @@ export class ProstateMriMap extends HTMLElement {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (!svgRoot) continue;
 
-      const overlayLayer = d3.select(svgRoot).select("g.zone-overlays");
-      if (!overlayLayer.empty()) {
-        for (const affectedZoneId of affectedZones) {
-          overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${affectedZoneId}"]`)
-            .style("opacity", "1");
+      for (const affectedZoneId of affectedZones) {
+        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`);
+        if (!zoneEl) continue;
+
+        // Store original fill
+        const originalFill = zoneEl.getAttribute("fill");
+        if (originalFill) {
+          zoneEl.setAttribute("data-original-fill", originalFill);
+        }
+
+        // Get pattern IDs for this zone
+        const patternIds = zoneEl.getAttribute("data-patterns");
+        if (patternIds) {
+          // Use the first pattern (could be enhanced to show multiple)
+          const firstPatternId = patternIds.split(" ")[0];
+          zoneEl.setAttribute("fill", `url(#${firstPatternId})`);
           this._activePatterns.add(affectedZoneId);
         }
       }
@@ -335,10 +346,16 @@ export class ProstateMriMap extends HTMLElement {
     for (const node of assigned) {
       const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
       if (svgRoot) {
-        const overlayLayer = d3.select(svgRoot).select("g.zone-overlays");
-        if (!overlayLayer.empty()) {
-          // Reset opacity on all use elements
-          overlayLayer.selectAll("use.zone-overlay").style("opacity", "0");
+        // Restore original fills for all zones with patterns
+        for (const zoneId of this._activePatterns) {
+          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`);
+          if (zoneEl) {
+            const originalFill = zoneEl.getAttribute("data-original-fill");
+            if (originalFill) {
+              zoneEl.setAttribute("fill", originalFill);
+              zoneEl.removeAttribute("data-original-fill");
+            }
+          }
         }
       }
     }

@@ -1,8 +1,8 @@
 {
   "lesions": [
       { "id": "L1", "zones": ["1Av", "1Ad"], "pirads": 5, "comment": "Overlapping index" },
-      { "id": "L1", "zones": ["1Av", "1Bv", "1Cv"], "pirads": 3, "comment": "Secondary overlapping" },
-      { "id": "L2", "zones": ["1Av", "2Av"], "pirads": 4, "comment": "Tertiary overlapping" }
+      { "id": "L2", "zones": ["1Av", "1Bv", "1Cv"], "pirads": 3, "comment": "Secondary overlapping" },
+      { "id": "L3", "zones": ["1Av", "2Av"], "pirads": 4, "comment": "Tertiary overlapping" }
   ],
   "meta": { "version": "1.0", "language": "en" }
 }

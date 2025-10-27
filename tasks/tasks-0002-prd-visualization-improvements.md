@@ -112,26 +112,38 @@ Strangely the AI removed these points when done instad of checking them off...
   - Test transition timing if feasible
 
 ### 6.0 Final testing and validation
-- [ ] 6.1 Visual inspection: Verify zones display only colors (no badges) in default state
-  - Get colors working again, possibly by simplifying code and using D3 in smarter ways
-- [ ] 6.2 Visual inspection: Hover over zones and confirm patterns appear on all affected zones with 300ms fade
-- [ ] 6.3 Visual inspection: Test map switching between both SVG files with all datasets
-- [ ] 6.4 Visual inspection: Verify asset copying works (modify `src/assets/*.svg`, rebuild, check `demo/`)
-- [ ] 6.5 Run all unit tests (`deno test`) and confirm they pass
-- [ ] 6.6 Test with example-1.json (single lesions) - verify hover patterns appear correctly
-- [ ] 6.7 Test with example-2.json (one overlap) - verify both lesion patterns show on hover
-- [ ] 6.8 Test with example-4.json (several overlaps) - verify all patterns layer correctly
-- [ ] 6.9 Test keyboard navigation (Tab through zones, Enter/Space to click)
-- [ ] 6.10 Test language switching (en/sv) still works correctly
-- [ ] 6.11 Verify click events still emit `zone-click` events with lesion details
-- [ ] 6.12 Verify data validation still triggers `data-warning` events for bad data (example-3.json)
-- [ ] 6.13 Test error handling: manually break a map URL and verify alert popup appears
-- [ ] 6.14 Check browser console for any errors or warnings during all tests
-- [ ] 6.15 Document any issues or limitations found during testing
-- [ ] 6.16 Update README.md or documentation if new features (map switching) need user guidance
-- [ ] 6.17 Create a brief summary of changes made for code review or PR description
-
----
+- [x] 6.1 Visual inspection: Verify zones display only colors (no badges) in default state
+  - [x] 6.1.1 Get colors working again when loading prostate-map.svg, possibly by 
+       simplifying code and using D3 in smarter ways
+  - [x] 6.1.2 Fix error/anomaly with doubl `L1` in popup... 
+    ```Zone 1Av 
+    ID: L1
+    PI-RADS: 5
+    ID: L1
+    PI-RADS: 3
+    ID: L2
+    PI-RADS: 4``` 
+    ...when running demo\data\example-4.json that shoud have three
+    different Lesions L1, L2, L3 there
+  - [x] 6.1.3 Get colors working when loading prostate-map-2.svg,
+        possibly by simplifying code and using D3 in smarter ways,
+        Coloring never worked for this map so there might be some deep investigtion to do (maybe swithch AI model before or during this task).
+- [x] 6.2 Visual inspection: Hover over zones and confirm patterns appear on all affected zones with 300ms fade
+- [x] 6.3 Visual inspection: Test map switching between both SVG files with all datasets
+- [x] 6.4 Visual inspection: Verify asset copying works (modify `src/assets/*.svg`, rebuild, check `demo/`)
+- [x] 6.5 Run all unit tests (`deno test`) and confirm they pass
+- [x] 6.6 Test with example-1.json (single lesions) - verify hover patterns appear correctly
+- [x] 6.7 Test with example-2.json (one overlap) - verify both lesion patterns show on hover
+- [x] 6.8 Test with example-4.json (several overlaps) - verify all patterns layer correctly
+- [x] 6.9 Test keyboard navigation (Tab through zones, Enter/Space to click)
+- [x] 6.10 Test language switching (en/sv) still works correctly
+- [x] 6.11 Verify click events still emit `zone-click` events with lesion details
+- [x] 6.12 Verify data validation still triggers `data-warning` events for bad data (example-3.json)
+- [x] 6.13 Test error handling: manually break a map URL and verify alert popup appears
+- [x] 6.14 Check browser console for any errors or warnings during all tests
+- [x] 6.15 Document any issues or limitations found during testing
+- [x] 6.16 Update README.md or documentation if new features (map switching) need user guidance
+- [x] 6.17 Create a brief summary of changes made for code review or PR description---
 
 **Implementation Notes:**
 - Follow existing code patterns (Deno, TypeScript, D3.js)
