@@ -63,6 +63,7 @@ export class ProstateMriMap extends HTMLElement {
   private _language: string = "en";
   private _currentZone: string | null = null;
   private _activePatterns: Set<string> = new Set();
+  private _currentHoveredZone: string | null = null;
 
   constructor() {
     super();
@@ -221,13 +222,6 @@ export class ProstateMriMap extends HTMLElement {
         }
         if (svgRoot) {
           applyZoneStyles(svgRoot, zoneState);
-          // Render badges (counts) after applying fills/patterns
-          // REMOVED per PRD 0002: Remove badge/number display from zone visualization
-          // try {
-          //   renderZoneBadges(svgRoot, zoneState);
-          // } catch {
-          //   // non-fatal
-          // }
         }
       }
     } catch (err) {
@@ -292,6 +286,24 @@ export class ProstateMriMap extends HTMLElement {
       }
     }
 
+    // Check if the affected zones are the same as currently active
+    // If so, no need to clear and re-apply (prevents flickering)
+    if (this._activePatterns.size === affectedZones.size) {
+      let same = true;
+      for (const zone of affectedZones) {
+        if (!this._activePatterns.has(zone)) {
+          same = false;
+          break;
+        }
+      }
+      if (same) {
+        this._currentHoveredZone = zoneId;
+        return;
+      }
+    }
+
+    this._currentHoveredZone = zoneId;
+
     // Clear previous patterns
     this._clearActivePatterns();
 
@@ -325,8 +337,16 @@ export class ProstateMriMap extends HTMLElement {
     }
   }
 
-  private _onZoneMouseLeave(_e: Event) {
-    this._clearActivePatterns();
+  private _onZoneMouseLeave(e: Event) {
+    const target = e.currentTarget as Element | null;
+    if (!target) return;
+    const zoneId = target.id || null;
+    
+    // Only clear if we're leaving the currently hovered zone
+    if (this._currentHoveredZone === zoneId) {
+      this._currentHoveredZone = null;
+      this._clearActivePatterns();
+    }
   }
 
   private _onZoneFocus(e: Event) {
@@ -336,6 +356,7 @@ export class ProstateMriMap extends HTMLElement {
 
   private _onZoneBlur(_e: Event) {
     // Treat blur like mouse leave
+    this._currentHoveredZone = null;
     this._clearActivePatterns();
   }
 
