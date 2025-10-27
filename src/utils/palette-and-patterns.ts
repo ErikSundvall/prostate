@@ -197,13 +197,13 @@ function applyZoneStylesFallback(
     }
 
     if (state.highestPirads === null) {
-      el.setAttribute?.("fill", "none");
+      (el as HTMLElement).style.fill = "none";
       el.removeAttribute?.("data-pirads");
       el.removeAttribute?.("data-patterns");
       continue;
     }
 
-    el.setAttribute?.("fill", getPiradsColor(state.highestPirads));
+    (el as HTMLElement).style.fill = getPiradsColor(state.highestPirads);
     el.setAttribute?.("data-pirads", String(state.highestPirads));
 
     if (state.count > 1) {
@@ -319,7 +319,7 @@ export function applyZoneStyles(
 
     zoneSelection
       .attr("data-pirads", String(state.highestPirads))
-      .attr("fill", getPiradsColor(state.highestPirads));
+      .style("fill", getPiradsColor(state.highestPirads));
 
     if (state.count > 0 && state.highestPirads !== null) {
       const patternIds = state.lesionIds.map((lesionId) =>

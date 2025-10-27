@@ -316,11 +316,11 @@ export class ProstateMriMap extends HTMLElement {
       if (!svgRoot) continue;
 
       for (const affectedZoneId of affectedZones) {
-        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`);
+        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`) as HTMLElement;
         if (!zoneEl) continue;
 
-        // Store original fill
-        const originalFill = zoneEl.getAttribute("fill");
+        // Store original fill (from style)
+        const originalFill = zoneEl.style.fill;
         if (originalFill) {
           zoneEl.setAttribute("data-original-fill", originalFill);
         }
@@ -330,7 +330,7 @@ export class ProstateMriMap extends HTMLElement {
         if (patternIds) {
           // Use the first pattern (could be enhanced to show multiple)
           const firstPatternId = patternIds.split(" ")[0];
-          zoneEl.setAttribute("fill", `url(#${firstPatternId})`);
+          zoneEl.style.fill = `url(#${firstPatternId})`;
           this._activePatterns.add(affectedZoneId);
         }
       }
@@ -369,11 +369,11 @@ export class ProstateMriMap extends HTMLElement {
       if (svgRoot) {
         // Restore original fills for all zones with patterns
         for (const zoneId of this._activePatterns) {
-          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`);
+          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`) as HTMLElement;
           if (zoneEl) {
             const originalFill = zoneEl.getAttribute("data-original-fill");
             if (originalFill) {
-              zoneEl.setAttribute("fill", originalFill);
+              zoneEl.style.fill = originalFill;
               zoneEl.removeAttribute("data-original-fill");
             }
           }

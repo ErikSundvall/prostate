@@ -5850,12 +5850,12 @@ function applyZoneStylesFallback(root, zoneState) {
       continue;
     }
     if (state.highestPirads === null) {
-      el.setAttribute?.("fill", "none");
+      el.style.fill = "none";
       el.removeAttribute?.("data-pirads");
       el.removeAttribute?.("data-patterns");
       continue;
     }
-    el.setAttribute?.("fill", getPiradsColor(state.highestPirads));
+    el.style.fill = getPiradsColor(state.highestPirads);
     el.setAttribute?.("data-pirads", String(state.highestPirads));
     if (state.count > 1) {
       const patterns = state.lesionIds.map(getPatternId).join(" ");
@@ -5887,7 +5887,7 @@ function applyZoneStyles(root, zoneState) {
       overlayLayer.selectAll(`rect.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).remove();
       continue;
     }
-    zoneSelection.attr("data-pirads", String(state.highestPirads)).attr("fill", getPiradsColor(state.highestPirads));
+    zoneSelection.attr("data-pirads", String(state.highestPirads)).style("fill", getPiradsColor(state.highestPirads));
     if (state.count > 0 && state.highestPirads !== null) {
       const patternIds = state.lesionIds.map((lesionId) => getCompositePatternId(zoneId, lesionId, state.highestPirads));
       zoneSelection.attr("data-patterns", patternIds.join(" "));
@@ -6243,14 +6243,14 @@ var ProstateMriMap = class extends HTMLElement {
       for (const affectedZoneId of affectedZones) {
         const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`);
         if (!zoneEl) continue;
-        const originalFill = zoneEl.getAttribute("fill");
+        const originalFill = zoneEl.style.fill;
         if (originalFill) {
           zoneEl.setAttribute("data-original-fill", originalFill);
         }
         const patternIds = zoneEl.getAttribute("data-patterns");
         if (patternIds) {
           const firstPatternId = patternIds.split(" ")[0];
-          zoneEl.setAttribute("fill", `url(#${firstPatternId})`);
+          zoneEl.style.fill = `url(#${firstPatternId})`;
           this._activePatterns.add(affectedZoneId);
         }
       }
@@ -6286,7 +6286,7 @@ var ProstateMriMap = class extends HTMLElement {
           if (zoneEl) {
             const originalFill = zoneEl.getAttribute("data-original-fill");
             if (originalFill) {
-              zoneEl.setAttribute("fill", originalFill);
+              zoneEl.style.fill = originalFill;
               zoneEl.removeAttribute("data-original-fill");
             }
           }
