@@ -41,7 +41,7 @@
     <style
        id="style1">
       /* Zone styling for placeholder zones */
-      .zone { stroke: #333; stroke-width:1; fill: none }
+      .zone { stroke: #333; stroke-width:1 }
     </style>
   </defs>
   <g
