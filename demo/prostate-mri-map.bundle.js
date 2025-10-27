@@ -6044,6 +6044,7 @@ var ProstateMriMap = class extends HTMLElement {
   _currentZone = null;
   _activePatterns = /* @__PURE__ */ new Set();
   _currentHoveredZone = null;
+  _lastAffectedZones = /* @__PURE__ */ new Set();
   constructor() {
     super();
     this.shadow = this.attachShadow({
@@ -6217,10 +6218,10 @@ var ProstateMriMap = class extends HTMLElement {
         affectedZones.add(z9);
       }
     }
-    if (this._activePatterns.size === affectedZones.size) {
+    if (this._lastAffectedZones.size === affectedZones.size) {
       let same = true;
       for (const zone of affectedZones) {
-        if (!this._activePatterns.has(zone)) {
+        if (!this._lastAffectedZones.has(zone)) {
           same = false;
           break;
         }
@@ -6231,6 +6232,7 @@ var ProstateMriMap = class extends HTMLElement {
       }
     }
     this._currentHoveredZone = zoneId;
+    this._lastAffectedZones = new Set(affectedZones);
     this._clearActivePatterns();
     const slot = this.shadow.querySelector('slot[name="map-svg"]');
     if (!slot) return;
@@ -6262,6 +6264,7 @@ var ProstateMriMap = class extends HTMLElement {
     const zoneId = target.id || null;
     if (this._currentHoveredZone === zoneId) {
       this._currentHoveredZone = null;
+      this._lastAffectedZones.clear();
       this._clearActivePatterns();
     }
   }
@@ -6270,6 +6273,7 @@ var ProstateMriMap = class extends HTMLElement {
   }
   _onZoneBlur(_e3) {
     this._currentHoveredZone = null;
+    this._lastAffectedZones.clear();
     this._clearActivePatterns();
   }
   _clearActivePatterns() {
