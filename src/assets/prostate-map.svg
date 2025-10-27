@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prostate map schematic (development placeholder). Author: Erik Sundvall. Version: 0.1 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" role="img" aria-label="Prostate zone schematic">
+  <defs>
+    <style>
+      /* Do not set a hard fill on zones so dynamic fills applied via
+         attributes are visible. Use stroke for outlines. */
+      .zone { stroke: #333; stroke-width:1 }
+      .label { font: 3px sans-serif; fill: #111 }
+    </style>
+  </defs>
+
+  <!-- Layout: three groups (A,B,C) each with two tight rows (v over d).
+       Each row contains levels 1..4 horizontally. Groups separated by extra space. -->
+  <g id="zones" transform="translate(3,3)">
+    <!-- Group A -->
+    <g id="group-A-v" transform="translate(0,0)">
+      <rect id="1Av" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Av</text>
+      <rect id="2Av" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Av</text>
+      <rect id="3Av" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Av</text>
+      <rect id="4Av" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Av</text>
+    </g>
+
+    <g id="group-A-d" transform="translate(0,20)">
+      <rect id="1Ad" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Ad</text>
+      <rect id="2Ad" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Ad</text>
+      <rect id="3Ad" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Ad</text>
+      <rect id="4Ad" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Ad</text>
+    </g>
+
+    <!-- Group B -->
+    <g id="group-B-v" transform="translate(0,50)">
+      <rect id="1Bv" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Bv</text>
+      <rect id="2Bv" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Bv</text>
+      <rect id="3Bv" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Bv</text>
+      <rect id="4Bv" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Bv</text>
+    </g>
+
+    <g id="group-B-d" transform="translate(0,70)">
+      <rect id="1Bd" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Bd</text>
+      <rect id="2Bd" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Bd</text>
+      <rect id="3Bd" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Bd</text>
+      <rect id="4Bd" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Bd</text>
+    </g>
+
+    <!-- Group C -->
+    <g id="group-C-v" transform="translate(0,100)">
+      <rect id="1Cv" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Cv</text>
+      <rect id="2Cv" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Cv</text>
+      <rect id="3Cv" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Cv</text>
+      <rect id="4Cv" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Cv</text>
+    </g>
+
+    <g id="group-C-d" transform="translate(0,120)">
+      <rect id="1Cd" class="zone" x="0" y="0" width="30" height="20" />
+      <text x="5" y="7" class="label">1Cd</text>
+      <rect id="2Cd" class="zone" x="35" y="0" width="30" height="20" />
+      <text x="40" y="7" class="label">2Cd</text>
+      <rect id="3Cd" class="zone" x="70" y="0" width="30" height="20" />
+      <text x="75" y="7" class="label">3Cd</text>
+      <rect id="4Cd" class="zone" x="105" y="0" width="30" height="20" />
+      <text x="110" y="7" class="label">4Cd</text>
+    </g>
+  </g>
+</svg>

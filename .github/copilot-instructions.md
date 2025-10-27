@@ -1,0 +1,2 @@
+- Use Deno rather than Node.js and NPM.
+- Use the https://docs.devin.ai/work-with-devin/deepwiki-mcp for 

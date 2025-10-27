@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test DeepWiki MCP (SSE & /mcp)</title>
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;padding:1rem}</style>
+</head>
+<body>
+  <h1>DeepWiki MCP test</h1>
+  <p>This page contains two quick examples:</p>
+  <ol>
+    <li>SSE test using EventSource against <code>/sse</code></li>
+    <li>HTTP POST example against <code>/mcp</code> using fetch</li>
+  </ol>
+
+  <h2>1) SSE (EventSource)</h2>
+  <p>Open the console to see events. The page will attempt to connect to <code>https://mcp.deepwiki.com/sse</code>.</p>
+  <pre id="sseLog">Connecting...</pre>
+
+  <h2>2) /mcp fetch POST</h2>
+  <p>Click to run a quick POST to <code>/mcp</code> (non-streaming). Results will appear below.</p>
+  <button id="runMcp">Run /mcp POST</button>
+  <pre id="mcpResult"></pre>
+
+  <script>
+    // SSE example (browser)
+    const sseLog = document.getElementById('sseLog');
+    try{
+      const sse = new EventSource('https://mcp.deepwiki.com/sse');
+      sse.addEventListener('open', () => {
+        sseLog.textContent += '\n[SSE] open';
+      });
+      sse.addEventListener('message', (e) => {
+        sseLog.textContent += '\n[message] ' + e.data;
+      });
+      sse.addEventListener('error', (e) => {
+        sseLog.textContent += '\n[error] ' + (e && e.message ? e.message : JSON.stringify(e));
+      });
+    } catch (err) {
+      sseLog.textContent += '\n[SSE] exception: ' + err;
+    }
+
+    // /mcp fetch example (POST) - small demonstration
+    document.getElementById('runMcp').addEventListener('click', async () => {
+      const out = document.getElementById('mcpResult');
+      out.textContent = 'Sending request...';
+      try {
+        const body = {
+          tool: 'read_wiki_structure',
+          input: { repo: 'd3/d3' }
+        };
+        const resp = await fetch('https://mcp.deepwiki.com/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        // Response may stream; here we try to read as text
+        const text = await resp.text();
+        out.textContent = 'Status: ' + resp.status + '\n' + text.slice(0, 2000);
+      } catch (err) {
+        out.textContent = 'Fetch error: ' + err;
+      }
+    });
+  </script>
+</body>
+</html>

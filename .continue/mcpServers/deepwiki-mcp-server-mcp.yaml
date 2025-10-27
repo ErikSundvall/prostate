@@ -1,0 +1,11 @@
+name: DeepWiki MCP helper (mcp)
+version: 0.0.1
+mcpServers:
+  - name: deepwiki_mcp
+    description: "Remote DeepWiki MCP server (public repos, no auth) - /mcp"
+    url: "https://mcp.deepwiki.com/mcp"
+    protocol: http
+    tools:
+      - read_wiki_structure
+      - read_wiki_contents
+      - ask_question

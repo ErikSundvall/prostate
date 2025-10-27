@@ -1,0 +1,12 @@
+name: DeepWiki MCP helper
+version: 0.0.1
+mcpServers:
+  - name: deepwiki
+    description: "Remote DeepWiki MCP server (public repos, no auth) - SSE"
+    # Use `url` (Continue expects this) and point to the SSE endpoint
+    url: "https://mcp.deepwiki.com/sse"
+    protocol: sse
+    tools:
+      - read_wiki_structure
+      - read_wiki_contents
+      - ask_question

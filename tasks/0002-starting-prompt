@@ -1,0 +1,9 @@
+We now have a prostate visualisation map as described in readme.md and all current code, but it was mostly an experiment in letting an AI use scaffolding from:
+https://github.com/snarktank/ai-dev-tasks.
+
+Now we want to change some app behaviours and then switch to more realistic prostate map. We will tag this new feature pack 0002, so the 0001-prefixed files can now be ignored.
+
+- Remove the nombers/badges from visualization, now we should only see the colour of highest pirads of each zone
+- Patterns shall only be activated when hoovering ofer a zone - when doing this, patterns for all lesions that overlap the hovered zone should appear - and be shown ovar all zones that these lesions cover.
+
+Make it possible to switch between prostate maps during development and test, note that any changes to maps be done in the src/assets shall be automatically copied over to the /demo directory during test, build etc. We will manually refine prostate-map-2.svg during the project.

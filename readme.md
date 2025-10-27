@@ -4,7 +4,7 @@ A Web Component for visualizing prostate MRI zones with lesion data, built with 
 
 ## Overview
 
-This widget displays an interactive SVG map of the prostate divided into 48 zones (4 glands × 3 sectors × 2 depths). It visualizes MRI findings (lesions) using PI-RADS scoring with colors and patterns, supports localization, and provides accessibility features.
+This widget displays an interactive SVG map of the prostate divided into 24 zones. It visualizes MRI findings (lesions) using PI-RADS scoring with colors and patterns, supports localization, and provides accessibility features.
 
 ## Features
 
@@ -157,7 +157,6 @@ deno task dev
 ### Prerequisites
 
 - Deno 1.40+
-- Node.js (for JSDOM in tests)
 
 ### Setup
 
