@@ -5835,13 +5835,6 @@ function selectZoneElement(rootSelection, zoneId) {
   }
   return selection;
 }
-function ensureOverlayLayer(rootSelection) {
-  let layer = rootSelection.select("g.zone-overlays");
-  if (layer.empty()) {
-    layer = rootSelection.append("g").attr("class", "zone-overlays").attr("data-overlay-layer", "true");
-  }
-  return layer;
-}
 function applyZoneStylesFallback(root, zoneState) {
   for (const [zoneId, state] of Object.entries(zoneState)) {
     const el = findZoneElement(root, zoneId);
@@ -5857,12 +5850,6 @@ function applyZoneStylesFallback(root, zoneState) {
     }
     el.style.fill = getPiradsColor(state.highestPirads);
     el.setAttribute?.("data-pirads", String(state.highestPirads));
-    if (state.count > 1) {
-      const patterns = state.lesionIds.map(getPatternId).join(" ");
-      el.setAttribute?.("data-patterns", patterns);
-    } else {
-      el.removeAttribute?.("data-patterns");
-    }
   }
 }
 function applyZoneStyles(root, zoneState) {
@@ -5875,7 +5862,6 @@ function applyZoneStyles(root, zoneState) {
     applyZoneStylesFallback(rootNode, zoneState);
     return;
   }
-  const overlayLayer = ensureOverlayLayer(rootSelection);
   for (const [zoneId, state] of Object.entries(zoneState)) {
     const zoneSelection = selectZoneElement(rootSelection, zoneId);
     if (zoneSelection.empty()) {
@@ -5883,76 +5869,11 @@ function applyZoneStyles(root, zoneState) {
       continue;
     }
     if (state.highestPirads === null) {
-      zoneSelection.attr("data-pirads", null).attr("fill", "none").attr("data-patterns", null);
-      overlayLayer.selectAll(`rect.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`).remove();
+      zoneSelection.attr("data-pirads", null).style("fill", "none");
       continue;
     }
     zoneSelection.attr("data-pirads", String(state.highestPirads)).style("fill", getPiradsColor(state.highestPirads));
-    if (state.count > 0 && state.highestPirads !== null) {
-      const patternIds = state.lesionIds.map((lesionId) => getCompositePatternId(zoneId, lesionId, state.highestPirads));
-      zoneSelection.attr("data-patterns", patternIds.join(" "));
-      zoneSelection.attr("data-lesion-ids", state.lesionIds.join(","));
-      ensurePatternDefs(root, state.lesionIds, zoneId, state.highestPirads);
-    } else {
-      zoneSelection.attr("data-patterns", null);
-      zoneSelection.attr("data-lesion-ids", null);
-    }
   }
-}
-var PATTERN_SIZE = 20;
-var PATTERN_BUILDERS = [
-  (pattern) => {
-    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "3");
-  },
-  (pattern) => {
-    pattern.append("path").attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "2");
-    pattern.append("path").attr("d", `M0 0 L${PATTERN_SIZE} ${PATTERN_SIZE}`).attr("stroke", "#000").attr("stroke-opacity", "1").attr("stroke-width", "2");
-  },
-  (pattern) => {
-    pattern.append("circle").attr("cx", PATTERN_SIZE / 2).attr("cy", PATTERN_SIZE / 2).attr("r", "6").attr("fill", "#000").attr("fill-opacity", "1");
-  }
-];
-function patternIndexForLesion(lesionId) {
-  const normalized = String(lesionId ?? "");
-  let sum = 0;
-  for (let i9 = 0; i9 < normalized.length; i9++) sum += normalized.charCodeAt(i9);
-  return PATTERN_BUILDERS.length ? sum % PATTERN_BUILDERS.length : 0;
-}
-function getPatternId(lesionId) {
-  return `pattern-${String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
-}
-function ensurePatternDefs(root, lesionIds, zoneId, pirads) {
-  if (!root || !lesionIds.length) return;
-  const rootSelection = M2(root);
-  if (rootSelection.empty()) return;
-  if (!supportsD3Mutation(rootSelection)) return;
-  let defs = rootSelection.select("defs");
-  if (defs.empty()) {
-    defs = rootSelection.insert("defs", ":first-child");
-  }
-  const uniqueIds = Array.from(new Set(lesionIds));
-  const piradsColor = getPiradsColor(pirads);
-  const data = uniqueIds.map((lesionId) => ({
-    lesionId,
-    patternId: getCompositePatternId(zoneId, lesionId, pirads),
-    builderIndex: patternIndexForLesion(lesionId),
-    zoneId,
-    piradsColor
-  }));
-  const patternSelection = defs.selectAll('pattern[data-pattern-source="composite"]').data(data, (d11) => d11.patternId);
-  patternSelection.exit().remove();
-  const patternEnter = patternSelection.enter().append("pattern").attr("id", (d11) => d11.patternId).attr("data-pattern-source", "composite").attr("patternUnits", "userSpaceOnUse").attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE);
-  patternEnter.append("rect").attr("x", 0).attr("y", 0).attr("width", PATTERN_SIZE).attr("height", PATTERN_SIZE).attr("fill", (d11) => d11.piradsColor).attr("stroke", "none");
-  patternEnter.each(function(d11) {
-    const patternSelectionForBuilder = M2(this);
-    const builder = PATTERN_BUILDERS[d11.builderIndex] ?? PATTERN_BUILDERS[0];
-    builder(patternSelectionForBuilder);
-  });
-}
-function getCompositePatternId(zoneId, lesionId, pirads) {
-  const sanitizedZone = String(zoneId).replace(/[^a-zA-Z0-9_-]/g, "-");
-  const sanitizedLesion = String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-");
-  return `pattern-${sanitizedZone}-${sanitizedLesion}-p${pirads}`;
 }
 
 // src/utils/translations.ts
@@ -6042,9 +5963,6 @@ var ProstateMriMap = class extends HTMLElement {
   _data = null;
   _language = "en";
   _currentZone = null;
-  _activePatterns = /* @__PURE__ */ new Set();
-  _currentHoveredZone = null;
-  _lastAffectedZones = /* @__PURE__ */ new Set();
   constructor() {
     super();
     this.shadow = this.attachShadow({
@@ -6054,10 +5972,6 @@ var ProstateMriMap = class extends HTMLElement {
     this._onSlotChange = this._onSlotChange.bind(this);
     this._onZoneClick = this._onZoneClick.bind(this);
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
-    this._onZoneMouseEnter = this._onZoneMouseEnter.bind(this);
-    this._onZoneMouseLeave = this._onZoneMouseLeave.bind(this);
-    this._onZoneFocus = this._onZoneFocus.bind(this);
-    this._onZoneBlur = this._onZoneBlur.bind(this);
     this._onPanelClose = this._onPanelClose.bind(this);
     this._onPanelKeydown = this._onPanelKeydown.bind(this);
     this._onFocusIn = this._onFocusIn.bind(this);
@@ -6109,14 +6023,6 @@ var ProstateMriMap = class extends HTMLElement {
           keyboardEvent.preventDefault();
           this._onZoneKeydown(keyboardEvent);
         }
-      }).on("mouseenter.zone-interaction", (event) => {
-        this._onZoneMouseEnter(event);
-      }).on("mouseleave.zone-interaction", (event) => {
-        this._onZoneMouseLeave(event);
-      }).on("focus.zone-interaction", (event) => {
-        this._onZoneFocus(event);
-      }).on("blur.zone-interaction", (event) => {
-        this._onZoneBlur(event);
       });
       for (const zoneId of CANONICAL_ZONES) {
         const zoneElement = svgRoot.querySelector(`[id="${zoneId}"]`);
@@ -6129,14 +6035,6 @@ var ProstateMriMap = class extends HTMLElement {
               keyboardEvent.preventDefault();
               this._onZoneKeydown(keyboardEvent);
             }
-          }).on("mouseenter.zone-interaction", (event) => {
-            this._onZoneMouseEnter(event);
-          }).on("mouseleave.zone-interaction", (event) => {
-            this._onZoneMouseLeave(event);
-          }).on("focus.zone-interaction", (event) => {
-            this._onZoneFocus(event);
-          }).on("blur.zone-interaction", (event) => {
-            this._onZoneBlur(event);
           });
         }
       }
@@ -6204,100 +6102,6 @@ var ProstateMriMap = class extends HTMLElement {
       this._showDetailPanel(zoneId, lesions);
       this._dispatchZoneClick(zoneId, lesions);
     }
-  }
-  _onZoneMouseEnter(e30) {
-    const target = e30.currentTarget;
-    if (!target) return;
-    const zoneId = target.id || null;
-    if (!zoneId || !this._data?.lesions) return;
-    const lesions = this._data.lesions.filter((l9) => l9.zones.includes(zoneId));
-    if (lesions.length === 0) return;
-    const affectedZones = /* @__PURE__ */ new Set();
-    for (const lesion of lesions) {
-      for (const z9 of lesion.zones) {
-        affectedZones.add(z9);
-      }
-    }
-    if (this._lastAffectedZones.size === affectedZones.size) {
-      let same = true;
-      for (const zone of affectedZones) {
-        if (!this._lastAffectedZones.has(zone)) {
-          same = false;
-          break;
-        }
-      }
-      if (same) {
-        this._currentHoveredZone = zoneId;
-        return;
-      }
-    }
-    this._currentHoveredZone = zoneId;
-    this._lastAffectedZones = new Set(affectedZones);
-    this._clearActivePatterns();
-    const slot = this.shadow.querySelector('slot[name="map-svg"]');
-    if (!slot) return;
-    const assigned = slot.assignedElements({
-      flatten: true
-    });
-    for (const node of assigned) {
-      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
-      if (!svgRoot) continue;
-      for (const affectedZoneId of affectedZones) {
-        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`);
-        if (!zoneEl) continue;
-        const originalFill = zoneEl.style.fill;
-        if (originalFill) {
-          zoneEl.setAttribute("data-original-fill", originalFill);
-        }
-        const patternIds = zoneEl.getAttribute("data-patterns");
-        if (patternIds) {
-          const firstPatternId = patternIds.split(" ")[0];
-          zoneEl.style.fill = `url(#${firstPatternId})`;
-          this._activePatterns.add(affectedZoneId);
-        }
-      }
-    }
-  }
-  _onZoneMouseLeave(e30) {
-    const target = e30.currentTarget;
-    if (!target) return;
-    const zoneId = target.id || null;
-    if (this._currentHoveredZone === zoneId) {
-      this._currentHoveredZone = null;
-      this._lastAffectedZones.clear();
-      this._clearActivePatterns();
-    }
-  }
-  _onZoneFocus(e30) {
-    this._onZoneMouseEnter(e30);
-  }
-  _onZoneBlur(_e3) {
-    this._currentHoveredZone = null;
-    this._lastAffectedZones.clear();
-    this._clearActivePatterns();
-  }
-  _clearActivePatterns() {
-    const slot = this.shadow.querySelector('slot[name="map-svg"]');
-    if (!slot) return;
-    const assigned = slot.assignedElements({
-      flatten: true
-    });
-    for (const node of assigned) {
-      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
-      if (svgRoot) {
-        for (const zoneId of this._activePatterns) {
-          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`);
-          if (zoneEl) {
-            const originalFill = zoneEl.getAttribute("data-original-fill");
-            if (originalFill) {
-              zoneEl.style.fill = originalFill;
-              zoneEl.removeAttribute("data-original-fill");
-            }
-          }
-        }
-      }
-    }
-    this._activePatterns.clear();
   }
   _dispatchZoneClick(zoneId, lesions) {
     const ev = new CustomEvent("zone-click", {

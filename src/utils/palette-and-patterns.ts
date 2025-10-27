@@ -56,14 +56,6 @@ export function computeZoneState(lesions: Lesion[] = {} as Lesion[]) {
 
 type RootSelection = d3.Selection<Element, unknown, null, undefined>;
 
-type OverlayDatum = {
-  zoneId: string;
-  lesionId: string;
-  patternId: string;
-  overlayIndex: number;
-  opacity: number;
-};
-
 type BadgeDatum = {
   zoneId: string;
   count: number;
@@ -143,19 +135,6 @@ function selectZoneElement(
   return selection;
 }
 
-function ensureOverlayLayer(
-  rootSelection: RootSelection,
-): d3.Selection<SVGGElement, unknown, null, undefined> {
-  let layer = rootSelection.select<SVGGElement>("g.zone-overlays");
-  if (layer.empty()) {
-    layer = rootSelection
-      .append("g")
-      .attr("class", "zone-overlays")
-      .attr("data-overlay-layer", "true");
-  }
-  return layer;
-}
-
 function ensureBadgeLayer(
   rootSelection: RootSelection,
 ): d3.Selection<SVGGElement, unknown, null, undefined> {
@@ -205,13 +184,6 @@ function applyZoneStylesFallback(
 
     (el as HTMLElement).style.fill = getPiradsColor(state.highestPirads);
     el.setAttribute?.("data-pirads", String(state.highestPirads));
-
-    if (state.count > 1) {
-      const patterns = state.lesionIds.map(getPatternId).join(" ");
-      el.setAttribute?.("data-patterns", patterns);
-    } else {
-      el.removeAttribute?.("data-patterns");
-    }
   }
 }
 
@@ -295,8 +267,6 @@ export function applyZoneStyles(
     return;
   }
 
-  const overlayLayer = ensureOverlayLayer(rootSelection);
-
   for (const [zoneId, state] of Object.entries(zoneState)) {
     const zoneSelection = selectZoneElement(rootSelection, zoneId);
     if (zoneSelection.empty()) {
@@ -307,91 +277,17 @@ export function applyZoneStyles(
     if (state.highestPirads === null) {
       zoneSelection
         .attr("data-pirads", null)
-        .attr("fill", "none")
-        .attr("data-patterns", null);
-      overlayLayer
-        .selectAll<SVGRectElement, OverlayDatum>(
-          `rect.zone-overlay[data-overlay-for="${escapeAttrValue(zoneId)}"]`,
-        )
-        .remove();
+        .style("fill", "none");
       continue;
     }
 
     zoneSelection
       .attr("data-pirads", String(state.highestPirads))
       .style("fill", getPiradsColor(state.highestPirads));
-
-    if (state.count > 0 && state.highestPirads !== null) {
-      const patternIds = state.lesionIds.map((lesionId) =>
-        getCompositePatternId(zoneId, lesionId, state.highestPirads!)
-      );
-      zoneSelection.attr("data-patterns", patternIds.join(" "));
-      zoneSelection.attr("data-lesion-ids", state.lesionIds.join(","));
-      ensurePatternDefs(root, state.lesionIds, zoneId, state.highestPirads);
-    } else {
-      zoneSelection.attr("data-patterns", null);
-      zoneSelection.attr("data-lesion-ids", null);
-    }
   }
 }
 
-const PATTERN_SIZE = 20;
 const SVG_NS = "http://www.w3.org/2000/svg";
-type PatternDatum = {
-  lesionId: string;
-  patternId: string;
-  builderIndex: number;
-};
-
-type PatternBuilder = (
-  selection: d3.Selection<SVGPatternElement, unknown, null, undefined>,
-) => void;
-
-const PATTERN_BUILDERS: PatternBuilder[] = [
-  (pattern) => {
-    pattern
-      .append("path")
-      .attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`)
-      .attr("stroke", "#000")
-      .attr("stroke-opacity", "1")
-      .attr("stroke-width", "3");
-  },
-  (pattern) => {
-    pattern
-      .append("path")
-      .attr("d", `M0 ${PATTERN_SIZE} L${PATTERN_SIZE} 0`)
-      .attr("stroke", "#000")
-      .attr("stroke-opacity", "1")
-      .attr("stroke-width", "2");
-    pattern
-      .append("path")
-      .attr("d", `M0 0 L${PATTERN_SIZE} ${PATTERN_SIZE}`)
-      .attr("stroke", "#000")
-      .attr("stroke-opacity", "1")
-      .attr("stroke-width", "2");
-  },
-  (pattern) => {
-    pattern
-      .append("circle")
-      .attr("cx", PATTERN_SIZE / 2)
-      .attr("cy", PATTERN_SIZE / 2)
-      .attr("r", "6")
-      .attr("fill", "#000")
-      .attr("fill-opacity", "1");
-  },
-];
-
-function patternIndexForLesion(lesionId: string): number {
-  const normalized = String(lesionId ?? "");
-  let sum = 0;
-  for (let i = 0; i < normalized.length; i++) sum += normalized.charCodeAt(i);
-  return PATTERN_BUILDERS.length ? sum % PATTERN_BUILDERS.length : 0;
-}
-
-export function getPatternId(lesionId: string) {
-  // sanitize lesion id for use in an id attribute
-  return `pattern-${String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
-}
 
 /**
  * Render small SVG badges (circle + text) for zones that have lesions.
@@ -480,79 +376,4 @@ export function renderZoneBadges(
       .attr("data-count", String(datum.count))
       .text(String(datum.count));
   });
-}
-
-/**
- * Ensure pattern defs exist for each zone-lesion-pirads combination.
- * Creates composite patterns that include both the PIRADS background color
- * and the lesion hatch pattern overlaid on top.
- */
-export function ensurePatternDefs(root: Element, lesionIds: string[], zoneId: string, pirads: number) {
-  if (!root || !lesionIds.length) return;
-
-  const rootSelection = d3.select(root as Element);
-  if (rootSelection.empty()) return;
-  if (!supportsD3Mutation(rootSelection)) return;
-
-  let defs = rootSelection.select<SVGDefsElement>("defs");
-  if (defs.empty()) {
-    defs = rootSelection.insert<SVGDefsElement>("defs", ":first-child");
-  }
-
-  const uniqueIds = Array.from(new Set(lesionIds));
-  const piradsColor = getPiradsColor(pirads);
-  
-  // Create composite pattern for each lesion that combines PIRADS color + hatch pattern
-  const data: (PatternDatum & { zoneId: string; piradsColor: string })[] = uniqueIds.map((lesionId) => ({
-    lesionId,
-    patternId: getCompositePatternId(zoneId, lesionId, pirads),
-    builderIndex: patternIndexForLesion(lesionId),
-    zoneId,
-    piradsColor,
-  }));
-
-  const patternSelection = defs
-    .selectAll<SVGPatternElement, typeof data[0]>(
-      'pattern[data-pattern-source="composite"]',
-    )
-    .data(data, (d) => d.patternId);
-
-  patternSelection.exit().remove();
-
-  const patternEnter = patternSelection
-    .enter()
-    .append("pattern")
-    .attr("id", (d) => d.patternId)
-    .attr("data-pattern-source", "composite")
-    .attr("patternUnits", "userSpaceOnUse")
-    .attr("width", PATTERN_SIZE)
-    .attr("height", PATTERN_SIZE);
-
-  // Add background rect with PIRADS color
-  patternEnter
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", PATTERN_SIZE)
-    .attr("height", PATTERN_SIZE)
-    .attr("fill", (d) => d.piradsColor)
-    .attr("stroke", "none");
-
-  // Add hatch pattern on top
-  patternEnter.each(function (this: SVGPatternElement, d: typeof data[0]) {
-    const patternSelectionForBuilder = d3.select(this) as d3.Selection<
-      SVGPatternElement,
-      typeof data[0],
-      null,
-      undefined
-    >;
-    const builder = PATTERN_BUILDERS[d.builderIndex] ?? PATTERN_BUILDERS[0];
-    builder(patternSelectionForBuilder as d3.Selection<SVGPatternElement, unknown, null, undefined>);
-  });
-}
-
-function getCompositePatternId(zoneId: string, lesionId: string, pirads: number): string {
-  const sanitizedZone = String(zoneId).replace(/[^a-zA-Z0-9_-]/g, "-");
-  const sanitizedLesion = String(lesionId).replace(/[^a-zA-Z0-9_-]/g, "-");
-  return `pattern-${sanitizedZone}-${sanitizedLesion}-p${pirads}`;
 }

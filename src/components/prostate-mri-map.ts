@@ -62,8 +62,6 @@ export class ProstateMriMap extends HTMLElement {
   private _data: ProstateMriData | null = null;
   private _language: string = "en";
   private _currentZone: string | null = null;
-  private _activePatterns: Set<string> = new Set();
-  private _currentHoveredZone: string | null = null;
 
   constructor() {
     super();
@@ -73,10 +71,6 @@ export class ProstateMriMap extends HTMLElement {
     this._onSlotChange = this._onSlotChange.bind(this);
     this._onZoneClick = this._onZoneClick.bind(this);
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
-    this._onZoneMouseEnter = this._onZoneMouseEnter.bind(this);
-    this._onZoneMouseLeave = this._onZoneMouseLeave.bind(this);
-    this._onZoneFocus = this._onZoneFocus.bind(this);
-    this._onZoneBlur = this._onZoneBlur.bind(this);
     this._onPanelClose = this._onPanelClose.bind(this);
     this._onPanelKeydown = this._onPanelKeydown.bind(this);
     this._onFocusIn = this._onFocusIn.bind(this);
@@ -145,18 +139,6 @@ export class ProstateMriMap extends HTMLElement {
             keyboardEvent.preventDefault();
             this._onZoneKeydown(keyboardEvent);
           }
-        })
-        .on("mouseenter.zone-interaction", (event: Event) => {
-          this._onZoneMouseEnter(event);
-        })
-        .on("mouseleave.zone-interaction", (event: Event) => {
-          this._onZoneMouseLeave(event);
-        })
-        .on("focus.zone-interaction", (event: Event) => {
-          this._onZoneFocus(event);
-        })
-        .on("blur.zone-interaction", (event: Event) => {
-          this._onZoneBlur(event);
         });
 
       // Also wire elements with canonical zone IDs, even if they don't have class="zone"
@@ -178,18 +160,6 @@ export class ProstateMriMap extends HTMLElement {
                 keyboardEvent.preventDefault();
                 this._onZoneKeydown(keyboardEvent);
               }
-            })
-            .on("mouseenter.zone-interaction", (event: Event) => {
-              this._onZoneMouseEnter(event);
-            })
-            .on("mouseleave.zone-interaction", (event: Event) => {
-              this._onZoneMouseLeave(event);
-            })
-            .on("focus.zone-interaction", (event: Event) => {
-              this._onZoneFocus(event);
-            })
-            .on("blur.zone-interaction", (event: Event) => {
-              this._onZoneBlur(event);
             });
         }
       }
@@ -266,121 +236,6 @@ export class ProstateMriMap extends HTMLElement {
       this._showDetailPanel(zoneId, lesions);
       this._dispatchZoneClick(zoneId, lesions);
     }
-  }
-
-  private _onZoneMouseEnter(e: Event) {
-    const target = e.currentTarget as Element | null;
-    if (!target) return;
-    const zoneId = target.id || null;
-    if (!zoneId || !this._data?.lesions) return;
-
-    // Get lesions affecting this zone
-    const lesions = this._data.lesions.filter(l => l.zones.includes(zoneId));
-    if (lesions.length === 0) return;
-
-    // Find all zones covered by these lesions
-    const affectedZones = new Set<string>();
-    for (const lesion of lesions) {
-      for (const z of lesion.zones) {
-        affectedZones.add(z);
-      }
-    }
-
-    // Check if the affected zones are the same as currently active
-    // If so, no need to clear and re-apply (prevents flickering)
-    if (this._activePatterns.size === affectedZones.size) {
-      let same = true;
-      for (const zone of affectedZones) {
-        if (!this._activePatterns.has(zone)) {
-          same = false;
-          break;
-        }
-      }
-      if (same) {
-        this._currentHoveredZone = zoneId;
-        return;
-      }
-    }
-
-    this._currentHoveredZone = zoneId;
-
-    // Clear previous patterns
-    this._clearActivePatterns();
-
-    // Apply patterns to all affected zones by changing their fill
-    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
-    if (!slot) return;
-    const assigned = slot.assignedElements({ flatten: true });
-    for (const node of assigned) {
-      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
-      if (!svgRoot) continue;
-
-      for (const affectedZoneId of affectedZones) {
-        const zoneEl = svgRoot.querySelector(`#${CSS.escape(affectedZoneId)}`) as HTMLElement;
-        if (!zoneEl) continue;
-
-        // Store original fill (from style)
-        const originalFill = zoneEl.style.fill;
-        if (originalFill) {
-          zoneEl.setAttribute("data-original-fill", originalFill);
-        }
-
-        // Get pattern IDs for this zone
-        const patternIds = zoneEl.getAttribute("data-patterns");
-        if (patternIds) {
-          // Use the first pattern (could be enhanced to show multiple)
-          const firstPatternId = patternIds.split(" ")[0];
-          zoneEl.style.fill = `url(#${firstPatternId})`;
-          this._activePatterns.add(affectedZoneId);
-        }
-      }
-    }
-  }
-
-  private _onZoneMouseLeave(e: Event) {
-    const target = e.currentTarget as Element | null;
-    if (!target) return;
-    const zoneId = target.id || null;
-    
-    // Only clear if we're leaving the currently hovered zone
-    if (this._currentHoveredZone === zoneId) {
-      this._currentHoveredZone = null;
-      this._clearActivePatterns();
-    }
-  }
-
-  private _onZoneFocus(e: Event) {
-    // Treat focus like mouse enter
-    this._onZoneMouseEnter(e);
-  }
-
-  private _onZoneBlur(_e: Event) {
-    // Treat blur like mouse leave
-    this._currentHoveredZone = null;
-    this._clearActivePatterns();
-  }
-
-  private _clearActivePatterns() {
-    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
-    if (!slot) return;
-    const assigned = slot.assignedElements({ flatten: true });
-    for (const node of assigned) {
-      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
-      if (svgRoot) {
-        // Restore original fills for all zones with patterns
-        for (const zoneId of this._activePatterns) {
-          const zoneEl = svgRoot.querySelector(`#${CSS.escape(zoneId)}`) as HTMLElement;
-          if (zoneEl) {
-            const originalFill = zoneEl.getAttribute("data-original-fill");
-            if (originalFill) {
-              zoneEl.style.fill = originalFill;
-              zoneEl.removeAttribute("data-original-fill");
-            }
-          }
-        }
-      }
-    }
-    this._activePatterns.clear();
   }
 
   private _dispatchZoneClick(
