@@ -301,6 +301,7 @@ export function applyZoneStyles(
     if (state.highestPirads === null) {
       zoneSelection
         .attr("data-pirads", null)
+        .attr("fill", "none")
         .attr("data-patterns", null);
       overlayLayer
         .selectAll<SVGUseElement, OverlayDatum>(
@@ -311,7 +312,8 @@ export function applyZoneStyles(
     }
 
     zoneSelection
-      .attr("data-pirads", String(state.highestPirads));
+      .attr("data-pirads", String(state.highestPirads))
+      .attr("fill", getPiradsColor(state.highestPirads));
 
     if (state.count > 1) {
       const patternIds = state.lesionIds.map(getPatternId);

@@ -1,12 +1,12 @@
 /// <reference lib="dom" />
 import * as d3 from "d3";
 import type { ProstateMriData, Lesion } from "../types.ts";
+import { CANONICAL_ZONES } from "../types.ts";
 import { validateLesionData } from "../utils/data-schema.ts";
 import {
   applyZoneStyles,
   computeZoneState,
   getPiradsColor,
-  renderZoneBadges,
 } from "../utils/palette-and-patterns.ts";
 import { translations } from "../utils/translations.ts";
 
@@ -29,11 +29,11 @@ template.innerHTML = `
     #detail-content li { margin-bottom: 0.5rem; }
     #detail-close { position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
     /* Palette overrides via CSS variables */
-    .zone[data-pirads="1"] { fill: var(--pirads-1, #FFFFB2); }
-    .zone[data-pirads="2"] { fill: var(--pirads-2, #FD8D3C); }
-    .zone[data-pirads="3"] { fill: var(--pirads-3, #FB6A4A); }
-    .zone[data-pirads="4"] { fill: var(--pirads-4, #DE2D26); }
-    .zone[data-pirads="5"] { fill: var(--pirads-5, #A50F15); }
+    [data-pirads="1"] { fill: var(--pirads-1, #FFFFB2); }
+    [data-pirads="2"] { fill: var(--pirads-2, #FD8D3C); }
+    [data-pirads="3"] { fill: var(--pirads-3, #FB6A4A); }
+    [data-pirads="4"] { fill: var(--pirads-4, #DE2D26); }
+    [data-pirads="5"] { fill: var(--pirads-5, #A50F15); }
     .zone:not([data-pirads]) { fill: none; }
     /* Hover and focus states */
     .zone:hover { stroke: #000; stroke-width: 2; }
@@ -62,6 +62,7 @@ export class ProstateMriMap extends HTMLElement {
   private _data: ProstateMriData | null = null;
   private _language: string = "en";
   private _currentZone: string | null = null;
+  private _activePatterns: Set<string> = new Set();
 
   constructor() {
     super();
@@ -71,6 +72,10 @@ export class ProstateMriMap extends HTMLElement {
     this._onSlotChange = this._onSlotChange.bind(this);
     this._onZoneClick = this._onZoneClick.bind(this);
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
+    this._onZoneMouseEnter = this._onZoneMouseEnter.bind(this);
+    this._onZoneMouseLeave = this._onZoneMouseLeave.bind(this);
+    this._onZoneFocus = this._onZoneFocus.bind(this);
+    this._onZoneBlur = this._onZoneBlur.bind(this);
     this._onPanelClose = this._onPanelClose.bind(this);
     this._onPanelKeydown = this._onPanelKeydown.bind(this);
     this._onFocusIn = this._onFocusIn.bind(this);
@@ -139,7 +144,54 @@ export class ProstateMriMap extends HTMLElement {
             keyboardEvent.preventDefault();
             this._onZoneKeydown(keyboardEvent);
           }
+        })
+        .on("mouseenter.zone-interaction", (event: Event) => {
+          this._onZoneMouseEnter(event);
+        })
+        .on("mouseleave.zone-interaction", (event: Event) => {
+          this._onZoneMouseLeave(event);
+        })
+        .on("focus.zone-interaction", (event: Event) => {
+          this._onZoneFocus(event);
+        })
+        .on("blur.zone-interaction", (event: Event) => {
+          this._onZoneBlur(event);
         });
+
+      // Also wire elements with canonical zone IDs, even if they don't have class="zone"
+      for (const zoneId of CANONICAL_ZONES) {
+        const zoneElement = svgRoot.querySelector(`[id="${zoneId}"]`) as SVGElement;
+        if (zoneElement && !zoneElement.classList.contains("zone")) {
+          d3.select(zoneElement)
+            .classed("zone", true)
+            .on(".zone-interaction", null)
+            .attr("tabindex", "0")
+            .attr("role", "button")
+            .attr("focusable", "true")
+            .on("click.zone-interaction", (event: Event) => {
+              this._onZoneClick(event);
+            })
+            .on("keydown.zone-interaction", (event: Event) => {
+              const keyboardEvent = event as KeyboardEvent;
+              if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+                keyboardEvent.preventDefault();
+                this._onZoneKeydown(keyboardEvent);
+              }
+            })
+            .on("mouseenter.zone-interaction", (event: Event) => {
+              this._onZoneMouseEnter(event);
+            })
+            .on("mouseleave.zone-interaction", (event: Event) => {
+              this._onZoneMouseLeave(event);
+            })
+            .on("focus.zone-interaction", (event: Event) => {
+              this._onZoneFocus(event);
+            })
+            .on("blur.zone-interaction", (event: Event) => {
+              this._onZoneBlur(event);
+            });
+        }
+      }
     }
   }
 
@@ -170,11 +222,12 @@ export class ProstateMriMap extends HTMLElement {
         if (svgRoot) {
           applyZoneStyles(svgRoot, zoneState);
           // Render badges (counts) after applying fills/patterns
-          try {
-            renderZoneBadges(svgRoot, zoneState);
-          } catch {
-            // non-fatal
-          }
+          // REMOVED per PRD 0002: Remove badge/number display from zone visualization
+          // try {
+          //   renderZoneBadges(svgRoot, zoneState);
+          // } catch {
+          //   // non-fatal
+          // }
         }
       }
     } catch (err) {
@@ -219,6 +272,77 @@ export class ProstateMriMap extends HTMLElement {
       this._showDetailPanel(zoneId, lesions);
       this._dispatchZoneClick(zoneId, lesions);
     }
+  }
+
+  private _onZoneMouseEnter(e: Event) {
+    const target = e.currentTarget as Element | null;
+    if (!target) return;
+    const zoneId = target.id || null;
+    if (!zoneId || !this._data?.lesions) return;
+
+    // Get lesions affecting this zone
+    const lesions = this._data.lesions.filter(l => l.zones.includes(zoneId));
+    if (lesions.length === 0) return;
+
+    // Find all zones covered by these lesions
+    const affectedZones = new Set<string>();
+    for (const lesion of lesions) {
+      for (const z of lesion.zones) {
+        affectedZones.add(z);
+      }
+    }
+
+    // Clear previous patterns
+    this._clearActivePatterns();
+
+    // Apply patterns to all affected zones
+    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
+    if (!slot) return;
+    const assigned = slot.assignedElements({ flatten: true });
+    for (const node of assigned) {
+      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
+      if (!svgRoot) continue;
+
+      const overlayLayer = d3.select(svgRoot).select("g.zone-overlays");
+      if (!overlayLayer.empty()) {
+        for (const affectedZoneId of affectedZones) {
+          overlayLayer.selectAll(`use.zone-overlay[data-overlay-for="${affectedZoneId}"]`)
+            .style("opacity", "1");
+          this._activePatterns.add(affectedZoneId);
+        }
+      }
+    }
+  }
+
+  private _onZoneMouseLeave(_e: Event) {
+    this._clearActivePatterns();
+  }
+
+  private _onZoneFocus(e: Event) {
+    // Treat focus like mouse enter
+    this._onZoneMouseEnter(e);
+  }
+
+  private _onZoneBlur(_e: Event) {
+    // Treat blur like mouse leave
+    this._clearActivePatterns();
+  }
+
+  private _clearActivePatterns() {
+    const slot = this.shadow.querySelector('slot[name="map-svg"]') as HTMLSlotElement | null;
+    if (!slot) return;
+    const assigned = slot.assignedElements({ flatten: true });
+    for (const node of assigned) {
+      const svgRoot = node.tagName?.toLowerCase() === "svg" ? node : node.querySelector("svg");
+      if (svgRoot) {
+        const overlayLayer = d3.select(svgRoot).select("g.zone-overlays");
+        if (!overlayLayer.empty()) {
+          // Reset opacity on all use elements
+          overlayLayer.selectAll("use.zone-overlay").style("opacity", "0");
+        }
+      }
+    }
+    this._activePatterns.clear();
   }
 
   private _dispatchZoneClick(

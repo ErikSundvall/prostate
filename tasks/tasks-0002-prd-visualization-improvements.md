@@ -48,7 +48,7 @@
   - Chain tasks: `deno task copy-assets && deno bundle ...`
 - [x] 2.4 Update the `dev` task to copy assets before starting the dev server
 - [x] 2.5 Test the asset copying by modifying `src/assets/prostate-map.svg`, running `deno task bundle`, and verifying `demo/prostate-map.svg` is updated
-- [ ] 2.7 Add a comment in `demo/` directory (e.g., in a README or HTML comment) noting that SVG files are auto-generated from `src/assets/` and thus should not be edited in demo/
+- [x] 2.7 Add a comment in `demo/` directory (e.g., in a README or HTML comment) noting that SVG files are auto-generated from `src/assets/` and thus should not be edited in demo/
 
 ### 3.0 Add prostate map switching functionality to demo
 - [x] 3.1 Refine `src/assets/prostate-map-2.svg` with proper zone IDs matching `prostate-map.svg` conventions
@@ -68,63 +68,52 @@
 - [x] 3.6 Test switching between both maps with each example dataset
 - [x] 3.7 Verify that zone IDs in `prostate-map-2.svg` that don't exist log a console message (per PRD open question #3)
   - Add validation logic to check for missing zones and log warnings
-- [ ] 3.8 Ensure map selection resets to default on page reload (no persistence needed per PRD)
+- [x] 3.8 Ensure map selection resets to default on page reload (no persistence needed per PRD)
 
 ### 4.0 Remove badge/number display from zone visualization
-- [ ] 4.1 Locate the `renderZoneBadges()` function in `src/utils/palette-and-patterns.ts`
-- [ ] 4.2 Comment out or remove the call to `renderZoneBadges()` in `src/components/prostate-mri-map.ts`
-  - Search for invocations of `renderZoneBadges` and disable them
-- [ ] 4.3 Update `applyZoneStyles()` to skip badge rendering logic
-  - Remove badge layer creation if it's only used for numbers
-  - Keep pattern overlay layer (needed for hover patterns)
-- [ ] 4.4 Update CSS in `src/components/prostate-mri-map.css` to remove any badge-related elements if styles exist
-  - Add `display: none` for `.zone-badges` or similar selectors
-- [ ] 4.5 Run unit tests to ensure badge removal doesn't break other functionality
-  - Update or remove tests that specifically check for badge rendering
-- [ ] 4.6 Visually verify in demo that zones show only solid colors (no numbers/badges)
-- [ ] 4.7 Verify zones with multiple lesions still have pattern data attributes set (for future hover implementation)
-- [ ] 4.8 Update inline demo script in `demo/index.html` to also skip badge rendering if it has a fallback renderer
-- [ ] 4.9 Document the change: add comment explaining badges are removed per PRD 0002
+Strangely the AI removed these points when done instad of checking them off...
+
 
 ### 5.0 Implement hover-activated pattern display with transitions
-- [ ] 5.1 Add CSS transition styles for pattern fade-in/fade-out (300ms, ease-in-out)
+- [x] 5.1 Add CSS transition styles for pattern fade-in/fade-out (300ms, ease-in-out)
   - In `src/components/prostate-mri-map.css`, add: `.zone-overlays { transition: opacity 300ms ease-in-out; }`
   - Set default opacity for overlays to 0, show on hover
-- [ ] 5.2 Add a visual hover indicator (cursor change) to zones in CSS
+- [x] 5.2 Add a visual hover indicator (cursor change) to zones in CSS
   - Add: `.zone:hover { cursor: pointer; }` (already partially exists, ensure it's visible)
   - Consider adding a subtle highlight or stroke on hover per PRD open question #1
-- [ ] 5.3 Implement hover event handlers in `src/components/prostate-mri-map.ts`
+- [x] 5.3 Implement hover event handlers in `src/components/prostate-mri-map.ts`
   - Add `_onZoneMouseEnter(event)` handler
   - Add `_onZoneMouseLeave(event)` handler
   - Bind these handlers in constructor
-- [ ] 5.4 In `_onZoneMouseEnter()`, identify the hovered zone and all lesions affecting it
+- [x] 5.4 In `_onZoneMouseEnter()`, identify the hovered zone and all lesions affecting it
   - Use `computeZoneState()` to get lesion IDs for the zone
   - For each lesion, find ALL zones covered by that lesion
-- [ ] 5.5 Apply patterns to all affected zones (not just the hovered zone)
+- [x] 5.5 Apply patterns to all affected zones (not just the hovered zone)
   - Use D3 selections to add pattern fills to zone elements
   - Layer multiple patterns if the hovered zone has multiple lesions
   - Set opacity to 1 with transition for fade-in effect
-- [ ] 5.6 Store the current hover state (which patterns are active) to allow cleanup on mouse leave
+- [x] 5.6 Store the current hover state (which patterns are active) to allow cleanup on mouse leave
   - Use a component instance variable: `_activePatterns` or similar
-- [ ] 5.7 In `_onZoneMouseLeave()`, clear all pattern overlays
+- [x] 5.7 In `_onZoneMouseLeave()`, clear all pattern overlays
   - Set opacity back to 0 with transition for fade-out effect
   - Remove pattern fills after transition completes
-- [ ] 5.8 Ensure base zone colors (highest PIRADS) remain visible under patterns
+- [x] 5.8 Ensure base zone colors (highest PIRADS) remain visible under patterns
   - Patterns should be semi-transparent or stroke-based (review existing pattern definitions)
   - Test with example-4.json (several overlaps) to verify blending
-- [ ] 5.9 Test hover behavior with each example dataset
+- [x] 5.9 Test hover behavior with each example dataset
   - Verify single-lesion zones show patterns on all affected zones
   - Verify multi-lesion zones show all patterns layered
   - Verify smooth 300ms transitions
-- [ ] 5.10 Ensure hover patterns work correctly with keyboard navigation
+- [x] 5.10 Ensure hover patterns work correctly with keyboard navigation
   - When a zone receives focus via Tab, show patterns similar to hover
   - Clear patterns on blur
-- [ ] 5.11 Update unit tests if needed to cover hover behavior
+- [x] 5.11 Update unit tests if needed to cover hover behavior
   - Mock hover events and verify pattern application
   - Test transition timing if feasible
 
 ### 6.0 Final testing and validation
 - [ ] 6.1 Visual inspection: Verify zones display only colors (no badges) in default state
+  - Get colors working again, possibly by simplifying code and using D3 in smarter ways
 - [ ] 6.2 Visual inspection: Hover over zones and confirm patterns appear on all affected zones with 300ms fade
 - [ ] 6.3 Visual inspection: Test map switching between both SVG files with all datasets
 - [ ] 6.4 Visual inspection: Verify asset copying works (modify `src/assets/*.svg`, rebuild, check `demo/`)

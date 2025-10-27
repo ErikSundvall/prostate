@@ -8,3 +8,20 @@
   --pirads-2: #fd8d3c;
   --pirads-1: #ffffb2;
 }
+
+/* Zone styling */
+.zone:not([data-pirads]) { fill: none; }
+
+/* Hover and focus states */
+.zone:hover { stroke: #000; stroke-width: 2; }
+.zone:focus { stroke: #007acc; stroke-width: 3; }
+
+/* Hover patterns with transitions per PRD 0002 */
+.zone-overlays {
+  transition: opacity 300ms ease-in-out;
+  opacity: 0;
+}
+
+.zone:hover .zone-overlays {
+  opacity: 1;
+}
