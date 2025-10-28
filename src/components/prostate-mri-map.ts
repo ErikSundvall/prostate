@@ -142,6 +142,7 @@ export class ProstateMriMap extends HTMLElement {
         });
 
       // Also wire elements with canonical zone IDs, even if they don't have class="zone"
+      // this ensures basic interactivity even for SVGs that lack proper zone markup
       for (const zoneId of CANONICAL_ZONES) {
         const zoneElement = svgRoot.querySelector(`[id="${zoneId}"]`) as SVGElement;
         if (zoneElement && !zoneElement.classList.contains("zone")) {
@@ -163,6 +164,50 @@ export class ProstateMriMap extends HTMLElement {
             });
         }
       }
+
+      // After wiring zones for this SVG root, validate canonical zones
+      // Presence and uniqueness. Only run when the SVG appears to have
+      // content (simple heuristic: contains at least one child element).
+      if (svgRoot && svgRoot.querySelectorAll && svgRoot.querySelectorAll("*").length > 0) {
+        this._validateCanonicalZones(svgRoot);
+      }
+    }
+  }
+
+  /**
+   * Validate that each canonical zone appears exactly once in the provided
+   * svgRoot. If duplicates or missing zones are detected, show a popup
+   * and surface the same message in the component warnings area via
+   * `_dispatchWarning`.
+   */
+  private _validateCanonicalZones(svgRoot: Element) {
+    const duplicates: string[] = [];
+    const missing: string[] = [];
+    for (const zoneId of CANONICAL_ZONES) {
+      // Query for any element with the exact id. We treat multiple matches as duplicates.
+      const matches = svgRoot.querySelectorAll(`[id="${zoneId}"]`);
+      if (!matches || matches.length === 0) missing.push(zoneId);
+      else if (matches.length > 1) duplicates.push(zoneId);
+    }
+
+    if (duplicates.length || missing.length) {
+      const parts: string[] = [];
+      if (duplicates.length) parts.push(`Duplicate zones: ${duplicates.join(", ")}`);
+      if (missing.length) parts.push(`Missing zones: ${missing.join(", ")}`);
+      const message = parts.join("; ");
+
+      // Surface as non-blocking UI warning and dispatch event.
+      try {
+        // show a popup so the user notices immediately
+        // eslint-disable-next-line no-alert
+        alert(`Map validation: ${message}`);
+      } catch {
+        // ignore if alert isn't available in the environment
+      }
+
+      // Also emit through the component's warning mechanism so it appears
+      // in the #warnings element and consumers can listen for the event.
+      this._dispatchWarning([`Map validation: ${message}`]);
     }
   }
 

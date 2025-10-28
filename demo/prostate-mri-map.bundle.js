@@ -6038,6 +6038,37 @@ var ProstateMriMap = class extends HTMLElement {
           });
         }
       }
+      if (svgRoot && svgRoot.querySelectorAll && svgRoot.querySelectorAll("*").length > 0) {
+        this._validateCanonicalZones(svgRoot);
+      }
+    }
+  }
+  /**
+   * Validate that each canonical zone appears exactly once in the provided
+   * svgRoot. If duplicates or missing zones are detected, show a popup
+   * and surface the same message in the component warnings area via
+   * `_dispatchWarning`.
+   */
+  _validateCanonicalZones(svgRoot) {
+    const duplicates = [];
+    const missing = [];
+    for (const zoneId of CANONICAL_ZONES) {
+      const matches = svgRoot.querySelectorAll(`[id="${zoneId}"]`);
+      if (!matches || matches.length === 0) missing.push(zoneId);
+      else if (matches.length > 1) duplicates.push(zoneId);
+    }
+    if (duplicates.length || missing.length) {
+      const parts = [];
+      if (duplicates.length) parts.push(`Duplicate zones: ${duplicates.join(", ")}`);
+      if (missing.length) parts.push(`Missing zones: ${missing.join(", ")}`);
+      const message = parts.join("; ");
+      try {
+        alert(`Map validation: ${message}`);
+      } catch {
+      }
+      this._dispatchWarning([
+        `Map validation: ${message}`
+      ]);
     }
   }
   /**
