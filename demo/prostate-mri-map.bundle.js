@@ -33077,6 +33077,31 @@ var ProstateMriMap = class extends HTMLElement {
     } catch (_e3) {
     }
     try {
+      const hasLink = !!document.querySelector('link[href*="shoelace"]') || Array.from(document.styleSheets || []).some((s18) => typeof s18.href === "string" && s18.href.includes("shoelace"));
+      if (!hasLink) {
+        console.warn("[ProstateMriMap] Shoelace theme stylesheet not found; injecting local fallback stylesheet demo/shoelace-theme-fallback.css");
+        try {
+          this._dispatchWarning([
+            "Shoelace theme not found; using local fallback stylesheet."
+          ]);
+        } catch (_e3) {
+        }
+        if (!document.querySelector("link[data-local-shoelace]")) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "demo/shoelace-theme-fallback.css";
+          link.setAttribute("data-local-shoelace", "true");
+          document.head.appendChild(link);
+        }
+        try {
+          popup.style.setProperty("--arrow-color", "#ffffff");
+        } catch (e41) {
+          console.debug("[ProstateMriMap] failed to set --arrow-color", e41);
+        }
+      }
+    } catch (_e3) {
+    }
+    try {
       popup.addEventListener("mouseenter", () => this._cancelHidePopup());
       popup.addEventListener("mouseleave", () => this._scheduleHidePopup(150));
     } catch (_e3) {
@@ -33122,7 +33147,9 @@ var ProstateMriMap = class extends HTMLElement {
     else {
       html += '<ul style="padding:0;margin:0;list-style:none">';
       for (const lesion of lesions) {
-        html += `<li style="margin-bottom:6px"><strong>${t15.lesionIdLabel}:</strong> ${lesion.id}<br><strong>${t15.piradsValueLabel}:</strong> ${lesion.pirads}</li>`;
+        const badgeColor = getPiradsColor(lesion.pirads);
+        const badgeTextColor = lesion.pirads && Number(lesion.pirads) >= 4 ? "#fff" : "#000";
+        html += `<li style="margin-bottom:6px"><strong>${t15.lesionIdLabel}:</strong> ${lesion.id}<br><strong>${t15.piradsValueLabel}:</strong> <span class="pirads-badge" style="background:${badgeColor};color:${badgeTextColor};">${lesion.pirads}</span></li>`;
       }
       html += "</ul>";
     }

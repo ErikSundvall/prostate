@@ -8,7 +8,7 @@ import { CANONICAL_ZONES } from "../types.ts";
 // Import the Shoelace package entry so its custom elements are registered
 // when the bundle is executed. Use the package entry instead of an internal
 // subpath to respect the package's "exports" map.
-import "npm:@shoelace-style/shoelace";
+import "@shoelace-style/shoelace";
 import { validateLesionData } from "../utils/data-schema.ts";
 import {
   applyZoneStyles,
@@ -350,6 +350,28 @@ export class ProstateMriMap extends HTMLElement {
     } catch (_e) {
       /* ignore */
     }
+    // if no Shoelace theme stylesheet is present, inject a local fallback
+    try {
+      const hasLink = !!document.querySelector('link[href*="shoelace"]') || Array.from(document.styleSheets || []).some(s => typeof s.href === 'string' && s.href.includes('shoelace'));
+      if (!hasLink) {
+        console.warn('[ProstateMriMap] Shoelace theme stylesheet not found; injecting local fallback stylesheet demo/shoelace-theme-fallback.css');
+        try {
+          this._dispatchWarning(['Shoelace theme not found; using local fallback stylesheet.']);
+        } catch (_e) {
+          /* ignore */
+        }
+        if (!document.querySelector('link[data-local-shoelace]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'demo/shoelace-theme-fallback.css';
+          link.setAttribute('data-local-shoelace', 'true');
+          document.head.appendChild(link);
+        }
+        try { (popup as HTMLElement).style.setProperty('--arrow-color', '#ffffff'); } catch (e) { console.debug('[ProstateMriMap] failed to set --arrow-color', e); }
+      }
+    } catch (_e) {
+      /* ignore */
+    }
     // allow popup hover to keep it open by cancelling any hide timer
     try {
       popup.addEventListener('mouseenter', () => this._cancelHidePopup());
@@ -404,7 +426,9 @@ export class ProstateMriMap extends HTMLElement {
     else {
       html += '<ul style="padding:0;margin:0;list-style:none">';
       for (const lesion of lesions) {
-        html += `<li style="margin-bottom:6px"><strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br><strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}</li>`;
+        const badgeColor = getPiradsColor(lesion.pirads as number);
+        const badgeTextColor = (lesion.pirads && Number(lesion.pirads) >= 4) ? '#fff' : '#000';
+        html += `<li style="margin-bottom:6px"><strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br><strong>${t.piradsValueLabel}:</strong> <span class=\"pirads-badge\" style=\"background:${badgeColor};color:${badgeTextColor};\">${lesion.pirads}</span></li>`;
       }
       html += '</ul>';
     }

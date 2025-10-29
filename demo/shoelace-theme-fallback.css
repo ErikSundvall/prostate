@@ -1,0 +1,38 @@
+/* Minimal Shoelace popup fallback styles used when the official theme isn't loaded.
+   This provides a visible background, shadow and arrow color so popups are readable.
+   It's intentionally small and local to avoid runtime CDN fetching in demos. */
+
+/* Popup container */
+sl-popup::part(popup) {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  padding: 4px 6px;
+  min-width: 120px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 12px;
+}
+
+/* Arrow */
+sl-popup::part(arrow) {
+  background: #ffffff;
+}
+
+/* Hover bridge */
+sl-popup::part(hover-bridge) {
+  background: transparent;
+}
+
+/* Make sure the popup is above other UI by default */
+sl-popup {
+  --arrow-color: #ffffff;
+}
+
+/* A small badge style used by the component when theme is missing */
+.zone-popup-content .pirads-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
