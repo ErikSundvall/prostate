@@ -1,5 +1,106 @@
 {
   "version": "5",
+  "specifiers": {
+    "npm:@shoelace-style/shoelace@^2.20.1": "2.20.1"
+  },
+  "npm": {
+    "@ctrl/tinycolor@4.2.0": {
+      "integrity": "sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A=="
+    },
+    "@floating-ui/core@1.7.3": {
+      "integrity": "sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==",
+      "dependencies": [
+        "@floating-ui/utils"
+      ]
+    },
+    "@floating-ui/dom@1.7.4": {
+      "integrity": "sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==",
+      "dependencies": [
+        "@floating-ui/core",
+        "@floating-ui/utils"
+      ]
+    },
+    "@floating-ui/utils@0.2.10": {
+      "integrity": "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="
+    },
+    "@lit-labs/ssr-dom-shim@1.4.0": {
+      "integrity": "sha512-ficsEARKnmmW5njugNYKipTm4SFnbik7CXtoencDZzmzo/dQ+2Q0bgkzJuoJP20Aj0F+izzJjOqsnkd6F/o1bw=="
+    },
+    "@lit/react@1.0.8_@types+react@19.2.2": {
+      "integrity": "sha512-p2+YcF+JE67SRX3mMlJ1TKCSTsgyOVdAwd/nxp3NuV1+Cb6MWALbN6nT7Ld4tpmYofcE5kcaSY1YBB9erY+6fw==",
+      "dependencies": [
+        "@types/react"
+      ]
+    },
+    "@lit/reactive-element@2.1.1": {
+      "integrity": "sha512-N+dm5PAYdQ8e6UlywyyrgI2t++wFGXfHx+dSJ1oBrg6FAxUj40jId++EaRm80MKX5JnlH1sBsyZ5h0bcZKemCg==",
+      "dependencies": [
+        "@lit-labs/ssr-dom-shim"
+      ]
+    },
+    "@shoelace-style/animations@1.2.0": {
+      "integrity": "sha512-avvo1xxkLbv2dgtabdewBbqcJfV0e0zCwFqkPMnHFGbJbBHorRFfMAHh1NG9ymmXn0jW95ibUVH03E1NYXD6Gw=="
+    },
+    "@shoelace-style/localize@3.2.1": {
+      "integrity": "sha512-r4C9C/5kSfMBIr0D9imvpRdCNXtUNgyYThc4YlS6K5Hchv1UyxNQ9mxwj+BTRH2i1Neits260sR3OjKMnplsFA=="
+    },
+    "@shoelace-style/shoelace@2.20.1": {
+      "integrity": "sha512-FSghU95jZPGbwr/mybVvk66qRZYpx5FkXL+vLNpy1Vp8UsdwSxXjIHE3fsvMbKWTKi9UFfewHTkc5e7jAqRYoQ==",
+      "dependencies": [
+        "@ctrl/tinycolor",
+        "@floating-ui/dom",
+        "@lit/react",
+        "@shoelace-style/animations",
+        "@shoelace-style/localize",
+        "composed-offset-position",
+        "lit",
+        "qr-creator"
+      ]
+    },
+    "@types/react@19.2.2": {
+      "integrity": "sha512-6mDvHUFSjyT2B2yeNx2nUgMxh9LtOWvkhIU3uePn2I2oyNymUAX1NIsdgviM4CH+JSrp2D2hsMvJOkxY+0wNRA==",
+      "dependencies": [
+        "csstype"
+      ]
+    },
+    "@types/trusted-types@2.0.7": {
+      "integrity": "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw=="
+    },
+    "composed-offset-position@0.0.6_@floating-ui+utils@0.2.10": {
+      "integrity": "sha512-Q7dLompI6lUwd7LWyIcP66r4WcS9u7AL2h8HaeipiRfCRPLMWqRx8fYsjb4OHi6UQFifO7XtNC2IlEJ1ozIFxw==",
+      "dependencies": [
+        "@floating-ui/utils"
+      ]
+    },
+    "csstype@3.1.3": {
+      "integrity": "sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw=="
+    },
+    "lit-element@4.2.1": {
+      "integrity": "sha512-WGAWRGzirAgyphK2urmYOV72tlvnxw7YfyLDgQ+OZnM9vQQBQnumQ7jUJe6unEzwGU3ahFOjuz1iz1jjrpCPuw==",
+      "dependencies": [
+        "@lit-labs/ssr-dom-shim",
+        "@lit/reactive-element",
+        "lit-html"
+      ]
+    },
+    "lit-html@3.3.1": {
+      "integrity": "sha512-S9hbyDu/vs1qNrithiNyeyv64c9yqiW9l+DBgI18fL+MTvOtWoFR0FWiyq1TxaYef5wNlpEmzlXoBlZEO+WjoA==",
+      "dependencies": [
+        "@types/trusted-types"
+      ]
+    },
+    "lit@3.3.1": {
+      "integrity": "sha512-Ksr/8L3PTapbdXJCk+EJVB78jDodUMaP54gD24W186zGRARvwrsPfS60wae/SSCTCNZVPd1chXqio1qHQmu4NA==",
+      "dependencies": [
+        "@lit/reactive-element",
+        "lit-element",
+        "lit-html"
+      ]
+    },
+    "qr-creator@1.0.0": {
+      "integrity": "sha512-C0cqfbS1P5hfqN4NhsYsUXePlk9BO+a45bAQ3xLYjBL3bOIFzoVEjs79Fado9u9BPBD3buHi3+vY+C8tHh4qMQ=="
+    }
+  },
   "redirects": {
     "https://esm.sh/@types/d3-array@~3.2.1/index.d.ts": "https://esm.sh/@types/d3-array@3.2.2/index.d.ts",
     "https://esm.sh/@types/d3-axis@~3.0.6/index.d.ts": "https://esm.sh/@types/d3-axis@3.0.6/index.d.ts",
@@ -84,6 +185,217 @@
     "https://esm.sh/robust-predicates@^3.0.2?target=denonext": "https://esm.sh/robust-predicates@3.0.2?target=denonext"
   },
   "remote": {
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.22MHKQYS.js": "936b01e15deac6103fa19768711da645a7e74d32f5b0c9ca2acba7a69628c8eb",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.23EVN5V7.js": "9c25323f8ae1d22c6b887293c08b9dbe3a3dccab96b1a5f2817b6d604c568d83",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.25TVLSB6.js": "86225663b02ee2c7ab255c82a22d33a3964ed8168a9abd191f98ba6ff5983522",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.2LTMPURQ.js": "9c97f0fdea53d3df6e8ff9aa69072e6218ffc2c80e46a8258a28544ef2d161c1",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.2N54XHGU.js": "f8633f7cf09a61e929af537a8459b710393cf552407c673a0511846dd854f2e1",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.2PEV5IOW.js": "c84d22c3b218ca020430732bb9f8cc33f23e782f80cb2d7e22512154887a1a71",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.2SU6QBUU.js": "8e7da27940ae70bec5107a483ad94672d090fc5c0ecd0e13814c4fe7a1365614",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.2X2NHTJ2.js": "42b7f915a842cc6ef169ca7d937fa17f0c8e13441ede6c905118ac2f1a1ec822",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.363G6HOV.js": "927981762d341a3e166cb17971994cc0e4919453965d3ff159b43436d0b93a4c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3BTGXKQG.js": "a3a65851309f9e038a4918e285a80c5cd42628ea11c4e6acd1b6e02453fc06ef",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3CYQ45DM.js": "86b2a79a49f862a6c0e70c223299f0a83c3bec6d65384dccb762b0e4c309c2a5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3RBSSBZT.js": "37e31ea79b9cf5546eb835b11818148958a55e2b2f544cde60d92e5f09cfbee6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3TFKS637.js": "14f82f632089ec1a68784a8aa36aec1e4a713623749ad880fbbd0119f78da043",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3UTP7VYR.js": "f44588736a224919315b3b5b080637159606f2f5a43c5307115503e8b83e4c2a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.3Y6SB6QS.js": "f1cea1705e0c978806be53c89f206e9c4be9cac5348d77fae76b8d759ff2a9c9",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.43SX5A4B.js": "2b243e2417f4039971a47dee58bea1d870f103864a0c400186a8a9208195b2a6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.4HVWIAXV.js": "f6799ade86934789de67fc383e30e8bb9e54fedf35e22440cf3c06ee9c4c0853",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.4YZRCULF.js": "9192a1826bb918d6106b1d24fa15bc2fa97ab1a764a7ead7595a9db710d5234f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.56E2RK64.js": "0e65a0df04ef4b5f8766a9eac70853b80ac9afff7cac0730fe0701455450d4bc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.5H6B24EH.js": "753660a5ddd0f65c448f7a56a8ac94a924390ac558cc0f11906af19860a759d3",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.5ODVSF2X.js": "946e57b79645375a884b7616214ea5ca13e7c20dcc1b83405984dd013c44b2dc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.657FRMIK.js": "b3588918b2801c80b700d061cd6f877bf6421d97268830f876e2c25b8e19f3a3",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6BZINGNK.js": "73ad977882c5bf6eee995d6e12c97f7950fd5949577d3247ad2b3b2819a33c1b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6L2QRY3L.js": "c8656dee29a667b9583c855b86b6e24db875cffc6cce7c61ed3327b535a6fc13",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6LXYZX3W.js": "fa95e0b8fb81a450cd0651da3e90bbd25f57ea870771c09465e24b4e5b50916a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6QB6HC7Y.js": "a6920b612e912746f92c5c2802bf67b6a0d5eb2d480b27c551d22856704bae4d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6QYB2UKN.js": "02bee5fa464ab2e3794233e515b960d47ff21c850e5f35d5ffac6306ee19133e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6R646567.js": "4ad8edfb590cafde439402de141f88f314487911c47df44fd2d37aa9e358517b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6TYFC5KB.js": "565b8ab4b3f8708a131998464bf3e719cdcbeace0eac8991d287106719d21568",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6VP72EQR.js": "d2a4b9371af952ea4a7e2f0c24aeb65dcb023a43833c5311b8faa24d72075fb3",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6ZKBLJI3.js": "318ee010e7eead20d61f28f1cc4dbe3c5b8c55d2a012a392b2597f184b8f3d89",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.6ZW74XXU.js": "df5ecca52557099c9e2d9748cdf816b3130ea9b82657ebbafb20f94bddabf342",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.72VMG2TH.js": "be6b1770349d20c85485958a92c96a7cdb028997307aec009c6cd1209eb4b831",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.77RFQ2PA.js": "cbe68a86b4fc820ca335b74250e734405f9c7cfb925475f13114e6454f20c290",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7A6LIWRA.js": "1bedd5c6432cd40cd803c1f654a334d1a7d22b2970e2b7ed68d2e19c0ecaa90c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7CHVIR7S.js": "05f61b6bf74096ed4b0ed402654402d16df88b3fc4a3f8e148ce39b4ad08189d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7CJW5OH4.js": "6c8c429451a726b8d07a4d29b12f5f7e1e25107eb72c789cb9558ddb5741365c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7IRNCF65.js": "e2d4c0a846fd011e9fe2c7bc541e9acf3d0ed8ab81c578dd4a0d4240af91fb39",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7O3YKQFM.js": "c770d2d6326fca1e0a17675f92faffbe29b86658e628f863e06b79c2a116a17c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7R3XBKDP.js": "f9a08b41b7c14ea5b9bb327696827c8f1d28c649bd6d883b27f30282cca1c9a9",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.7YKI7PSP.js": "6cc1b09b4b273bab6553ba3ec70b63d78b5167dc11a615af73391b2f31ab5cb6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.A43S6NAO.js": "3f0d92f8390fd7d02fe0ab78b0667686e605b214086d53b80799c5f4e7dc04b7",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.A4OT2FKZ.js": "43ebe34d809f5ecc6c42c2a6d3641de4be3f7855e394e89cd78b1375e05f5f98",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.AFTLC75S.js": "d2bc83ee3beeed198cd8961629b6506c3ab054b7a9754e206f2c4ae87b304577",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.AGWHFEOF.js": "85fe327cb832df22bdf0265693942b998bad53025df07ddc58cbd9a979bb1a0c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.AJOTCAUP.js": "e881a78fac2eb3181e0c4cb8d5fa5535b933ccf69b58ef3731757d32e1418caf",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ATDIJH4E.js": "7d85f289ae2e703598c8370699499450f67868bd39985c128c04ea84d2be8243",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.B3IYGYY2.js": "052dc097a7584449e3c2b3d11ea624836b8604e7bf39c470555e9f556a6eba3e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.B4BZKR24.js": "8bdb8b4bf886773489e9b8436aaf39a63de270073002ff62341649d857ea27cd",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BBQXAFWV.js": "7484cba958fc523bd1b2ba31955506acf639776b03414a4df6e5edcaf49782e4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BCIBWPWZ.js": "aa4c83fd42feedee99ba83f43908e517242ad3067260848141b3db8c92169580",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BHN72EMB.js": "be28d53c396e360a00a41b671cf3d708cb9a8a65ffa8a883b3a73f3ed7802f0d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BIBT457X.js": "95d30fb1640faea84eea116a6fc49f54b5cb4c68332260068dee390660a9f56e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BQ3KD2CV.js": "437f472b3ef571561603df87ee943350362d7630111f9f4f6d44aee9eaa88dde",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BQVQNT2D.js": "dc3408dc7ee13ca074d10c93dbdd55d5f3abd2bcf041f0f866ebd2e359df1126",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BSPH4GYQ.js": "30461cf39e573dacb01a13530e525ec51a84c2a6a30f792d3b84f4ae58676462",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BUCE77BS.js": "42177d8eb7eedf914007a5126ac62ac17e5c7a1945232d951b17d5d1fdf90916",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.BWUQXUSO.js": "32696478c5e12a3b6c4540b8a81d256fafbb2f98d0ae774d43ee1e3e5f0c4a3c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.C5XXIIYE.js": "b077feef192527cf82545c3c462f32d674ab420e716708a3c6a1ebe79913fc96",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.CJPPA5ZB.js": "dad781bf2352e87758f23ddd2f6a7d1b94dd005807f798cb832188184cd8faa9",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.COJ3GIKP.js": "82b5d8f0a769b426854013628d55f8ced945e095c31da5b8e0920216d883cc64",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.CXXVG4XA.js": "60f4f201c76c79bfcc25ff8e237259b4c4a60d96f7e40152f8ffccae48ba96c5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.D4SUTPHP.js": "6af8dc691b67bd6582b4e4e26a1f0becc499f5c69bcf6cc15cab19908a3a0930",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.DGN7R5IM.js": "3afcb0ccfd244bdbcad65163c2e984dac7530d001ef1c00a8e83294516463b65",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.DT2WPFWO.js": "95ade5b60a58bf6afa0edb48bd7a5aa275e7af22c656200a405b315d66899d97",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.DTID7P2Q.js": "9a8998bcea6f97b256a548f838ec7a0a75326bc0c1db0bd014ed38553f075cad",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.DULGZG3M.js": "4b821c379d5986b21dbbdb085ab7c84eee81f5f9a7be04def6d0f98d30adb5d6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.DYBY5YPS.js": "ab92d3dd2fa5bf61928b3f416deaa402db9e92c5a45a8e202f424cd457dc5d39",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.E456JCAM.js": "e0b98321425dc1823411051eef7d892087696f387c89de28c98679dc26eca694",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.E5624Z63.js": "9e9184128daca8f5860c6641005cd30cba2213ea22b854cb2afa3d2c36d89070",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.E7U2HBHY.js": "9cfe212439f0c64953b14cd2e865d1b405ccf965b77496e5af157fa3ef1967ff",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.EICMY6OD.js": "553817520060cc567bcb08e9a7b2678d26449a1ea56dc1da93119067a9dbac76",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ELYN236P.js": "9fe6712415784d21cd112b7afd1a49ca287deecbd5c75ed80d2eab48f7d8dc8d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.EPVAF3TW.js": "3d602142dba3ee9637ee13ac303c127bb6984995b77ba3e4a76ffed4dbcfc87c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ESELY2US.js": "c4097a6aa14847ee845e5f0cfe35a3a4291962c383d08d3523e3056878af9720",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ESLGNPIU.js": "38aa40077f4e6b59fc25c1a0b06f3b93de38cb77dc7d7ca9534e3456daddf044",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ETC3TS5P.js": "d141f0181b6c64d6c578b71fbb30b47b379b40b0bf674c006d463f6a15e6138b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.F4VGSDIW.js": "12d829e2c00ac82dcf7e7dcda90aa7d2dc28ede49f7c7f418680f6ae161df4d2",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.F6WSSRVI.js": "61bb024d51d0e385473f3c3cebc946b0f40db73407298d4d05faa9131d2c035d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.FI5HGITO.js": "dd13d90aca79c18eba439f9839d19327f96660988258d09291c80c43879b18ba",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.FVSIPAHJ.js": "71bbb1147764d29c68a73849b0dea9d2fb8c83176ea1ae14894a757260aa5ac3",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GAL6Y7PX.js": "51819cdb8b4c0e7a0b2d0b5ab25ef0b2ca639320fc540321a79f1ee0698ec222",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GBEAUZO3.js": "e5f2e39320b77a46ce1e7852c138c0d8ec2dadaf0594e6960995ee99d6d44f12",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GCASL3UL.js": "31b2a3f1fe45ae0b527ca4979e1458eaced3380aae582bb6fac3282fb186b479",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GGU6PTYI.js": "520336ef7db5f72a8d8ba8656bc38fc7d38a37713e3e7dca0f804aac3fd1a668",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GH4M4AKX.js": "342e51654eea9255d4483b2eeb6798d46738a90ce819b2ad63c1dce979e8b4a5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GMWHDCZQ.js": "ce3019d1e12980ed0f351292092f39242947fb21b9d7c22f16d54f38130a0cf0",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GOR5HDIV.js": "010e539640c8325ee82589784c5db60c845602cc9b8bb5d6064bb6e9261e3e34",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GUCZNPII.js": "140f0adaa81d25459c4a67159e45e84fe39fbbcfbfaeafc11eb4708a65801c2c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GXABAILW.js": "d39cd95d32a61cee87aa4f47ea10529a109accd7c7733d9b67cbdf2af876a16e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.GYJIQCRZ.js": "2dc46388813dc4021d8dbd933ff8c041380924b0089f97b6fa96f342cbab1bd4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.H2NT4TAM.js": "8a8199d6932e7e6030cc5c750ffdc29b0e598c7ca6830f2c55c8d96bd7258397",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.H7MMJU35.js": "2aa13d2b1e9303e44a1e9efc69831497b123769b2bb20b46b7c9f22b0a98c749",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HAL7R4WT.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HBZRVSSU.js": "34a51e45047f2cfd6e73270f02d2230b1b4a59730889c23d78618fe94cf54589",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HCAVMRBP.js": "0e9f3c628c9394b525b9aa314fc37dade6264b9f940b8cc1caba1e3de3928aca",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HDXABDQM.js": "366d69b380a801d57edf6560d081f0cb82063dd8303724867fe882d7ced75d79",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HF7GESMZ.js": "4f1d59a3fb42615764c821c9f633ef85fd2ec5e7701355c82ea22eac263950a4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.HLE3DWEF.js": "a967be0bac331300dfa6e5c74e282d9f999908e2248d6a62e0e60d538a670508",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ILPGQA6P.js": "52f9d5253de279b5eba6a4162204cd3a9ee8333e646674fa37c2442ee4889348",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.IMSGIFYD.js": "673cef70a9cf55ee0abeea8f6a0d6efc892ba8520c4c9ad804a35d11e40d24e2",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.INZSKSLC.js": "87039e3df3d1da962f970f3d63be22170761ef1a42b79f30b7a2ab26580358cb",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.IQ4CZWQV.js": "7c9602ca92580827bd3aee99fb15cc803c2b288f9af1c37625d27b17f102e373",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.IUUAGFZ3.js": "1ecb749cc7b8aa0b69b35e03e373383a4109e48f7b5aef13f58ca1833198b938",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.J6I4XZDR.js": "5f0e9c21d88d8359856180ebcda9cec21bb3e84d459bc26f92424b8590df0e57",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.JMZM2TDT.js": "c3f1b75d48e0e8d2ab1164f869128047579b49f65a65e30659efa7c07b41fbf1",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.JN7V4XQW.js": "e5b3ecae76bc5e46eb247ed37f178b5eec359dd6bdd5f21d00d6fbe5baec1865",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.JQGUL4TV.js": "61076ccf243497fcf8a11f9ffff73794a5d37dba112806e07b187ac3a5935c51",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.JSDN56S3.js": "bfa0a3786ab504dbc1fdee03824d88212716e98c5ae6e87d91d5ea9838ae74e7",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.JTY2OBAL.js": "ca7038216bc755d3df9b911c8ef4c526e6cd38feb22377267fc36fb86338cf2f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.K75BC545.js": "b812197e3d096cc98042e779963cf2aa3e325c4887ab881069ed410d0be73452",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.K7OS3WCD.js": "146630aabfaa44ae1e7f3d277a8c67bd78a42a494b10b7e5f50e5956492944f6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.KI7IBFHO.js": "2ec1b8d2499873ba60aad90b21c50765f0b05ff77a449d95489aa2f7ce30f008",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.KINKNNIL.js": "a056f259b149ab71c453cce6b82ccfd025db10a5b90ff3f5da05df6a0804a22a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.KMHRSCRM.js": "068464625e3c0ef1cf108b4677cdea770a303d338ae09f8617dc729f4ee66d75",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.L6BHDOW4.js": "76623719aae236bd2c66a0c8cb366827bc82a693590a896172fd00cc5f88948d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LBR23TF5.js": "29bd07dd0616d32e6e443001313593223ea77366282fad23740a2c364d56ad90",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LD4M4QGE.js": "d78765574040b7d78ba9d0eecb9dc7746df7d5a6962e2ac303ba2c2d6534fd32",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LFKA4HNX.js": "e6d5006e7d0f19c504e55b65c21e0e160bacde6a805940088220b06e6502c909",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LFMBQ5XL.js": "54d398bb65905b43942bef1ad90e8a2a8904703f60b15713399afb83ee011852",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LRJNU3Q5.js": "62cce085832f650d2b408fae8d2579461c914a881e16cb3a99f4d95c89098b9c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.LVTIJWMU.js": "75a729d8fc9ab935b601a73d05bed63793b590e2fdaef6f3762cf5f83b1785c6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.MCO2UFUJ.js": "f11ca7798b05c942c77a136f849a721bb62d0c6a10ac4cffc3eff202d389efb6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.MNXRJNUB.js": "bcb17734d6da5ef1c45ccef413de8e873341a623da1dcad5bbee63cc12c84efd",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.MRAPBIDX.js": "4940e488f6407b48959ff3349dee785b45aa7fe15d9a1682e1ce5e6fad1d26e0",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.MYGIJ4XX.js": "f568152de1aa41aae6a48566e8edf4c040a70d7bdf489aacf309a33bdb00027f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.N3N5QO4Z.js": "e1271dc5e5d60cd47653aa368669e9dfbd624616561939aeb2b0aff3111ada5a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NDC2Y3JV.js": "db4f50ec4258d1381e8975fb7824ecba55889971a4febb080e0964a2b1027173",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NENCI4JA.js": "74805f107ee44b80e73cdce8c6d0bfd42abdb88b7f011b1fba8a98a04c572d0f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NHXCKMHW.js": "629192c346bd1b036f46b639251c3f4f3d124f4ddcfd8a7bac6c1e12fbcff702",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NLZKSRIS.js": "df3b0ca5d2faac055e35a38deaca2ec873b06e1c10ab8fb95b46ba764d8209dc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NUVE7B27.js": "afbc568ae153f4dc06157fac181e93fec6c45db4fcf57d4d29a9e610c4fc9534",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.NYIIDP5N.js": "32772b78bca61210992bc3a593669ce2621d213e72b0b382e60cc09ddd87a539",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OC7LF64N.js": "443f2657a121236947ba9c67eb935ef609c210c7503a79a38a5266ced02bc676",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OGQ452CI.js": "222d7a27ef7a06e28bf545d09a22fcfcf11d48cb1986fd711376af4a0ff8e9f6",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OOP2EFQH.js": "14d2118f7d90650905f9bed65a8649e770ee0d56dc4aeab42711de8c145a0126",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OPVD7L25.js": "570c00e0a56b92d31a9f7f2100c6299e5098b868ea120d73c029b69cdf512961",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OT7KJOU5.js": "6ef2910432ad71552089f230122a0ed58148aeb5ff9c73ba6abc608ac14ddae3",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OVAK6FI5.js": "847c0bf74880279bac1aaa6587002766d5f062e4608f39713b98ab1355bd509a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OWA2Y72A.js": "1e574e7c1c703dbf33ffb2f4dc1d49b4e5ea6823ad41b420a5310edea0d6bf41",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OXMUYT4F.js": "03c7983744759b710c4bbbf0229c60a4716a41b333c3a2bbd8dc65111e35865e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.OYASTEA5.js": "f98a22b4e964500d57fb8d15db467f675b93a5252511bc8e722e83a8cfe73e48",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.P7ZG6EMR.js": "11da9e127aa1b30b0969bf5d90bfbeb62e0c6e35c7e0c165d35d7171358b06d5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.PCO44S4V.js": "1e5a93a1e1b6708541ff01480594d4ada9e6ac4e07d6c53079eb0de9b3a71564",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.PKRKD3AZ.js": "39742b0fa6ff798a72a6736a910ba2eca015e7de0d15974295390dc53082f511",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.PPYWLKVR.js": "11fd773bb0d2ccf6f2586b24b90c5919d9b361ea9b21c1509872f8a0de5919dc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.PTKJ3X2X.js": "3843ad5b262fbf3a5f5e9cba19e1ede609636647b93ddd88677f59a50a51b869",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.Q7W5QCVI.js": "8fb9a367e190becd0ee9a75e9bd5d8dad99dfa048117c9c5fba83baf3c6c5409",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QAQDTVQK.js": "ebe327a140de3f4f8d82d6ff2428177676f71349d37456e4fc94faad55e9046b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QAUZN7X3.js": "53fdd69708cf390d74174efeaf5af5dd79967827af33c10ca866c6d2a7d6870e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QC2YVEIR.js": "451959e54bcfc26b52e02624ec372d4f0a3ac17eb838f924e2eb65d7a7dd8dfb",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QL5C2XOW.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QLZC7WSZ.js": "879278d6b568537c7d105a4ff3ab98ce0e69c06bdbc0bb73919c6a1c2e808649",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QULM2YGT.js": "72c8d1b4060bec5c013460bfc292b11e0da472f2512db07b4c05336c0df31497",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.QVLAF6A7.js": "bc76f2c32f96aeb0ea90fbef517b82a59e80fd59647a7c453dcba9ecee44cee5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.R2PKWA6V.js": "178b24092d16a1770bf3075b08ad829a4a65b64a2b07cbd611d2f375b0c76576",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.R5PHFXA4.js": "68196fa9c16f045808f050602ba94661f4d9e81a801751bfd96c7f167327af26",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.RKALBKIL.js": "862a0b33561e271f095b23f790856b170ed5c9388336d8c11f98721aac61261c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.RUT25VT2.js": "5fa619db1134a34b5bee30c755b9ec9cd762eee1de06fe7952629c1f1ea56d7e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.RWUUFNUL.js": "b97b1c02b836f825a27766fae793781aa7bd1c31548b93336e0c355e38dbccfc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.RXGPXZJL.js": "f9ea606edbc8e6db39fb44cac87270eab3e2c400fae3b71010452a203d5f64a4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.RZ5YGLPE.js": "2a418b7f5cf7dcae2294482ced6acbf1ba984ef70fc8de5c2fbec5c7cf9802df",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.S32TRDOY.js": "d80999ba1c27e983f47efb0c2688b55d697e3993a2c096bc0b430d9583050bdb",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.S3MDVLAR.js": "4cc36f2a5603585c7e9d92492349b78feed26d20c99e0148c3f46f9bfccf5125",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.SJU6QPON.js": "deb9cd6f7601f551453d43d81554325e56f4981d4dcbd7cc9acd631297494229",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.SRECDZMQ.js": "f39a241f2f66ef448741b03eb56d91acb7f9cf76bbd254b0b55c3c3605e834c2",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.T33TOUU7.js": "7b5f27a3b2f688cc20e57111088c5eebdbab8a6c0434e035778c421422f7fe2e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.TC2QSLMZ.js": "50edb8e4a25e89ccd1fdcbe6613c657d810f66a4a78207e94ee79297d592164b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.TD36ASEP.js": "5c37e7d40f6240f7312139312856801923558fa4c2f29a98a5137e3b2010fd4c",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.TDEXDIPB.js": "4c35cc5b4a4edb9d214bb02e81f05b540adf5968ead31f9ef8569cb62f7d4511",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.TK2X5CVK.js": "c8107b50487384cd89f6e511e8b3bc2ab429e853443cb9cd1e12d5bcb90a7e80",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.TWN6XJ74.js": "dfdac28bf6ae185768c89ed118a200a64b65ac91c189bf2e54015343bed7e3d5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.U5OKE2YZ.js": "332b76688dc440ad4f56130c6447f7cd13176876fe5d4d66c417c2c4f5d8ff38",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UBADX4L7.js": "8edb86663345ef8ec3c6305a4acc41cdede8353453cb759bafce2902adb8599e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UFYCLV54.js": "7bd31afaf30d7085f11f88fa63560c0c846c962d3339bf917a1204e7a5090c0f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UJ2UXXXJ.js": "290a512ddfe9bc62bbee9117cbe7740037c2a9d73809f9a479aa14345da819bc",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UP75L23G.js": "1056baa432f847e137ebf1c9c9f1aa57177b708f2b91a5e27995d6be528db2de",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UT2QDHFA.js": "e2def4d67884afeb8f06127a418e87b2e03da16eb4f99ac612943f6b5209ad5e",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.UWWYSZEP.js": "b50d09a978bb6962d0232485133b9508e4455d38e49c05a9ed886981420e20ce",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.V42RO5VC.js": "2c779eb96fd3aa51426539677d1adea4896571ff5ae66a63be22bb6c94b80182",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.V4KCW2CR.js": "9628f6a866672e6ce044a909df39a2fe4c4f32dc8d5eafa4f691ef4110a05828",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VAEDVJZI.js": "c3cab103a17530c72cacd911a0392cb6e464c2e2060891ae50aa96fd6664d75a",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VGK3WMAH.js": "2a10ec7edc9a9d3ba2fd67be3c2d15372f6f38db9b03181ddec759579d26b2b7",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VK6OMCX5.js": "40361fc15f6abbbe25567954e72eaccd1bffef04fda8ca20ea81a987bfc8e012",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VMDRFYXT.js": "7fdbff23664e45651094955b1d3f40b984c81848dff6cc19d8117eaaa3661f42",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VMHMBRYP.js": "b0b11a42dfb9105a4d8da2dd97f41db47955779d7a5d1892968bf12aebb718b5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VTCMHGUN.js": "e39829d1b7f1c438ee7d8afc01cbc1cb065b4921a3e3fe96ca466a63cbaaf6ac",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.VZQEICZP.js": "5730bc33f86c6736f452ddd52cbf8464fdff38ec63e7d6e6de1b72d2422b1326",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.W27M6RDR.js": "69044f047cd8262ddd659de34e4682b8ab1797c53d2192ee4c0495827941624d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.WWKCHQSR.js": "ec8ad3c2118313da4acea539f37f6fb981e755dc9206aa680d99f0835849a134",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.X6SBPXFE.js": "876f33dd4add98dcf09413ef3fcf1e068f6b168786322244f5ce243b19019831",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.XCDC6BMM.js": "ce4e0b2d55672abbcc812ca8bda4ec883ae5f8f4f19c6e8b6b4262aa18fe1bec",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.XNEONNEJ.js": "ffe701abffd2a00c268c4e34acc25704d792c4865223df637788be4c50a50b20",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.XVNSTSE6.js": "d3554632b36908d7f01de35f702dc64995476ec7a2cb32a38ec245cc8afdbafd",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.XYWSHVZY.js": "6509ca7c2e4750f6bc3d80969383220db04410f8012c789951d7f347431a56b4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.Y4FFWLBX.js": "921539c8abe8a7beeb6b85461fa46a7aa9d52e493e9eb4707ee6fd102f4cfe3d",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.YA5FISEV.js": "7abd52f1db268a08677b0ffe4122df15738f9a3b037e027e6bc278fc368a3f47",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.YFTUIM77.js": "10fddc2d0a1a882e5c101dbb437f4b22fee2f7054dbf88ffaed9a0f1754f6e0f",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.YHRB6S75.js": "f8f6165beabad0240ea54294804dfc5bd211fff2799383cf8a8760244ed10248",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.YKCHVB3R.js": "4d574f22e64dd557d9975f7e713a4635c83f1ccbe3048152ee9151eaee1a33ee",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.YNTJR3K4.js": "85c56e0502dce423ad45af655e6290634c0d9854751e6f8ae68ed34d9b927bd5",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.Z3B46XM3.js": "1181527c4583682b5c762f9a6f70e4573b9cc918200da28193ff1baa3e9dc322",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZH2AND3P.js": "ba39c553d62f970fb6bcfb93b637f94cb9615df15032edf462416a3b7d4351ad",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZICKRO5P.js": "1e4a9599108ce63388fc9bc012cfbf15a7674abc1a29d950edfd77ce8db2c895",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZL53POKZ.js": "1f0c820ee81e8cd783cefcba1b28f075b64014f72932823c134cfbd45aee61c1",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZLRQFEYA.js": "52c56fb8c744af7daf44ccf1512adb18b8cddf926a17a5d5ae6932288e5d3d52",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZMQMRL56.js": "145032abc7e40da8391bfccc463410350ae9d941147b980446afaee8f6d40a84",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZRGBTBXP.js": "8f1aee6ae523ee2fcbe4cdf2cbe75f71db940d20b49e1f5bcc6651d256bfdfd4",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZTHCIXLL.js": "295d2aa9dcfe887dca51b05092123cb14f9d78070859dacbd9d56155ce8e8d1b",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/chunks/chunk.ZYSIEHF4.js": "37f9563fe041705d27faecae75f28ec23780f0210039cf0ce6dd31d1f0d4c386",
+    "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace.js": "4f5ce5b32d216e7955e4c17ae4abae208480f8d61bc5297709abebf8c56cca98",
     "https://esm.sh/d3-array@3.2.4/denonext/d3-array.mjs": "6519a5e73c89994e9e5b3959b717052ac2fa998e81c4b911b36f6fe3bb506798",
     "https://esm.sh/d3-array@3.2.4?target=denonext": "4266074d204ab57fcfbe3b73d6259dd41e56d864ca72d20b13e159414fe8c5f5",
     "https://esm.sh/d3-axis@3.0.0/denonext/d3-axis.mjs": "0879889007e89c7560d74a5fd3cf44953149b2e52eeca8fa31dd02a836546063",
@@ -199,5 +511,15 @@
     "https://esm.sh/internmap@2.0.3?target=denonext": "235fe2491d38df4060d092e8b8e882891b7bcb595435dcf9f52d7d38b6d2c534",
     "https://esm.sh/robust-predicates@3.0.2/denonext/robust-predicates.mjs": "8333e9ebc007d4b0f6894c8cd577c0e66c5421a5b7ce8664c659e3d2143dddb2",
     "https://esm.sh/robust-predicates@3.0.2?target=denonext": "c05d88c418e0d44a5b82d29f87f5ac1d935d117fa1122989c4162204ef38f83c"
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@shoelace-style/shoelace@2.20.1"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@shoelace-style/shoelace@^2.20.1"
+      ]
+    }
   }
 }

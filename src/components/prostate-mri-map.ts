@@ -2,6 +2,13 @@
 import * as d3 from "d3";
 import type { ProstateMriData, Lesion } from "../types.ts";
 import { CANONICAL_ZONES } from "../types.ts";
+// Import Shoelace via the npm specifier so it is bundled with the component.
+// This is a side-effect import which registers Shoelace custom elements such
+// as <sl-popup> so the component can use them at runtime.
+// Import the Shoelace package entry so its custom elements are registered
+// when the bundle is executed. Use the package entry instead of an internal
+// subpath to respect the package's "exports" map.
+import "npm:@shoelace-style/shoelace";
 import { validateLesionData } from "../utils/data-schema.ts";
 import {
   applyZoneStyles,
@@ -21,13 +28,7 @@ template.innerHTML = `
     #legend h4 { margin: 0.5rem 0 0.25rem 0; font-size: 0.9rem; }
     #legend div { margin-bottom: 0.25rem; }
     #legend span { margin-right: 0.5rem; border: 1px solid #000; }
-    #detail-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-    #detail-panel.show { display: flex; align-items: center; justify-content: center; }
-    #detail-content { background: white; border: 1px solid #ccc; border-radius: 4px; padding: 1rem; max-width: 500px; max-height: 80vh; overflow-y: auto; }
-    #detail-content h3 { margin-top: 0; }
-    #detail-content ul { list-style: none; padding: 0; }
-    #detail-content li { margin-bottom: 0.5rem; }
-    #detail-close { position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+  /* detail panel removed in favor of anchored popups */
     /* Palette overrides via CSS variables */
     [data-pirads="1"] { fill: var(--pirads-1, #FFFFB2); }
     [data-pirads="2"] { fill: var(--pirads-2, #FD8D3C); }
@@ -43,13 +44,6 @@ template.innerHTML = `
     <slot name="map-svg"></slot>
     <div id="warnings" aria-live="polite"></div>
     <div id="legend"></div>
-    <div id="detail-panel">
-      <div id="detail-content" role="dialog" aria-modal="true">
-        <button id="detail-close" aria-label="Close">&times;</button>
-        <h3 id="detail-title"></h3>
-        <ul id="detail-lesions"></ul>
-      </div>
-    </div>
   </div>
 `;
 
@@ -62,6 +56,14 @@ export class ProstateMriMap extends HTMLElement {
   private _data: ProstateMriData | null = null;
   private _language: string = "en";
   private _currentZone: string | null = null;
+  private _zonePopup: HTMLElement | null = null;
+  // We only use Shoelace `sl-popup` now. Assume it is available at runtime.
+  private _zonePopupIsShoelace = true;
+  // Timer used to delay hiding the popup so users can move pointer into it
+  private _popupHideTimer: number | null = null;
+  private _isTouchDevice = typeof globalThis !== "undefined" && (
+    ('ontouchstart' in (globalThis as unknown as Record<string, unknown>)) || ((navigator && (navigator.maxTouchPoints ?? 0) > 0))
+  );
 
   constructor() {
     super();
@@ -71,9 +73,7 @@ export class ProstateMriMap extends HTMLElement {
     this._onSlotChange = this._onSlotChange.bind(this);
     this._onZoneClick = this._onZoneClick.bind(this);
     this._onZoneKeydown = this._onZoneKeydown.bind(this);
-    this._onPanelClose = this._onPanelClose.bind(this);
-    this._onPanelKeydown = this._onPanelKeydown.bind(this);
-    this._onFocusIn = this._onFocusIn.bind(this);
+  // panel methods removed; popups are anchored to zones
   }
 
   connectedCallback() {
@@ -82,12 +82,7 @@ export class ProstateMriMap extends HTMLElement {
       | HTMLSlotElement
       | null;
     if (slot) slot.addEventListener("slotchange", this._onSlotChange);
-    // panel event listeners
-    const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
-    const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
-    closeBtn.addEventListener('click', this._onPanelClose);
-    panel.addEventListener('click', (e) => { if (e.target === panel) this._onPanelClose(); });
-    this.shadow.addEventListener('keydown', this._onPanelKeydown);
+  // no global detail panel — popups are anchored to zones
     // initial attempt to wire slotted content if already present
     this._wireSlottedZones();
     this._applyStylesToSlottedSvg();
@@ -97,11 +92,7 @@ export class ProstateMriMap extends HTMLElement {
       | HTMLSlotElement
       | null;
     if (slot) slot.removeEventListener("slotchange", this._onSlotChange);
-    const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
-    const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
-    closeBtn.removeEventListener('click', this._onPanelClose);
-    panel.removeEventListener('click', this._onPanelClose);
-    this.shadow.removeEventListener('keydown', this._onPanelKeydown);
+  // no detail panel cleanup needed
     this._unwireSlottedZones();
   }
 
@@ -130,23 +121,39 @@ export class ProstateMriMap extends HTMLElement {
         .attr("tabindex", "0")
         .attr("role", "button")
         .attr("focusable", "true")
-        .on("click.zone-interaction", (event: Event) => {
-          this._onZoneClick(event);
-        })
-        .on("keydown.zone-interaction", (event: Event) => {
-          const keyboardEvent = event as KeyboardEvent;
-          if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
-            keyboardEvent.preventDefault();
-            this._onZoneKeydown(keyboardEvent);
-          }
+          .on("click.zone-interaction", (event: Event) => {
+            this._onZoneClick(event);
+          })
+          .on("keydown.zone-interaction", (event: Event) => {
+            const keyboardEvent = event as KeyboardEvent;
+            if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+              keyboardEvent.preventDefault();
+              this._onZoneKeydown(keyboardEvent);
+            }
+          });
+
+      // For non-touch devices we also show the popup on hover to improve discoverability
+      if (!this._isTouchDevice) {
+        zones.on("mouseenter.zone-interaction", (event: Event) => {
+          const target = event.currentTarget as Element | null;
+          if (!target) return;
+          const zoneId = target.id || '';
+          const lesions = zoneId ? (this._data?.lesions.filter(l => l.zones.includes(zoneId)) || []) : [];
+          // Cancel any pending hide and show the popup
+          this._cancelHidePopup();
+          this._showZonePopup(target, lesions);
+        }).on("mouseleave.zone-interaction", () => {
+          // Delay hiding to allow pointer to move into the popup
+          this._scheduleHidePopup(150);
         });
+      }
 
       // Also wire elements with canonical zone IDs, even if they don't have class="zone"
       // this ensures basic interactivity even for SVGs that lack proper zone markup
       for (const zoneId of CANONICAL_ZONES) {
         const zoneElement = svgRoot.querySelector(`[id="${zoneId}"]`) as SVGElement;
-        if (zoneElement && !zoneElement.classList.contains("zone")) {
-          d3.select(zoneElement)
+          if (zoneElement && !zoneElement.classList.contains("zone")) {
+          const sel = d3.select(zoneElement)
             .classed("zone", true)
             .on(".zone-interaction", null)
             .attr("tabindex", "0")
@@ -162,6 +169,18 @@ export class ProstateMriMap extends HTMLElement {
                 this._onZoneKeydown(keyboardEvent);
               }
             });
+
+          if (!this._isTouchDevice) {
+            sel.on("mouseenter.zone-interaction", (event: Event) => {
+              const target = event.currentTarget as Element | null;
+              if (!target) return;
+              const zoneId = target.id || '';
+              const lesions = zoneId ? (this._data?.lesions.filter(l => l.zones.includes(zoneId)) || []) : [];
+              this._showZonePopup(target, lesions);
+            }).on("mouseleave.zone-interaction", () => {
+              this._hideZonePopup();
+            });
+          }
         }
       }
 
@@ -257,6 +276,8 @@ export class ProstateMriMap extends HTMLElement {
         : node.querySelector("svg");
       if (!svgRoot) continue;
       d3.select(svgRoot).selectAll(".zone").on(".zone-interaction", null);
+      // hide any visible popup when unwiring
+      this._hideZonePopup();
     }
   }
 
@@ -266,7 +287,9 @@ export class ProstateMriMap extends HTMLElement {
     const zoneId = target.id || null;
     if (!zoneId) return;
     const lesions = this._data?.lesions.filter(l => l.zones.includes(zoneId)) || [];
-    this._showDetailPanel(zoneId, lesions);
+    // Show popup anchored to the zone. For touch devices this is the primary
+    // interaction; for mouse users click also shows the popup (hover also does).
+    this._showZonePopup(target, lesions);
     this._dispatchZoneClick(zoneId, lesions);
   }
 
@@ -278,8 +301,203 @@ export class ProstateMriMap extends HTMLElement {
       const zoneId = target.id || null;
       if (!zoneId) return;
       const lesions = this._data?.lesions.filter(l => l.zones.includes(zoneId)) || [];
-      this._showDetailPanel(zoneId, lesions);
+      this._showZonePopup(target, lesions);
       this._dispatchZoneClick(zoneId, lesions);
+    }
+  }
+
+  // Create or return the popup element. We trust Shoelace is loaded and
+  // create a dedicated `sl-popup` instance appended to document.body.
+  private _ensureZonePopup(): HTMLElement {
+    if (this._zonePopup) return this._zonePopup;
+
+    const popup = document.createElement("sl-popup") as HTMLElement & { show?: (ref: Element) => void; hide?: () => void; };
+    // prefer arrow and sensible default placement; enable flip so popup can
+    // automatically move underneath the anchor if there's no room above.
+    try {
+      popup.setAttribute("arrow", "true");
+      popup.setAttribute("placement", "top");
+      // allow automatic flipping when preferred placement doesn't fit
+      popup.setAttribute("flip", "");
+      // small offset so arrow has room
+      popup.setAttribute("distance", "8");
+    } catch (_e) {
+      // ignore if attributes are not supported
+    }
+    const content = document.createElement("div");
+    // Do not use a named slot; sl-popup projects its default (unnamed) slot
+    // for popup content. Give the element a class so we can find it later.
+    content.className = 'zone-popup-content';
+    // Add minimal inline styling so the popup content is visible even if a
+    // Shoelace theme isn't loaded. Shoelace provides positioning only; the
+    // theme controls visuals — these inline styles are a safe fallback.
+    try {
+      content.style.background = 'white';
+      content.style.padding = '8px';
+      content.style.borderRadius = '6px';
+      content.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+      content.style.minWidth = '120px';
+      content.style.color = 'black';
+    } catch (_e) {
+      /* ignore */
+    }
+    popup.appendChild(content);
+    // append the popup to document.body so Shoelace can position it
+    // relative to the viewport and the reference element.
+    (document.body || document.documentElement).appendChild(popup);
+    try {
+      (popup as HTMLElement).style.zIndex = '99999';
+    } catch (_e) {
+      /* ignore */
+    }
+    // allow popup hover to keep it open by cancelling any hide timer
+    try {
+      popup.addEventListener('mouseenter', () => this._cancelHidePopup());
+      popup.addEventListener('mouseleave', () => this._scheduleHidePopup(150));
+    } catch (_e) {
+      /* ignore */
+    }
+    console.debug('[ProstateMriMap] created sl-popup and appended to document.body', popup);
+    this._zonePopupIsShoelace = true;
+    this._zonePopup = popup;
+    return popup;
+  }
+
+  private _scheduleHidePopup(delay = 150) {
+    this._cancelHidePopup();
+    try {
+      this._popupHideTimer = (globalThis as unknown as Window).setTimeout(() => {
+        this._popupHideTimer = null;
+        this._hideZonePopup();
+      }, delay) as unknown as number;
+    } catch (_e) {
+      // fallback: immediate hide
+      this._hideZonePopup();
+    }
+  }
+
+  private _cancelHidePopup() {
+    if (this._popupHideTimer != null) {
+      try {
+        (globalThis as unknown as Window).clearTimeout(this._popupHideTimer as unknown as number);
+      } catch (_e) {
+        /* ignore */
+      }
+      this._popupHideTimer = null;
+    }
+  }
+
+  private _renderZonePopupContent(lesions: Lesion[], zoneId?: string) {
+    const popup = this._ensureZonePopup();
+    if (!popup) return;
+    const content = (popup.querySelector('.zone-popup-content') as HTMLElement | null) ?? (popup.querySelector('[slot="content"]') as HTMLElement | null);
+    if (!content) return;
+    content.innerHTML = this._buildPopupHtml(lesions, zoneId);
+  }
+
+  private _buildPopupHtml(lesions: Lesion[], zoneId?: string) {
+    const lang = (this._language === 'sv' ? 'sv' : 'en') as 'en' | 'sv';
+    const t = translations[lang];
+    const title = zoneId ? `${t.zoneLabel} ${zoneId}` : '';
+    let html = `<div class="popup-title" style="font-weight:600;margin-bottom:6px">${title}</div>`;
+  if (!lesions || lesions.length === 0) html += `<div>No lesions</div>`;
+    else {
+      html += '<ul style="padding:0;margin:0;list-style:none">';
+      for (const lesion of lesions) {
+        html += `<li style="margin-bottom:6px"><strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br><strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}</li>`;
+      }
+      html += '</ul>';
+    }
+    return html;
+  }
+
+  private _showZonePopup(targetEl: Element, lesions: Lesion[] = []) {
+    const popup = this._ensureZonePopup();
+    if (!popup) return;
+    const zoneId = targetEl.id || undefined;
+    this._renderZonePopupContent(lesions, zoneId);
+
+    // Shoelace popup usually exposes a `show(reference)` method
+    try {
+      // Prefer setting the popup's anchor property and activating it via the
+      // `active` attribute/property per Shoelace docs. This is more reliable
+      // than assuming show()/hide() exist on the element across versions.
+      const p = popup as unknown as { show?: (ref: Element) => void; hide?: () => void; anchor?: unknown; active?: boolean; setAttribute?: (k: string, v: string) => void };
+      console.debug('[ProstateMriMap] attempting to activate sl-popup', { popup: p, target: targetEl });
+
+      // Set the anchor to the target element so positioning can work.
+      try {
+        // prefer property assignment when available
+        // @ts-ignore - anchor is a documented property
+        p.anchor = targetEl;
+      } catch (_e) {
+        try {
+          // fallback: set anchor attribute to id if present
+          if (targetEl.id) p.setAttribute?.('anchor', targetEl.id);
+        } catch (_e2) {
+          /* ignore */
+        }
+      }
+
+      // Try calling show() if present; otherwise use the active property/attribute
+      if (typeof p.show === 'function') {
+        p.show!(targetEl);
+        console.debug('[ProstateMriMap] called sl-popup.show()', { popup: p, target: targetEl });
+      } else {
+        try {
+          // @ts-ignore - active is a documented property
+          p.active = true;
+          p.setAttribute?.('active', '');
+          console.debug('[ProstateMriMap] set sl-popup.active and attribute', { popup: p, target: targetEl });
+        } catch (err) {
+          console.debug('[ProstateMriMap] could not set active on sl-popup', err);
+        }
+      }
+
+      // Post-activation diagnostics: allow positioning to settle then inspect
+      setTimeout(() => {
+        try {
+          const el = popup as unknown as HTMLElement;
+          const rect = el.getBoundingClientRect();
+          const cs = (globalThis as unknown as Window).getComputedStyle?.(el) ?? null;
+          console.debug('[ProstateMriMap] post-activate sl-popup rect & style', { rect, display: cs?.display, visibility: cs?.visibility, opacity: cs?.opacity });
+          if ((rect.width === 0 && rect.height === 0) || cs?.display === 'none' || cs?.visibility === 'hidden' || Number(cs?.opacity) === 0) {
+            console.warn('[ProstateMriMap] sl-popup appears invisible after activate; forcing display and high z-index');
+            try { el.setAttribute('active', ''); } catch (e) { console.debug('[ProstateMriMap] could not set active attribute', e); }
+            try { el.style.display = 'block'; el.style.zIndex = '99999'; } catch (e) { console.debug('[ProstateMriMap] could not force display/zIndex', e); }
+          }
+        } catch (err) {
+          console.debug('[ProstateMriMap] error during post-activate diagnostics', err);
+        }
+      }, 50);
+
+      return;
+    } catch (err) {
+      console.debug('[ProstateMriMap] sl-popup activation attempt failed', err);
+      return;
+    }
+  }
+
+  private _hideZonePopup() {
+    if (!this._zonePopup) return;
+    try {
+      const p = this._zonePopup as unknown as { hide?: () => void; removeAttribute?: (k: string) => void; active?: boolean };
+      console.debug('[ProstateMriMap] hiding sl-popup', p);
+      if (typeof p.hide === 'function') {
+        p.hide();
+        console.debug('[ProstateMriMap] called sl-popup.hide()');
+      } else {
+        try {
+          // @ts-ignore - active is a documented property
+          p.active = false;
+          p.removeAttribute?.('active');
+          console.debug('[ProstateMriMap] removed active attribute from sl-popup');
+        } catch (e) {
+          console.debug('[ProstateMriMap] error clearing active attribute for sl-popup', e);
+        }
+      }
+    } catch (_err) {
+      console.debug('[ProstateMriMap] error while hiding sl-popup', _err);
     }
   }
 
@@ -294,63 +512,7 @@ export class ProstateMriMap extends HTMLElement {
     });
     this.dispatchEvent(ev);
   }
-
-  private _showDetailPanel(zoneId: string, lesions: Lesion[]) {
-    this._currentZone = zoneId;
-    const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
-    const title = this.shadow.querySelector('#detail-title') as HTMLElement;
-    const list = this.shadow.querySelector('#detail-lesions') as HTMLElement;
-    const lang = (this._language === 'sv' ? 'sv' : 'en') as 'en' | 'sv';
-    const t = translations[lang];
-    title.textContent = `${t.zoneLabel} ${zoneId}`;
-    list.innerHTML = '';
-    for (const lesion of lesions) {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <strong>${t.lesionIdLabel}:</strong> ${lesion.id}<br>
-        <strong>${t.piradsValueLabel}:</strong> ${lesion.pirads}<br>
-        ${lesion.details?.comment ? `<strong>${t.commentLabel}:</strong> ${lesion.details.comment}<br>` : ''}
-        ${lesion.details?.size_mm ? `<strong>${t.sizeLabel}:</strong> ${lesion.details.size_mm} mm<br>` : ''}
-        ${lesion.details ? `<strong>${t.detailsLabel}:</strong> ${JSON.stringify(lesion.details)}` : ''}
-      `;
-      list.appendChild(li);
-    }
-    panel.classList.add('show');
-    // focus the close button
-    const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
-    closeBtn.focus();
-    // add focus trapping
-    this._onFocusIn = this._onFocusIn.bind(this);
-    this.shadow.addEventListener('focusin', this._onFocusIn);
-  }
-
-  private _hideDetailPanel() {
-    this._currentZone = null;
-    const panel = this.shadow.querySelector('#detail-panel') as HTMLElement;
-    panel.classList.remove('show');
-    this.shadow.removeEventListener('focusin', this._onFocusIn);
-  }
-
-  private _onPanelClose() {
-    this._hideDetailPanel();
-  }
-
-  private _onPanelKeydown(e: Event) {
-    const ke = e as KeyboardEvent;
-    if (ke.key === 'Escape') {
-      this._hideDetailPanel();
-    }
-  }
-
-  private _onFocusIn(e: Event) {
-    if (!this._currentZone) return;
-    const panel = this.shadow.querySelector('#detail-content') as HTMLElement;
-    const target = e.target as Element;
-    if (!panel.contains(target)) {
-      const closeBtn = this.shadow.querySelector('#detail-close') as HTMLElement;
-      closeBtn.focus();
-    }
-  }
+  // detail panel methods removed; anchored popup is used instead
 
   attributeChangedCallback(
     name: string,

@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/ErikSundvall/prostate/issues"
   },
-  "homepage": "https://github.com/ErikSundvall/prostate#readme"
+  "homepage": "https://github.com/ErikSundvall/prostate#readme",
+  "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1"
+  }
 }

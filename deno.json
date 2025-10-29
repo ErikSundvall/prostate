@@ -4,7 +4,8 @@
   },
   "lint": {},
   "imports": {
-    "d3": "https://esm.sh/d3@7"
+    "d3": "https://esm.sh/d3@7",
+    "npm:@shoelace-style/shoelace": "npm:@shoelace-style/shoelace@2.20.1"
   },
   "tasks": {
     "fmt": "deno fmt",
