@@ -350,24 +350,18 @@ export class ProstateMriMap extends HTMLElement {
     } catch (_e) {
       /* ignore */
     }
-    // if no Shoelace theme stylesheet is present, inject a local fallback
+    // Check for presence of a Shoelace theme stylesheet; if missing, warn
     try {
       const hasLink = !!document.querySelector('link[href*="shoelace"]') || Array.from(document.styleSheets || []).some(s => typeof s.href === 'string' && s.href.includes('shoelace'));
       if (!hasLink) {
-        console.warn('[ProstateMriMap] Shoelace theme stylesheet not found; injecting local fallback stylesheet demo/shoelace-theme-fallback.css');
+        // Inform the consumer via event so they can include the official Shoelace theme.
         try {
-          this._dispatchWarning(['Shoelace theme not found; using local fallback stylesheet.']);
+          this._dispatchWarning(['Shoelace theme not found; please include the Shoelace theme CSS for correct popup visuals.']);
+          console.warn('[ProstateMriMap] Shoelace theme not found; include the Shoelace theme CSS to style popups');
         } catch (_e) {
           /* ignore */
         }
-        if (!document.querySelector('link[data-local-shoelace]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = 'demo/shoelace-theme-fallback.css';
-          link.setAttribute('data-local-shoelace', 'true');
-          document.head.appendChild(link);
-        }
-        try { (popup as HTMLElement).style.setProperty('--arrow-color', '#ffffff'); } catch (e) { console.debug('[ProstateMriMap] failed to set --arrow-color', e); }
+        try { console.warn('[ProstateMriMap] Shoelace theme stylesheet not found; include the Shoelace theme CSS to style popups'); } catch (_e) { /* ignore */ }
       }
     } catch (_e) {
       /* ignore */
@@ -447,7 +441,7 @@ export class ProstateMriMap extends HTMLElement {
       // `active` attribute/property per Shoelace docs. This is more reliable
       // than assuming show()/hide() exist on the element across versions.
       const p = popup as unknown as { show?: (ref: Element) => void; hide?: () => void; anchor?: unknown; active?: boolean; setAttribute?: (k: string, v: string) => void };
-      console.debug('[ProstateMriMap] attempting to activate sl-popup', { popup: p, target: targetEl });
+  // activating sl-popup for target
 
       // Set the anchor to the target element so positioning can work.
       try {
@@ -466,15 +460,15 @@ export class ProstateMriMap extends HTMLElement {
       // Try calling show() if present; otherwise use the active property/attribute
       if (typeof p.show === 'function') {
         p.show!(targetEl);
-        console.debug('[ProstateMriMap] called sl-popup.show()', { popup: p, target: targetEl });
+  // called show()
       } else {
         try {
           // @ts-ignore - active is a documented property
           p.active = true;
           p.setAttribute?.('active', '');
-          console.debug('[ProstateMriMap] set sl-popup.active and attribute', { popup: p, target: targetEl });
-        } catch (err) {
-          console.debug('[ProstateMriMap] could not set active on sl-popup', err);
+          // set active attribute/property
+        } catch (_err) {
+          // ignore failures to set active
         }
       }
 
@@ -484,20 +478,19 @@ export class ProstateMriMap extends HTMLElement {
           const el = popup as unknown as HTMLElement;
           const rect = el.getBoundingClientRect();
           const cs = (globalThis as unknown as Window).getComputedStyle?.(el) ?? null;
-          console.debug('[ProstateMriMap] post-activate sl-popup rect & style', { rect, display: cs?.display, visibility: cs?.visibility, opacity: cs?.opacity });
           if ((rect.width === 0 && rect.height === 0) || cs?.display === 'none' || cs?.visibility === 'hidden' || Number(cs?.opacity) === 0) {
-            console.warn('[ProstateMriMap] sl-popup appears invisible after activate; forcing display and high z-index');
-            try { el.setAttribute('active', ''); } catch (e) { console.debug('[ProstateMriMap] could not set active attribute', e); }
-            try { el.style.display = 'block'; el.style.zIndex = '99999'; } catch (e) { console.debug('[ProstateMriMap] could not force display/zIndex', e); }
+            // popup appears invisible after activate; do not log here
+            try { el.setAttribute('active', ''); } catch (_e) { /* ignore */ }
+            try { el.style.display = 'block'; el.style.zIndex = '99999'; } catch (_e) { /* ignore */ }
           }
-        } catch (err) {
-          console.debug('[ProstateMriMap] error during post-activate diagnostics', err);
+        } catch (_err) {
+          /* ignore post-activate diagnostic errors */
         }
       }, 50);
 
       return;
-    } catch (err) {
-      console.debug('[ProstateMriMap] sl-popup activation attempt failed', err);
+    } catch (_err) {
+      // ignore activation errors
       return;
     }
   }
@@ -506,22 +499,17 @@ export class ProstateMriMap extends HTMLElement {
     if (!this._zonePopup) return;
     try {
       const p = this._zonePopup as unknown as { hide?: () => void; removeAttribute?: (k: string) => void; active?: boolean };
-      console.debug('[ProstateMriMap] hiding sl-popup', p);
       if (typeof p.hide === 'function') {
-        p.hide();
-        console.debug('[ProstateMriMap] called sl-popup.hide()');
+        try { p.hide(); } catch (_e) { /* ignore */ }
       } else {
         try {
           // @ts-ignore - active is a documented property
           p.active = false;
           p.removeAttribute?.('active');
-          console.debug('[ProstateMriMap] removed active attribute from sl-popup');
-        } catch (e) {
-          console.debug('[ProstateMriMap] error clearing active attribute for sl-popup', e);
-        }
+        } catch (_e) { /* ignore */ }
       }
     } catch (_err) {
-      console.debug('[ProstateMriMap] error while hiding sl-popup', _err);
+      /* ignore hide errors */
     }
   }
 

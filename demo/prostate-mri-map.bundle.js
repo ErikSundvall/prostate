@@ -33079,24 +33079,15 @@ var ProstateMriMap = class extends HTMLElement {
     try {
       const hasLink = !!document.querySelector('link[href*="shoelace"]') || Array.from(document.styleSheets || []).some((s18) => typeof s18.href === "string" && s18.href.includes("shoelace"));
       if (!hasLink) {
-        console.warn("[ProstateMriMap] Shoelace theme stylesheet not found; injecting local fallback stylesheet demo/shoelace-theme-fallback.css");
         try {
           this._dispatchWarning([
-            "Shoelace theme not found; using local fallback stylesheet."
+            "Shoelace theme not found; please include the Shoelace theme CSS for correct popup visuals."
           ]);
         } catch (_e3) {
         }
-        if (!document.querySelector("link[data-local-shoelace]")) {
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = "demo/shoelace-theme-fallback.css";
-          link.setAttribute("data-local-shoelace", "true");
-          document.head.appendChild(link);
-        }
         try {
-          popup.style.setProperty("--arrow-color", "#ffffff");
-        } catch (e41) {
-          console.debug("[ProstateMriMap] failed to set --arrow-color", e41);
+          console.warn("[ProstateMriMap] Shoelace theme stylesheet not found; include the Shoelace theme CSS to style popups");
+        } catch (_e3) {
         }
       }
     } catch (_e3) {
@@ -33106,7 +33097,6 @@ var ProstateMriMap = class extends HTMLElement {
       popup.addEventListener("mouseleave", () => this._scheduleHidePopup(150));
     } catch (_e3) {
     }
-    console.debug("[ProstateMriMap] created sl-popup and appended to document.body", popup);
     this._zonePopupIsShoelace = true;
     this._zonePopup = popup;
     return popup;
@@ -33162,10 +33152,6 @@ var ProstateMriMap = class extends HTMLElement {
     this._renderZonePopupContent(lesions, zoneId);
     try {
       const p14 = popup;
-      console.debug("[ProstateMriMap] attempting to activate sl-popup", {
-        popup: p14,
-        target: targetEl
-      });
       try {
         p14.anchor = targetEl;
       } catch (_e3) {
@@ -33176,20 +33162,11 @@ var ProstateMriMap = class extends HTMLElement {
       }
       if (typeof p14.show === "function") {
         p14.show(targetEl);
-        console.debug("[ProstateMriMap] called sl-popup.show()", {
-          popup: p14,
-          target: targetEl
-        });
       } else {
         try {
           p14.active = true;
           p14.setAttribute?.("active", "");
-          console.debug("[ProstateMriMap] set sl-popup.active and attribute", {
-            popup: p14,
-            target: targetEl
-          });
-        } catch (err) {
-          console.debug("[ProstateMriMap] could not set active on sl-popup", err);
+        } catch (_err) {
         }
       }
       setTimeout(() => {
@@ -33197,33 +33174,22 @@ var ProstateMriMap = class extends HTMLElement {
           const el = popup;
           const rect = el.getBoundingClientRect();
           const cs = globalThis.getComputedStyle?.(el) ?? null;
-          console.debug("[ProstateMriMap] post-activate sl-popup rect & style", {
-            rect,
-            display: cs?.display,
-            visibility: cs?.visibility,
-            opacity: cs?.opacity
-          });
           if (rect.width === 0 && rect.height === 0 || cs?.display === "none" || cs?.visibility === "hidden" || Number(cs?.opacity) === 0) {
-            console.warn("[ProstateMriMap] sl-popup appears invisible after activate; forcing display and high z-index");
             try {
               el.setAttribute("active", "");
-            } catch (e41) {
-              console.debug("[ProstateMriMap] could not set active attribute", e41);
+            } catch (_e3) {
             }
             try {
               el.style.display = "block";
               el.style.zIndex = "99999";
-            } catch (e41) {
-              console.debug("[ProstateMriMap] could not force display/zIndex", e41);
+            } catch (_e3) {
             }
           }
-        } catch (err) {
-          console.debug("[ProstateMriMap] error during post-activate diagnostics", err);
+        } catch (_err) {
         }
       }, 50);
       return;
-    } catch (err) {
-      console.debug("[ProstateMriMap] sl-popup activation attempt failed", err);
+    } catch (_err) {
       return;
     }
   }
@@ -33231,21 +33197,19 @@ var ProstateMriMap = class extends HTMLElement {
     if (!this._zonePopup) return;
     try {
       const p14 = this._zonePopup;
-      console.debug("[ProstateMriMap] hiding sl-popup", p14);
       if (typeof p14.hide === "function") {
-        p14.hide();
-        console.debug("[ProstateMriMap] called sl-popup.hide()");
+        try {
+          p14.hide();
+        } catch (_e3) {
+        }
       } else {
         try {
           p14.active = false;
           p14.removeAttribute?.("active");
-          console.debug("[ProstateMriMap] removed active attribute from sl-popup");
-        } catch (e41) {
-          console.debug("[ProstateMriMap] error clearing active attribute for sl-popup", e41);
+        } catch (_e3) {
         }
       }
     } catch (_err) {
-      console.debug("[ProstateMriMap] error while hiding sl-popup", _err);
     }
   }
   _dispatchZoneClick(zoneId, lesions) {
